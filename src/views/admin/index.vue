@@ -5,33 +5,41 @@
 
 <template>
     <div>
-
         <Card>
             <Row>
-                <Input v-model="searchConName3" placeholder="请输入姓名搜搜..." style="width: 200px" />
+                <DatePicker type="date" placeholder="请选择开始日期" :format="formatDate" v-model="query.StartDate" style="width: 200px"></DatePicker>
+                <DatePicker type="date" placeholder="请选择结束日期" :format="formatDate" v-model="query.EndDate" style="width: 200px"></DatePicker>
+                <Input v-model="query.KeyWord" placeholder="请输入关键字搜搜..." style="width: 200px" />
                 <span @click="search" style="margin: 0 10px;"><Button type="primary" :loading="loading" icon="search">搜索</Button></span>
-                <Button type="ghost">取消</Button>
-                <span @click="addModal" style=""><Button type="primary"  icon="add">新增</Button></span>
+                <Button @click="cancelSearch" type="ghost">取消</Button>
+                <template>
+                    <div style="float: right;">
+                        <span @click="addModal" style=""><Button type="primary"  icon="add">新增</Button></span>
+                    </div>
+                </template>
+
             </Row>
-            <Row :gutter="10">
-                <div class="margin-top-10 searchable-table-con1">
-                    <can-edit-table refs="table4" v-model="editInlineAndCellData" @on-cell-change="handleCellChange" @on-change="handleChange"
-                        :hover-show="true" :editIncell="true" :columns-list="editInlineAndCellColumn"></can-edit-table>
+            <Row>
+                <div class="margin-top-10">
+                    <can-edit-table refs="table4" v-model="editInlineAndCellData" :hover-show="true" :editIncell="true" :columns-list="editInlineAndCellColumn"
+                        :loading="loadingTable"></can-edit-table>
+
                 </div>
-                <Modal :width="500" v-model="showAdd" ok-text="aaa" on-ok="onOk">
+
+                <Modal :width="500" v-model="showAdd">
                     <template>
                         <Form ref="formCustom" :model="formCustom" :rules="ruleCustom" :label-width="80">
-                            <FormItem label="用户名" prop="loginName">
-                                <Input type="text" v-model="formCustom.loginName"></Input>
+                            <FormItem label="用户名" prop="LoginName">
+                                <Input type="text" v-model="formCustom.LoginName"></Input>
                             </FormItem>
-                            <FormItem label="密码" prop="passWord">
-                                <Input type="password" v-model="formCustom.passWord"></Input>
+                            <FormItem label="密码" prop="PassWord">
+                                <Input type="password" v-model="formCustom.PassWord"></Input>
                             </FormItem>
-                            <FormItem label="确认密码" prop="passWordCheck">
-                                <Input type="password" v-model="formCustom.passWordCheck"></Input>
+                            <FormItem label="确认密码" prop="PassWordCheck">
+                                <Input type="password" v-model="formCustom.PassWordCheck"></Input>
                             </FormItem>
-                            <FormItem label="真实姓名" prop="nickName">
-                                <Input type="text" v-model="formCustom.nickName" number></Input>
+                            <FormItem label="真实姓名" prop="NickName">
+                                <Input type="text" v-model="formCustom.NickName" number></Input>
                             </FormItem>
 
                         </Form>
@@ -42,6 +50,11 @@
                     </div>
 
                 </Modal>
+            </Row>
+            <Row>
+                <div style="float: left;" class="margin-top-10">
+                    <Page :total="totalCount" :current="query.page" @on-change="changePage"></Page>
+                </div>
             </Row>
         </Card>
     </div>
@@ -61,27 +74,27 @@ export default {
     data () {
          const validatePass = (rule, value, callback) => {
             if (value === '') {
-                callback(new Error('Please enter your password'));
+                callback(new Error('请输入密码'));
             } else {
-                if (this.formCustom.passWordCheck !== '') {
+                if (this.formCustom.PassWordCheck !== '') {
                     // 对第二个密码框单独验证
-                    this.$refs.formCustom.validateField('passWordCheck');
+                    this.$refs.formCustom.validateField('PassWordCheck');
                 }
                 callback();
             }
         };
         const validatePassCheck = (rule, value, callback) => {
             if (value === '') {
-                callback(new Error('Please enter your password again'));
-            } else if (value !== this.formCustom.passWord) {
-                callback(new Error('The two input passwords do not match!'));
+                callback(new Error('请输入确认密码'));
+            } else if (value !== this.formCustom.PassWord) {
+                callback(new Error('2次密码不一致!'));
             } else {
                 callback();
             }
         };
         const validateName = (rule, value, callback) => {
             if (!value) {
-                return callback(new Error('loginname cannot be empty'));
+                return callback(new Error('请输入登录名'));
             }
             // 模拟异步验证效果
             setTimeout(() => {
@@ -90,7 +103,7 @@ export default {
         };
         const validateNick = (rule, value, callback) => {
             if (!value) {
-                return callback(new Error('nickname cannot be empty'));
+                return callback(new Error('请输入真实姓名'));
             }
             callback();
         };
@@ -101,54 +114,73 @@ export default {
             showCurrentTableData: false,
             loading:false,
             loading2:false,
+            loadingTable:true,
             searchConName3:'',
+            formatDate:'yyyy-MM-dd',
             showAdd:false,
+            totalCount:0,
+            current:1,
             formCustom:{
-                 loginName:'',
-                 passWord:'',
-                 passWordCheck:'',
+                 LoginName:'',
+                 PassWord:'',
+                 PassWordCheck:'',
                  nickName:''
             },
             ruleCustom: {
-                    loginName: [
+                    LoginName: [
                         { validator: validateName, trigger: 'blur' }
                     ],
-                    passWord: [
+                    PassWord: [
                         { validator: validatePass, trigger: 'blur' }
                     ],
-                    passWordCheck: [
+                    PassWordCheck: [
                         { validator: validatePassCheck, trigger: 'blur' }
                     ],
-                    nickName: [
+                    NickName: [
                         { validator: validateNick, trigger: 'blur' }
                     ]
             },
             query:{
-                userId:Cookies.get('mmnum'),
-                token:Cookies.get('token'),
-                page:'1',
-                rows:'10'
+                ApiUid:Cookies.get('mmnum'),
+                Token:Cookies.get('token'),
+                Page:1,
+                Rows:10,
+                KeyWord:'',
+                StartDate:'',
+                EndDate:''
             }
         };
     },
     methods: {
         getData () {
+              this.loadingTable=true;
               var q=this.query;
-              q["sign"]=Util.createsign(q,this.$store.state.app.mmkey);
-              console.log(q);
+              q["Sign"]=Util.createsign(q,this.$store.state.app.mmkey);
               Util.ajax.post("api/Admin/GetList",q).then(res=>{
                 var data=res.data;
                 if(data.resultCode=="0")
                 {
-                       this.editInlineAndCellColumn = data.columns;
+                    this.totalCount=data.totalCount;
+                    this.loadingTable=false;
+                    this.editInlineAndCellColumn = data.columns;
+                    if(data.totalCount>0)
+                    {
+                   
                        this.editInlineAndCellData = data.data;
+                       
+                    }else{
+                       this.editInlineAndCellData = [];
+                    }
+                       
                 }
                 else{
                     this.$Message.error(data.message);
+                     this.loadingTable=false;
                 }    
             
             }).catch(error=>{
-                this.$Message.error('新增失败');
+                this.$Message.error('数据获取失败');
+                 this.loadingTable=false;
             });
 
         },
@@ -161,18 +193,14 @@ export default {
         getCurrentData () {
             this.showCurrentTableData = true;
         },
-        handleDel (val, index) {
-            this.$Message.success('删除了第' + (index + 1) + '行数据');
-        },
-        handleCellChange (val, index, key) {
-            this.$Message.success('修改了第 ' + (index + 1) + ' 行列名为 ' + key + ' 的数据');
-        },
-        handleChange (val, index) {
-            this.$Message.success('修改了第' + (index + 1) + '行数据');
-        },
         search(){
-            alert(this.$store.state.user.token);
-            this.loading=true;
+            this.getData();
+        },
+        cancelSearch(){
+            this.query.KeyWord='';
+            this.query.StartDate='';
+            this.query.EndDate='';
+            this.getData();
         },
         addModal(){
             this.showAdd=true;
@@ -185,10 +213,10 @@ export default {
             this.$refs["formCustom"].validate((valid) => {
             if (valid) {
                  let pdata=this.formCustom;
-                 pdata["passWord"]=md5(pdata["passWord"]);
-                 pdata["userId"]=this.$store.state.user.id;
-                 pdata["token"]=this.$store.state.user.token;
-                 pdata["sign"]=Util.createsign(pdata,this.$store.state.app.mmkey);
+                 pdata["PassWord"]=md5(pdata["PassWord"]);
+                 pdata["ApiUid"]=this.$store.state.user.id;
+                 pdata["Token"]=this.$store.state.user.token;
+                 pdata["Sign"]=Util.createsign(pdata,this.$store.state.app.mmkey);
                  Util.ajax.post("api/Admin/AddAdmin",pdata).then(res=>{
                     var data=res.data;
                     if(data.resultCode=="0")
@@ -198,6 +226,7 @@ export default {
                        {
                             this.formCustom[key]="";
                        }
+                       this.getData();
                     }
                     else{
                         this.$Message.error(data.message);
@@ -220,6 +249,11 @@ export default {
         closeModal(){
             this.showAdd=false;
         },
+        changePage(n){
+             this.query.Page=n;
+             console.log(n);
+             this.getData();
+        }
     },
     created () {
         this.getData();

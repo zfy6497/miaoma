@@ -264,9 +264,10 @@ util.post = function (purl, pdata) {
 util.createsign = function (pdata, skey) {
     let keys = new Array();
     let i = 0;
+    var nlist = ['key', 'Sign', 'StartDate', 'EndDate'];
     for (var key in pdata) {
         let val = pdata[key];
-        if (val !== '' && key !== 'key' && key !== 'sign') {
+        if (val !== '' && nlist.indexOf(key) < 0) {
             keys[i] = key + '=' + val;
             i++;
         }
@@ -274,6 +275,17 @@ util.createsign = function (pdata, skey) {
     }
     var t2 = keys.sort().join('&') + '&key=' + skey;
     return md5(t2).toLowerCase();
+};
+
+
+util.formatDate = function (date) {
+    let objDate = new Date(date);
+    const y = objDate.getFullYear();
+    let m = objDate.getMonth() + 1;
+    m = m < 10 ? '0' + m : m;
+    let d = objDate.getDate();
+    d = d < 10 ? ('0' + d) : d;
+    return y + '-' + m + '-' + d;
 };
 
 export default util;

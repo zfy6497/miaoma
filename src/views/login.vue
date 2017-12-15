@@ -45,8 +45,8 @@ export default {
     data () {
         return {
             form: {
-                userName: 'iview_admin',
-                password: ''
+                userName: 'admin',
+                password: '123456'
             },
             rules: {
                 userName: [
@@ -73,7 +73,7 @@ export default {
             this.$refs.loginForm.validate((valid) => {
                 if (valid) {  
                     let t1=this.postdata;
-                    t1["sign"]=Util.createsign(t1,this.$store.state.app.mmkey);
+                    t1["Sign"]=Util.createsign(t1,this.$store.state.app.mmkey);
                     Util.ajax.post("/api/User/UserLogin",t1).then (res=>{
                         var data=res.data;
                         if(data.resultCode=="0")

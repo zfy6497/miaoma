@@ -4,12 +4,18 @@
 
 <template>
     <div>
-        <Table :ref="refs" :columns="columnsList" :data="thisTableData" border disabled-hover></Table>
+        <Table :ref="refs" :columns="columnsList"  :loading="loading" :data="thisTableData" border disabled-hover></Table>
     </div>
 </template>
 
 <script>
+import Util from '../../libs/util.js';
+
+
+
 const editButton = (vm, h, currentRow, index) => {
+
+
     return h('Button', {
         props: {
             type: currentRow.editting ? 'success' : 'primary',
@@ -30,14 +36,33 @@ const editButton = (vm, h, currentRow, index) => {
                     vm.edittingStore[index].editting = true;
                     vm.thisTableData = JSON.parse(JSON.stringify(vm.edittingStore));
                 } else {
-                    vm.edittingStore[index].saving = true;
-                    vm.thisTableData = JSON.parse(JSON.stringify(vm.edittingStore));
-                    let edittingRow = vm.edittingStore[index];
-                    edittingRow.editting = false;
-                    edittingRow.saving = false;
-                    vm.thisTableData = JSON.parse(JSON.stringify(vm.edittingStore));
-                    vm.$emit('input', vm.handleBackdata(vm.thisTableData));
-                    vm.$emit('on-change', vm.handleBackdata(vm.thisTableData), index);
+
+                   let edittingRow = vm.edittingStore[index];
+                   let pdata={'NickName':edittingRow.NickName,'Remark':edittingRow.Remark,'Id':edittingRow.Id}
+                   pdata["ApiUid"]=vm.$store.state.user.id;
+                   pdata["Token"]=vm.$store.state.user.token;
+                   pdata["Sign"]=Util.createsign(pdata,vm.$store.state.app.mmkey);
+                    Util.ajax.post("api/Admin/UpdateAdmin",pdata).then(res=>{
+                    var data=res.data;
+                    if(data.resultCode=="0")
+                    {
+                        vm.edittingStore[index].saving = true;
+                        vm.thisTableData = JSON.parse(JSON.stringify(vm.edittingStore));
+                        edittingRow.editting = false;
+                        edittingRow.saving = false;
+                        vm.thisTableData = JSON.parse(JSON.stringify(vm.edittingStore));
+                        vm.$emit('input', vm.handleBackdata(vm.thisTableData));
+                        //vm.$emit('on-change', vm.handleBackdata(vm.thisTableData), index);
+                         vm.$Message.success('编辑成功');
+                    }
+                    else{
+                        vm.$Message.error(data.message);
+                    }    
+                    }).catch(error=>{
+                        vm.$Message.error('编辑失败');
+                    });
+
+                  
                 }
             }
         }
@@ -54,7 +79,8 @@ const deleteButton = (vm, h, currentRow, index) => {
             'on-ok': () => {
                 vm.thisTableData.splice(index, 1);
                 vm.$emit('input', vm.handleBackdata(vm.thisTableData));
-                vm.$emit('on-delete', vm.handleBackdata(vm.thisTableData), index);
+               // vm.$emit('on-delete', vm.handleBackdata(vm.thisTableData), index);
+                vm.$Message.success('删除成功');
             }
         }
     }, [
@@ -112,10 +138,27 @@ const saveIncellEditBtn = (vm, h, param) => {
         },
         on: {
             click: (event) => {
-                vm.edittingStore[param.index].edittingCell[param.column.key] = false;
-                vm.thisTableData = JSON.parse(JSON.stringify(vm.edittingStore));
-                vm.$emit('input', vm.handleBackdata(vm.thisTableData));
-                vm.$emit('on-cell-change', vm.handleBackdata(vm.thisTableData), param.index, param.column.key);
+                let edittingRow = vm.edittingStore[param.index];
+                let pdata={'NickName':edittingRow.NickName,'Remark':edittingRow.Remark,'Id':edittingRow.Id}
+                pdata["ApiUid"]=vm.$store.state.user.id;
+                pdata["Token"]=vm.$store.state.user.token;
+                pdata["Sign"]=Util.createsign(pdata,vm.$store.state.app.mmkey);
+                Util.ajax.post("api/Admin/UpdateAdmin",pdata).then(res=>{
+                var data=res.data;
+                if(data.resultCode=="0")
+                {
+                    edittingRow.edittingCell[param.column.key] = false;
+                    vm.thisTableData = JSON.parse(JSON.stringify(vm.edittingStore));
+                    vm.$emit('input', vm.handleBackdata(vm.thisTableData));
+                    //vm.$emit('on-cell-change', vm.handleBackdata(vm.thisTableData), param.index, param.column.key);
+                    vm.$Message.success('编辑成功');
+                }
+                else{
+                    vm.$Message.error(data.message);
+                }    
+                }).catch(error=>{
+                    vm.$Message.error('编辑失败');
+                });
             }
         }
     });
@@ -148,6 +191,10 @@ export default {
         hoverShow: {
             type: Boolean,
             default: false
+        },
+        loading: {
+            type: Boolean,
+            default: true
         }
     },
     data () {
@@ -200,6 +247,7 @@ export default {
             this.thisTableData = res;
             this.edittingStore = JSON.parse(JSON.stringify(this.thisTableData));
             this.columnsList.forEach(item => {
+                item.fixed=item.fixedType
                 if (item.editable) {
                     item.render = (h, param) => {
                         let currentRow = this.thisTableData[param.index];
@@ -250,9 +298,7 @@ export default {
                     item.render = (h, param) => {
                         let currentRowData = this.thisTableData[param.index];
                         if (item.handle.length === 2) {
-                            return h('div', [
-                                editButton(this, h, currentRowData, param.index),
-                                deleteButton(this, h, currentRowData, param.index)
+                            return h('div', [ editButton(this, h, currentRowData, param.index),deleteButton(this, h, currentRowData, param.index)
                             ]);
                         } else if (item.handle.length === 1) {
                             if (item.handle[0] === 'edit') {
@@ -267,6 +313,16 @@ export default {
                         }
                     };
                 }
+                if(item.formatType==="formatTime"){
+
+                     item.render = (h, param) => {
+                        let currentRowData = this.thisTableData[param.index];
+                         return h('span', Util.formatDate(currentRowData[item.key]));
+                    };
+                   
+                }
+                
+
             });
         },
         handleBackdata (data) {

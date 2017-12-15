@@ -49,50 +49,42 @@ export const otherRouter = {
     name: 'otherRouter',
     component: Main,
     children: [
-        { path: 'home', title: {i18n: 'home'}, name: 'home_index', component: resolve => { require(['@/views/home/home.vue'], resolve); } }
+        { path: 'home', title: { i18n: 'home' }, name: 'home_index', component: resolve => { require(['@/views/home/home.vue'], resolve); } }
     ]
 };
 
 // 作为Main组件的子页面展示并且在左侧菜单显示的路由写在appRouter里
 export const appRouter = [
     {
-        path: '/group',
+        path: '/admin',
         icon: 'ios-folder',
-        name: 'group',
-        title: 'Group',
+        name: 'admin',
+        title: '系统管理',
         component: Main,
         children: [
             {
-                path: 'page1',
-                icon: 'ios-paper-outline',
-                name: 'page1',
-                title: 'Page1',
-                component: resolve => { require(['@/views/group/page1/page1.vue'], resolve); }
-            },
-            {
-                path: 'page2',
-                icon: 'ios-list-outline',
-                name: 'page2',
-                title: 'Page2',
-                component: resolve => { require(['@/views/group/page2/page2.vue'], resolve); }
-            },
-            {
                 path: 'admin',
                 icon: 'ios-list-outline',
-                name: '管理员管理',
+                name: 'adminList',
                 title: '管理员管理',
                 component: resolve => { require(['@/views/admin/index.vue'], resolve); }
+            }, {
+                path: 'admin',
+                icon: 'ios-list-outline',
+                name: 'adminConfig',
+                title: '系统配置',
+                component: resolve => { require(['@/views/group/page1/page1.vue'], resolve); }
             }
         ]
     },
     {
         path: '/page',
         icon: 'ios-paper',
-        title: 'Page',
+        title: '会员管理',
         name: 'page',
         component: Main,
         children: [
-            { path: 'index', title: 'Page', name: 'page_index', component: resolve => { require(['@/views/page/page.vue'], resolve); } }
+            { path: 'index', title: '会员列表', name: 'page_index', component: resolve => { require(['@/views/page/page.vue'], resolve); } }
         ]
     }
 ];
