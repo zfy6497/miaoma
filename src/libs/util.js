@@ -258,22 +258,25 @@ util.fullscreenEvent = function (vm) {
 util.post = function (purl, pdata, vm, callback) {
     pdata['ApiUid'] = vm.$store.state.user.id;
     pdata['Token'] = vm.$store.state.user.token;
-    pdata['Sign'] = util.createsign(pdata, vm.$store.state.app.mmkey);
     var nlist = ['StartDate', 'EndDate'];
+    var md5list = ['PassWord'];
     for (var key in pdata) {
-          let val = pdata[key];
-       if(nlist.indexOf(key) >= 0 && val!='')
-       {
-            pdata[key]= util.formatDate(pdata[key]);
-       }
+        let val = pdata[key];
+        if (nlist.indexOf(key) >= 0 && val != '') {
+            pdata[key] = util.formatDate(pdata[key]);
+        }
+        if (md5list.indexOf(key) >= 0 && val != '') {
+            pdata[key] = md5(pdata[key]);
+        }
     }
+    pdata['Sign'] = util.createsign(pdata, vm.$store.state.app.mmkey);
     util.ajax.post(purl, pdata).then(res => {
         var data = res.data;
         if (data.resultCode === 0) {
             callback('1', data);
         }
         else {
-            vm.$Message.error(data.message);
+            callback('0', data.message);
         }
     }).catch(error => {
         callback('0');

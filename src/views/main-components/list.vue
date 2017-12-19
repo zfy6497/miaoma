@@ -30,30 +30,15 @@
 
                 </div>
 
-                <Modal :width="500" v-model="showAdd" v-if="showAddButton">
-                    <template slot="frommodel">
-                        <Form ref="formCustom" :model="formCustom" :rules="ruleCustom" :label-width="80">
-                            <FormItem label="用户名" prop="LoginName">
-                                <Input type="text" v-model="formCustom.LoginName"></Input>
-                            </FormItem>
-                            <FormItem label="密码" prop="PassWord">
-                                <Input type="password" v-model="formCustom.PassWord"></Input>
-                            </FormItem>
-                            <FormItem label="确认密码" prop="PassWordCheck">
-                                <Input type="password" v-model="formCustom.PassWordCheck"></Input>
-                            </FormItem>
-                            <FormItem label="真实姓名" prop="NickName">
-                                <Input type="text" v-model="formCustom.NickName" number></Input>
-                            </FormItem>
+                <Modal :width="modalWidth"   v-model="showAdd" v-if="showAddButton">
+                    <Form ref="formCustom" :model="formCustom" :rules="ruleCustom" :label-width="80">
+                        <slot name="frommodel"></slot>
+                    </Form>
 
-                        </Form>
-                        <div slot="footer">
-                            <Button type="ghost" @click="closeModal">取消</Button>
-                            <Button type="primary" @click="saveInfo" :loading="loading2">确定</Button>
-                        </div>
-                    </template>
-
-
+                    <div slot="footer">
+                        <Button type="ghost" @click="closeModal">取消</Button>
+                        <Button type="primary" @click="saveInfo" :loading="loading2">确定</Button>
+                    </div>
                 </Modal>
             </Row>
             <Row v-if="showPage">
@@ -101,43 +86,12 @@ export default {
         deleteUrl:String,
         addUrl:String,
         getUrl:String,
+        formCustom:Object,
+        ruleCustom:Object,
+        modalWidth:Number,
+        modalLabel:Number,
     },
     data () {
-         const validatePass = (rule, value, callback) => {
-            if (value === '') {
-                callback(new Error('请输入密码'));
-            } else {
-                if (this.formCustom.PassWordCheck !== '') {
-                    // 对第二个密码框单独验证
-                    this.$refs.formCustom.validateField('PassWordCheck');
-                }
-                callback();
-            }
-        };
-        const validatePassCheck = (rule, value, callback) => {
-            if (value === '') {
-                callback(new Error('请输入确认密码'));
-            } else if (value !== this.formCustom.PassWord) {
-                callback(new Error('2次密码不一致!'));
-            } else {
-                callback();
-            }
-        };
-        const validateName = (rule, value, callback) => {
-            if (!value) {
-                return callback(new Error('请输入登录名'));
-            }
-            // 模拟异步验证效果
-            setTimeout(() => {
-                 callback();
-            }, 1000);
-        };
-        const validateNick = (rule, value, callback) => {
-            if (!value) {
-                return callback(new Error('请输入真实姓名'));
-            }
-            callback();
-        };
         return {
             editInlineAndCellColumn: [],
             editInlineAndCellData: [],
@@ -149,29 +103,8 @@ export default {
             showAdd:false,
             totalCount:0,
             current:1,
-            formCustom:{
-                 LoginName:'',
-                 PassWord:'',
-                 PassWordCheck:'',
-                 nickName:''
-            },
-            ruleCustom: {
-                    LoginName: [
-                        { validator: validateName, trigger: 'blur' }
-                    ],
-                    PassWord: [
-                        { validator: validatePass, trigger: 'blur' }
-                    ],
-                    PassWordCheck: [
-                        { validator: validatePassCheck, trigger: 'blur' }
-                    ],
-                    NickName: [
-                        { validator: validateNick, trigger: 'blur' }
-                    ]
-            },
+           
             query:{
-                ApiUid:Cookies.get('mmnum'),
-                Token:Cookies.get('token'),
                 Page:1,
                 Rows:10,
                 KeyWord:'',
@@ -228,9 +161,7 @@ export default {
             this.$refs["formCustom"].validate((valid) => {
             if (valid) {
                 var vm=this;
-                 let pdata=this.formCustom;
-                 pdata["PassWord"]=md5(pdata["PassWord"]);
-                 Util.post(this.addUrl,pdata,this,function(res){
+                 Util.post(this.addUrl,this.formCustom,vm,function(res,msg){
                     if(res==='1')
                     {
                         vm.$Message.success('新增成功');
@@ -241,7 +172,13 @@ export default {
                         vm.getData();
                         vm.loading2=false;
                     }else{
-                        vm.$Message.error('新增失败');
+                        if(msg && msg!="")
+                        {
+                            vm.$Message.error(msg);
+                        }else{
+                             vm.$Message.error('新增失败');
+                        }
+                      
                         vm.loading2=false;
                     }      
                 });
