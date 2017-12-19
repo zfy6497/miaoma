@@ -9,11 +9,11 @@ util.title = function (title) {
     title = title || 'iView admin';
     window.document.title = title;
 };
-
+//http://localhost:49659
 const ajaxUrl = env === 'development'
     ? 'http://127.0.0.1:8888'
     : env === 'production'
-        ? 'http://localhost:49659'
+        ? 'http://43.247.89.26:1088'
         : 'http://43.247.89.26:1088';
 
 util.ajax = axios.create({

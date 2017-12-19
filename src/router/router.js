@@ -78,6 +78,35 @@ export const appRouter = [
         ]
     },
     {
+        path: '/product',
+        icon: 'bag',
+        name: 'product',
+        title: '商品管理',
+        component: Main,
+        children: [
+            {
+                path: 'productlist',
+                icon: 'heart',
+                name: 'productlist',
+                title: '商品列表',
+                component: resolve => { require(['@/views/product/productlist.vue'], resolve); }
+            }, {
+                path: 'categories',
+                icon: 'levels',
+                name: 'categories',
+                title: '分类管理',
+                component: resolve => { require(['@/views/product/categories.vue'], resolve); }
+            }, {
+                path: 'brands',
+                icon: 'podium',
+                name: 'brands',
+                title: '品牌管理',
+                component: resolve => { require(['@/views/product/brands.vue'], resolve); }
+            }
+        ]
+    }
+    ,
+    {
         path: '/page',
         icon: 'ios-paper',
         title: '会员管理',
