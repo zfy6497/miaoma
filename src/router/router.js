@@ -69,7 +69,7 @@ export const appRouter = [
                 title: '管理员管理',
                 component: resolve => { require(['@/views/admin/index.vue'], resolve); }
             }, {
-                path: 'admin',
+                path: 'group',
                 icon: 'ios-list-outline',
                 name: 'adminConfig',
                 title: '系统配置',

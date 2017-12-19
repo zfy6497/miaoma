@@ -100,7 +100,7 @@
             // console.log(isFullScreen);
         }
     },
-    mounted () {
+    created () {
         this.init();
     }
 };

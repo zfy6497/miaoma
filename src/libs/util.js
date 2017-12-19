@@ -255,10 +255,29 @@ util.fullscreenEvent = function (vm) {
     vm.$store.commit('updateMenulist');
 };
 
-util.post = function (purl, pdata) {
-    let results = '';
-    util.ajax.post(purl, pdata).then(res => { results = res.data; });
-    return results;
+util.post = function (purl, pdata, vm, callback) {
+    pdata['ApiUid'] = vm.$store.state.user.id;
+    pdata['Token'] = vm.$store.state.user.token;
+    pdata['Sign'] = util.createsign(pdata, vm.$store.state.app.mmkey);
+    var nlist = ['StartDate', 'EndDate'];
+    for (var key in pdata) {
+          let val = pdata[key];
+       if(nlist.indexOf(key) >= 0 && val!='')
+       {
+            pdata[key]= util.formatDate(pdata[key]);
+       }
+    }
+    util.ajax.post(purl, pdata).then(res => {
+        var data = res.data;
+        if (data.resultCode === 0) {
+            callback('1', data);
+        }
+        else {
+            vm.$Message.error(data.message);
+        }
+    }).catch(error => {
+        callback('0');
+    });
 };
 
 util.createsign = function (pdata, skey) {
@@ -289,3 +308,5 @@ util.formatDate = function (date) {
 };
 
 export default util;
+
+

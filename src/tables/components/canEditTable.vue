@@ -4,7 +4,7 @@
 
 <template>
     <div>
-        <Table :ref="refs" :columns="columnsList"  :loading="loading" :data="thisTableData" border disabled-hover></Table>
+        <Table :ref="refs" :columns="columnsList" :loading="loading" :data="thisTableData" border disabled-hover></Table>
     </div>
 </template>
 
@@ -36,33 +36,30 @@ const editButton = (vm, h, currentRow, index) => {
                     vm.edittingStore[index].editting = true;
                     vm.thisTableData = JSON.parse(JSON.stringify(vm.edittingStore));
                 } else {
-
-                   let edittingRow = vm.edittingStore[index];
-                   let pdata={'NickName':edittingRow.NickName,'Remark':edittingRow.Remark,'Id':edittingRow.Id}
-                   pdata["ApiUid"]=vm.$store.state.user.id;
-                   pdata["Token"]=vm.$store.state.user.token;
-                   pdata["Sign"]=Util.createsign(pdata,vm.$store.state.app.mmkey);
-                    Util.ajax.post("api/Admin/UpdateAdmin",pdata).then(res=>{
-                    var data=res.data;
-                    if(data.resultCode=="0")
-                    {
-                        vm.edittingStore[index].saving = true;
-                        vm.thisTableData = JSON.parse(JSON.stringify(vm.edittingStore));
-                        edittingRow.editting = false;
-                        edittingRow.saving = false;
-                        vm.thisTableData = JSON.parse(JSON.stringify(vm.edittingStore));
-                        vm.$emit('input', vm.handleBackdata(vm.thisTableData));
-                        //vm.$emit('on-change', vm.handleBackdata(vm.thisTableData), index);
-                         vm.$Message.success('编辑成功');
-                    }
-                    else{
-                        vm.$Message.error(data.message);
-                    }    
-                    }).catch(error=>{
-                        vm.$Message.error('编辑失败');
+                    let edittingRow = vm.edittingStore[index];
+                    let pdata={};
+                    vm.caneditcolumns.forEach(item => {
+                    pdata[item.key]=edittingRow[item.key];
                     });
-
-                  
+                    if(edittingRow["Id"]&&edittingRow["Id"]!=="0")
+                    {
+                    pdata["Id"]=edittingRow["Id"];                    
+                    }
+                    Util.post(vm.updateUrl,pdata,vm,function(res){
+                        if(res==='1')
+                        {
+                            vm.edittingStore[index].saving = true;
+                            vm.thisTableData = JSON.parse(JSON.stringify(vm.edittingStore));
+                            edittingRow.editting = false;
+                            edittingRow.saving = false;
+                            vm.thisTableData = JSON.parse(JSON.stringify(vm.edittingStore));
+                            vm.$emit('input', vm.handleBackdata(vm.thisTableData));
+                            //vm.$emit('on-change', vm.handleBackdata(vm.thisTableData), index);
+                            vm.$Message.success('编辑成功');
+                        }else{
+                                vm.$Message.error('编辑失败');
+                        }
+                    })                  
                 }
             }
         }
@@ -77,10 +74,22 @@ const deleteButton = (vm, h, currentRow, index) => {
         },
         on: {
             'on-ok': () => {
-                vm.thisTableData.splice(index, 1);
-                vm.$emit('input', vm.handleBackdata(vm.thisTableData));
-               // vm.$emit('on-delete', vm.handleBackdata(vm.thisTableData), index);
-                vm.$Message.success('删除成功');
+                 let pdata={};
+                if(currentRow["Id"]&&currentRow["Id"]!=="0")
+                {
+                   pdata["Id"]=currentRow["Id"];                    
+                }
+                Util.post(vm.deleteUrl,pdata,vm,function(res){
+                if(res==='1')
+                {
+                    vm.thisTableData.splice(index, 1);
+                    vm.$emit('input', vm.handleBackdata(vm.thisTableData));
+                //vm.$emit('on-delete', vm.handleBackdata(vm.thisTableData), index);
+                    vm.$Message.success('删除成功');
+                }else{
+                    vm.$Message.error('删除失败');
+                }
+            })
             }
         }
     }, [
@@ -139,26 +148,28 @@ const saveIncellEditBtn = (vm, h, param) => {
         on: {
             click: (event) => {
                 let edittingRow = vm.edittingStore[param.index];
-                let pdata={'NickName':edittingRow.NickName,'Remark':edittingRow.Remark,'Id':edittingRow.Id}
-                pdata["ApiUid"]=vm.$store.state.user.id;
-                pdata["Token"]=vm.$store.state.user.token;
-                pdata["Sign"]=Util.createsign(pdata,vm.$store.state.app.mmkey);
-                Util.ajax.post("api/Admin/UpdateAdmin",pdata).then(res=>{
-                var data=res.data;
-                if(data.resultCode=="0")
-                {
-                    edittingRow.edittingCell[param.column.key] = false;
-                    vm.thisTableData = JSON.parse(JSON.stringify(vm.edittingStore));
-                    vm.$emit('input', vm.handleBackdata(vm.thisTableData));
-                    //vm.$emit('on-cell-change', vm.handleBackdata(vm.thisTableData), param.index, param.column.key);
-                    vm.$Message.success('编辑成功');
-                }
-                else{
-                    vm.$Message.error(data.message);
-                }    
-                }).catch(error=>{
-                    vm.$Message.error('编辑失败');
+                let pdata={};
+                vm.caneditcolumns.forEach(item => {
+                   pdata[item.key]=edittingRow[item.key];
                 });
+                if(edittingRow["Id"]&&edittingRow["Id"]!=="0")
+                {
+                   pdata["Id"]=edittingRow["Id"];                    
+                }
+                Util.post(vm.updateUrl,pdata,vm,function(res){
+                    if(res==='1')
+                    {
+                        edittingRow.edittingCell[param.column.key] = false;
+                        vm.thisTableData = JSON.parse(JSON.stringify(vm.edittingStore));
+                        vm.$emit('input', vm.handleBackdata(vm.thisTableData));
+                        //vm.$emit('on-cell-change', vm.handleBackdata(vm.thisTableData), param.index, param.column.key);
+                        vm.$Message.success('编辑成功');
+                    }else{
+                         vm.$Message.error('编辑失败');
+                    }
+                })
+
+              
             }
         }
     });
@@ -195,13 +206,16 @@ export default {
         loading: {
             type: Boolean,
             default: true
-        }
+        },
+        updateUrl:String,
+        deleteUrl:String
     },
     data () {
         return {
             columns: [],
             thisTableData: [],
-            edittingStore: []
+            edittingStore: [],
+            caneditcolumns:[]
         };
     },
     created () {
@@ -217,6 +231,7 @@ export default {
                     }
                 }
             });
+            this.caneditcolumns=editableCell;
             let cloneData = JSON.parse(JSON.stringify(this.value));
             let res = [];
             res = cloneData.map((item, index) => {
