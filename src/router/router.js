@@ -86,6 +86,16 @@ export const appRouter = [
         children: [
             { path: 'index', title: '会员列表', name: 'page_index', component: resolve => { require(['@/views/page/page.vue'], resolve); } }
         ]
+    },
+    {
+        path: '/page',
+        icon: 'ios-paper',
+        title: '预约管理',
+        name: 'page',
+        component: Main,
+        children: [
+            { path: 'index', title: '会员列表', name: 'page_index', component: resolve => { require(['@/views/page/page.vue'], resolve); } }
+        ]
     }
 ];
 
