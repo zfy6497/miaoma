@@ -87,7 +87,6 @@ export default {
                         { validator: validateNick, trigger: 'blur' }
                     ]
             },
-            FormItems:[{'label':'',}],
             modalWidth:500,
             modalLaberWidth:80
         };

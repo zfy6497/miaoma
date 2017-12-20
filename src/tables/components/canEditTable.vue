@@ -4,7 +4,7 @@
 
 <template>
     <div>
-        <Table :ref="refs" :columns="columnsList" :loading="loading" :data="thisTableData" border disabled-hover></Table>
+        <Table :ref="refs" :columns="columnsList" :loading="loading" @on-sort-change="sortChange" :data="thisTableData" border disabled-hover ></Table>
     </div>
 </template>
 
@@ -348,6 +348,9 @@ export default {
                 delete item.saving;
             });
             return clonedData;
+        },
+        sortChange(data){
+            this.$emit('on-reload', data.key,data.order);
         }
     },
     watch: {

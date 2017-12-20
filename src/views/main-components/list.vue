@@ -11,7 +11,7 @@
                     <DatePicker type="date" v-if="showDate" placeholder="请选择开始日期" :format="formatDate" v-model="query.StartDate" style="width: 200px"></DatePicker>
                     <DatePicker type="date" v-if="showDate" placeholder="请选择结束日期" :format="formatDate" v-model="query.EndDate" style="width: 200px"></DatePicker>
                     <Input v-model="query.KeyWord" v-if="showKeyWord" placeholder="请输入关键字搜搜..." style="width: 200px" />
-                    <span @click="search"  style="margin: 0 10px;"><Button type="primary" :loading="loading" icon="search">搜索</Button></span>
+                    <span @click="search" style="margin: 0 10px;"><Button type="primary" :loading="loading" icon="search">搜索</Button></span>
                     <Button @click="cancelSearch" type="ghost">取消</Button>
                 </template>
                 <template>
@@ -26,11 +26,11 @@
             <Row>
                 <div class="margin-top-10">
                     <can-edit-table refs="table4" v-model="editInlineAndCellData" :hover-show="true" :editIncell="true" :columns-list="editInlineAndCellColumn"
-                        :loading="loadingTable" :update-url="updateUrl" :delete-url="deleteUrl"></can-edit-table>
+                        :loading="loadingTable" :update-url="updateUrl" :delete-url="deleteUrl" @on-reload="reload"></can-edit-table>
 
                 </div>
 
-                <Modal :width="modalWidth"   v-model="showAdd" v-if="showAddButton">
+                <Modal :width="modalWidth" v-model="showAdd" v-if="showAddButton">
                     <Form ref="formCustom" :model="formCustom" :rules="ruleCustom" :label-width="80">
                         <slot name="frommodel"></slot>
                     </Form>
@@ -109,7 +109,9 @@ export default {
                 Rows:10,
                 KeyWord:'',
                 StartDate:'',
-                EndDate:''
+                EndDate:'',
+                Sidx:'Id',
+                Sord:'desc'
             }
         };
     },
@@ -196,6 +198,11 @@ export default {
         changePage(n){
              this.query.Page=n;
              this.getData();
+        },
+        reload(key,order){
+            this.query.Sidx=key;
+            this.query.Sord=order;
+            this.getData();
         }
     },
     mounted () {

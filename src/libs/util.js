@@ -16,6 +16,9 @@ const ajaxUrl = env === 'development'
         ? 'http://localhost:49659'
         : 'http://43.247.89.26:1088';
 
+util.ajaxUrl = function () {
+    return ajaxUrl;
+};
 util.ajax = axios.create({
     baseURL: ajaxUrl,
     timeout: 30000,

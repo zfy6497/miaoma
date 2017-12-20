@@ -6,6 +6,9 @@
             columns 表格列的配置描述 sortable:true 开启排序功能 
             type: 'selection'为多选功能 type: 'action' 为操作功能 actions:[{}] 操作按钮
  -->
+ <style lang="less">
+    @import "./treegrid.less";
+</style>
 <template>
     <div :style="{width:tableWidth}" class='autoTbale'>
         <table class="table table-bordered" id='hl-tree-table'>
@@ -45,8 +48,20 @@
                 </tr>
             </tbody>
         </table>
+           <Modal :width="modalWidth" v-model="showFrom"  @on-cancel="closeModal" :closable="false">
+           <Form ref="formCustom" :model="formCustom" :rules="ruleCustom" :label-width="80">
+                <slot name="formmodel"></slot>
+            </Form>
+
+            <div slot="footer">
+                <Button type="ghost" @click="closeModal">取消</Button>
+                <Button type="primary" @click="saveInfo" :loading="loading2">确定</Button>
+            </div>
+     </Modal>
     </div>
+  
 </template>
+
 <script>
 export default {
     name: 'treeGrid',
@@ -57,7 +72,15 @@ export default {
             default: function() {
                 return [];
             }
-        }
+        },
+        updateUrl:String,
+        deleteUrl:String,
+        addUrl:String,
+        getUrl:String,
+        formCustom:Object,
+        ruleCustom:Object,
+        modalWidth:Number,
+        modalLabel:Number,
     },
     data() {
         return {
@@ -68,7 +91,11 @@ export default {
             screenWidth: document.body.clientWidth, //自适应宽
             tdsWidth: 0, //td总宽
             timer: false, //控制监听时长
-            dataLength: 0, //树形数据长度
+            dataLength: 0, //树形数据长度,
+            showFrom:false,
+            loading2:false,
+            editItem:''
+
         }
     },
     computed: {
@@ -164,7 +191,9 @@ export default {
         },
         // 点击某一行事件
         RowClick(data, event, index, text) {
+            this.showFrom=true;
             let result = this.makeData(data)
+            console.log(data);
             this.$emit('on-row-click', result, event, index, text)
         },
         // 点击事件 返回数据处理
@@ -404,72 +433,50 @@ export default {
                 '[object Object]': 'object'
             };
             return map[toString.call(obj)];
-        }
+        },
+         addModal(){
+            this.showFrom=true;
+        },
+        saveInfo(){
+           // this.loading2=true;
+            this.$refs["formCustom"].validate((valid) => {
+            if (valid) {
+                var vm=this;
+                 Util.post(this.addUrl,this.formCustom,vm,function(res,msg){
+                    if(res==='1')
+                    {
+                        vm.$Message.success('新增成功');
+                        for(var key in  vm.formCustom)
+                        {
+                            vm.formCustom[key]="";
+                        }
+                        vm.getData();
+                        vm.loading2=false;
+                    }else{
+                        if(msg && msg!="")
+                        {
+                            vm.$Message.error(msg);
+                        }else{
+                             vm.$Message.error('新增失败');
+                        }
+                      
+                        vm.loading2=false;
+                    }      
+                });
+            } else {
+                console.log('error submit!!');
+                this.loading2=false;
+                return false;
+            }
+        });
+           
+        },
+        closeModal(){
+            this.showFrom=false;
+        },
     },
     beforeDestroy() {
         window.onresize = null
     }
 }
 </script>
-<style>
-.autoTbale {
-    overflow: auto;
-}
-table {
-    width: 100%;
-    border-spacing: 0;
-    border-collapse: collapse;
-}
-.table-bordered {
-    border: 1px solid #EBEBEB;
-}
-.table>tbody>tr>td,
-.table>tbody>tr>th,
-.table>thead>tr>td,
-.table>thead>tr>th {
-    border-top: 1px solid #e7eaec;
-    line-height: 1.42857;
-    padding: 8px;
-    vertical-align: middle;
-}
-.table-bordered>tbody>tr>td,
-.table-bordered>tbody>tr>th,
-.table-bordered>tfoot>tr>td,
-.table-bordered>tfoot>tr>th,
-.table-bordered>thead>tr>td,
-.table-bordered>thead>tr>th {
-    border: 1px solid #e7e7e7;
-}
-.table>thead>tr>th {
-    border-bottom: 1px solid #DDD;
-}
-.table-bordered>thead>tr>td,
-.table-bordered>thead>tr>th {
-    background-color: #F5F5F6;
-}
-#hl-tree-table>tbody>tr {
-    background-color: #fbfbfb;
-}
-#hl-tree-table>tbody>.child-tr {
-    background-color: #fff;
-}
-label {
-    margin: 0 8px;
-}
-.ms-tree-space {
-    position: relative;
-    top: 1px;
-    display: inline-block;
-    font-style: normal;
-    font-weight: 400;
-    line-height: 1;
-    width: 14px;
-    height: 14px;
-}
-.ms-tree-space::before {
-    content: ""
-}
-#hl-tree-table th>label {
-    margin: 0;
-}
-</style>
