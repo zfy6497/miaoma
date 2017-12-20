@@ -117,13 +117,54 @@ export const appRouter = [
         ]
     },
     {
-        path: '/page',
+        path: '/yuyue',
         icon: 'ios-paper',
         title: '预约管理',
         name: 'page',
         component: Main,
         children: [
-            { path: 'index', title: '会员列表', name: 'page_index', component: resolve => { require(['@/views/page/page.vue'], resolve); } }
+            {
+                path: 'speciallist',
+                icon: 'heart',
+                name: 'speciallist',
+                title: '专家列表',
+                component: resolve => { require(['@/views/yuyue/speciallist.vue'], resolve); }
+            },
+            {
+                path: 'specialorder',
+                icon: 'heart',
+                name: 'specialorder',
+                title: '预约订单',
+                component: resolve => { require(['@/views/yuyue/specialorder.vue'], resolve); }
+            },
+            {
+                path: 'storelist',
+                icon: 'heart',
+                name: 'storelist',
+                title: '门店管理',
+                component: resolve => { require(['@/views/yuyue/storelist.vue'], resolve); }
+            },
+            {
+                path: 'homeads',
+                icon: 'heart',
+                name: 'homeads',
+                title: '首页广告',
+                component: resolve => { require(['@/views/yuyue/homeads.vue'], resolve); }
+            },
+            {
+                path: 'commentlist',
+                icon: 'heart',
+                name: 'commentlist',
+                title: '评价管理',
+                component: resolve => { require(['@/views/yuyue/commentlist.vue'], resolve); }
+            },
+            {
+                path: 'arealist',
+                icon: 'heart',
+                name: 'arealist',
+                title: '区域管理',
+                component: resolve => { require(['@/views/yuyue/arealist.vue'], resolve); }
+            }
         ]
     }
 ];
