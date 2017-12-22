@@ -38,7 +38,6 @@
                                             </DropdownItem>
                                             <DropdownMenu slot="list" v-for="(c3,index3) in c2.childs">
                                                 <DropdownItem> {{c3.name}}</DropdownItem>
-                                               
                                             </DropdownMenu>
                                         </Dropdown>
                                     </DropdownMenu>
