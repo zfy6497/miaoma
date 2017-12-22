@@ -104,66 +104,109 @@ export const appRouter = [
                 component: resolve => { require(['@/views/product/brands.vue'], resolve); }
             }
         ]
-    }
-    ,
+    },
     {
-        path: '/page',
-        icon: 'ios-paper',
+        path: '/member',
+        icon: 'person',
         title: '会员管理',
         name: 'page',
         component: Main,
         children: [
-            { path: 'index', title: '会员列表', name: 'page_index', component: resolve => { require(['@/views/page/page.vue'], resolve); } }
+            { path: 'index', title: '会员列表', name: 'index', component: resolve => { require(['@/views/member/index.vue'], resolve); } }
         ]
     },
     {
         path: '/yuyue',
-        icon: 'ios-paper',
+        icon: 'soup-can',
         title: '预约管理',
-        name: 'page',
+        name: 'yuyue',
         component: Main,
         children: [
             {
                 path: 'speciallist',
-                icon: 'heart',
+                icon: 'ios-list',
                 name: 'speciallist',
                 title: '专家列表',
                 component: resolve => { require(['@/views/yuyue/speciallist.vue'], resolve); }
             },
             {
                 path: 'specialorder',
-                icon: 'heart',
+                icon: 'ios-list',
                 name: 'specialorder',
                 title: '预约订单',
                 component: resolve => { require(['@/views/yuyue/specialorder.vue'], resolve); }
             },
             {
                 path: 'storelist',
-                icon: 'heart',
+                icon: 'ios-list',
                 name: 'storelist',
                 title: '门店管理',
                 component: resolve => { require(['@/views/yuyue/storelist.vue'], resolve); }
             },
             {
                 path: 'homeads',
-                icon: 'heart',
+                icon: 'ios-list',
                 name: 'homeads',
                 title: '首页广告',
                 component: resolve => { require(['@/views/yuyue/homeads.vue'], resolve); }
             },
             {
                 path: 'commentlist',
-                icon: 'heart',
+                icon: 'ios-list',
                 name: 'commentlist',
                 title: '评价管理',
                 component: resolve => { require(['@/views/yuyue/commentlist.vue'], resolve); }
             },
             {
                 path: 'arealist',
-                icon: 'heart',
+                icon: 'ios-list',
                 name: 'arealist',
                 title: '区域管理',
                 component: resolve => { require(['@/views/yuyue/arealist.vue'], resolve); }
+            }
+        ]
+    },
+    {
+        path: '/course',
+        icon: 'ios-paper',
+        title: '在线课程',
+        name: 'course',
+        component: Main,
+        children: [
+            {
+                path: 'homesetting',
+                icon: 'ios-list',
+                name: 'homesetting',
+                title: '首页配置',
+                component: resolve => { require(['@/views/course/homesetting.vue'], resolve); }
+            },
+            {
+                path: 'categorylist',
+                icon: 'ios-list',
+                name: 'categorylist',
+                title: '课程分类',
+                component: resolve => { require(['@/views/course/categorylist.vue'], resolve); }
+            },
+            {
+                path: 'courselist',
+                icon: 'ios-list',
+                name: 'courselist',
+                title: '课程管理',
+                component: resolve => { require(['@/views/course/courselist.vue'], resolve); }
+            },
+            {
+                path: 'courseorder',
+                icon: 'ios-list',
+                name: 'courseorder',
+                title: '课程订购',
+                component: resolve => { require(['@/views/course/courseorder.vue'], resolve); }
+            },
+            {
+                path: 'coursedynamic',
+                icon: 'ios-list',
+                name: 'coursedynamic',
+                title: '课程动态',
+                component: resolve => { require(['@/views/course/coursedynamic.vue'], resolve); }
             }
         ]
     }

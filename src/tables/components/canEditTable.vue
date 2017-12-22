@@ -19,7 +19,8 @@ const editButton = (vm, h, currentRow, index) => {
     return h('Button', {
         props: {
             type: currentRow.editting ? 'success' : 'primary',
-            loading: currentRow.saving
+            loading: currentRow.saving,
+            size:'small'
         },
         style: {
             margin: '0 5px'
@@ -70,7 +71,8 @@ const deleteButton = (vm, h, currentRow, index) => {
         props: {
             confirm: true,
             title: '您确定要删除这条数据吗?',
-            transfer: true
+            transfer: true,
+               
         },
         on: {
             'on-ok': () => {
@@ -99,7 +101,8 @@ const deleteButton = (vm, h, currentRow, index) => {
             },
             props: {
                 type: 'error',
-                placement: 'top'
+                placement: 'top',
+                 size:'small'
             }
         }, '删除')
     ]);
