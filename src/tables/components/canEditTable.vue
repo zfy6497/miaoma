@@ -11,8 +11,26 @@
 <script>
 import Util from '../../libs/util.js';
 
+//弹出编辑框
+const alertEditButton=(vm,h,currentRow,index,callback) =>{
+return h('Button', {
+        props: {
+            type: 'primary',
+            loading: currentRow.saving,
+            size:'small',
+        },
+        style: {
+            margin: '0 5px'
+        },
+        on: {
+            'click': () => {
+                 callback(vm,h,currentRow,index);
+            }
+        }
+    }, '编辑');
+}
 
-
+//当前编辑
 const editButton = (vm, h, currentRow, index) => {
 
 
@@ -36,6 +54,7 @@ const editButton = (vm, h, currentRow, index) => {
                     }
                     vm.edittingStore[index].editting = true;
                     vm.thisTableData = JSON.parse(JSON.stringify(vm.edittingStore));
+
                 } else {
                     let edittingRow = vm.edittingStore[index];
                     let pdata={};
@@ -66,6 +85,8 @@ const editButton = (vm, h, currentRow, index) => {
         }
     }, currentRow.editting ? '保存' : '编辑');
 };
+
+//删除
 const deleteButton = (vm, h, currentRow, index) => {
     return h('Poptip', {
         props: {
@@ -133,6 +154,7 @@ const selectButton = (vm, h, currentRow, index,callback) => {
     },'查看');
 };
 
+//初始化编辑行
 const incellEditBtn = (vm, h, param) => {
     if (vm.hoverShow) {
         return h('div', {
@@ -168,6 +190,8 @@ const incellEditBtn = (vm, h, param) => {
         });
     }
 };
+
+//保存编辑行信息
 const saveIncellEditBtn = (vm, h, param) => {
     return h('Button', {
         props: {
@@ -203,6 +227,7 @@ const saveIncellEditBtn = (vm, h, param) => {
         }
     });
 };
+
 const cellInput = (vm, h, param, item) => {
     return h('Input', {
         props: {
@@ -217,6 +242,7 @@ const cellInput = (vm, h, param, item) => {
         }
     });
 };
+
 export default {
     name: 'canEditTable',
     props: {
@@ -238,7 +264,7 @@ export default {
         },
         updateUrl:String,
         deleteUrl:String,
-        select:Function
+        editMessage:Function
     },
     data () {
         return {
@@ -348,6 +374,9 @@ export default {
                                 switch (todo) {
                                     case "edit":
                                         type = editButton(this, h, currentRowData, param.index);
+                                        break;
+                                    case "alertEdit":
+                                        type = alertEditButton(this, h, currentRowData, param.index,this.editMessage);
                                         break;
                                     case "delete":
                                         type = deleteButton(this, h, currentRowData, param.index)

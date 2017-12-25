@@ -23,12 +23,11 @@
             <Row>
                 <div class="margin-top-10">
                     <can-edit-table refs="table4" v-model="editInlineAndCellData" :hover-show="true"  :columns-list="editInlineAndCellColumn"
-                        :loading="loadingTable" :update-url="updateUrl" :delete-url="deleteUrl"></can-edit-table>
+                        :loading="loadingTable" :update-url="updateUrl" :delete-url="deleteUrl" :editMessage="editModal" ></can-edit-table>
                 </div>
 
                 <Modal :width="560" :scrollable="true" v-model="showAdd"  class-name="vertical-center-modal" title="门店管理">
                     <template>
-                       
                         <Form ref="formCustom" :model="formCustom" :rules="ruleCustom" :label-width="120"   >
                             <FormItem label="* 标题" prop="W_ReplyTitle" >
                                   <div style="display:inline-block;width:300px;">
@@ -218,6 +217,10 @@ export default {
     },
     addModal() {
       this.showAdd = true;
+    },
+    editModal:function(vm, h, currentRow, index){
+          this.showAdd = true;
+          this.formCustom=currentRow;
     },
     transfer() {
       this.showAdd = true;
