@@ -181,9 +181,8 @@ export default {
       vm.showAdd = true;
     },
     editModal:function(vm, h, currentRow, index){
-      let vm=this;
-      vm.showAdd = true;
-      vm.formCustom=currentRow;     
+      this.showAdd = true;
+      this.formCustom=currentRow;     
     },
     transfer() {
       this.showAdd = true;
