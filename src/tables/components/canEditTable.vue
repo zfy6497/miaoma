@@ -107,6 +107,32 @@ const deleteButton = (vm, h, currentRow, index) => {
         }, '删除')
     ]);
 };
+
+//查看
+const selectButton = (vm, h, currentRow, index,callback) => {
+    return h('Button', {
+        style: {
+            margin: '0 5px'
+        },
+        props: {
+             type: 'text',
+             size: 'small'
+        },                   
+        on: {
+            'click': () => {        
+                 let query = {Id: currentRow.Id};
+                 let routeName = vm.$route.name;
+                 console.log(vm.$route.path);
+                 vm.$router.push({
+                        name: routeName,
+                        query: query
+                 }); 
+                callback&&callback();
+            }
+        }
+    },'查看');
+};
+
 const incellEditBtn = (vm, h, param) => {
     if (vm.hoverShow) {
         return h('div', {
@@ -211,7 +237,8 @@ export default {
             default: true
         },
         updateUrl:String,
-        deleteUrl:String
+        deleteUrl:String,
+        select:Function
     },
     data () {
         return {
@@ -315,7 +342,24 @@ export default {
                 if (item.handle) {
                     item.render = (h, param) => {
                         let currentRowData = this.thisTableData[param.index];
-                        if (item.handle.length === 2) {
+                        return  h('div', [
+                            item.handle.map((todo,i)=>{
+                                let type;
+                                switch (todo) {
+                                    case "edit":
+                                        type = editButton(this, h, currentRowData, param.index);
+                                        break;
+                                    case "delete":
+                                        type = deleteButton(this, h, currentRowData, param.index)
+                                        break;
+                                    case "select":
+                                       type =  selectButton(this, h, currentRowData, param.index)
+                                        break;
+                                }
+                                return type;
+                            })
+                        ])
+                        /* if (item.handle.length === 2) {
                             return h('div', [ editButton(this, h, currentRowData, param.index),deleteButton(this, h, currentRowData, param.index)
                             ]);
                         } else if (item.handle.length === 1) {
@@ -328,7 +372,7 @@ export default {
                                     deleteButton(this, h, currentRowData, param.index)
                                 ]);
                             }
-                        }
+                        } */
                     };
                 }
                 if(item.formatType==="formatTime"){

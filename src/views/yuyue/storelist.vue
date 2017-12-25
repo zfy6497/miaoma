@@ -29,17 +29,18 @@
                 <Modal :width="560" :scrollable="true" v-model="showAdd"  class-name="vertical-center-modal" title="门店管理">
                     <template>
                        
-                        <Form ref="formCustom" :model="formCustom" :rules="ruleCustom" :label-width="120">
-                            <FormItem label="* 标题" prop="W_ReplyTitle">
-                                <div style="display:inline-block;width:300px;">
-                                    <Input type="text" placeholder="请输入图文回复标题" v-model="formCustom.W_ReplyTitle"></Input>
-                                </div> 
+                        <Form ref="formCustom" :model="formCustom" :rules="ruleCustom" :label-width="120"   >
+                            <FormItem label="* 标题" prop="W_ReplyTitle" >
+                                  <div style="display:inline-block;width:300px;">
+                                      <Input type="text" placeholder="请输入图文回复标题" v-model="formCustom.W_ReplyTitle"></Input>
+                                  </div>
                             </FormItem>
-                            <FormItem label="* 封面图片" prop="W_ReplyImage">
-                                <div style="display:inline-block;width:300px;">
-                                    <Input type="text"  placeholder="请上传图文回复图片" v-model="formCustom.W_ReplyImage"></Input>
-                                </div>
+                            <FormItem label="* tup" prop="W_ReplyTitle" >
+                                  <div style="display:inline-block;width:300px;">
+                                      <Input type="text"  placeholder="请上传图文回复图片" v-model="formCustom.W_ReplyImage"></Input>
+                                  </div>
                             </FormItem>
+                           
                             <FormItem label="* 所在区域" prop="AreaId">
                                 <div style="display:inline-block;width:300px;">
                                     <Input type="text"  v-model="formCustom.AreaId" number></Input>
@@ -129,7 +130,7 @@ export default {
     const validateName = (rule, value, callback) => {
       if (value === "") {
         callback(new Error("请输入门店名称"));
-      }   
+      }
       callback();
     };
     const validateTelephone = (rule, value, callback) => {
@@ -150,21 +151,21 @@ export default {
       totalCount: 0,
       current: 1,
       formCustom: {
-        Id:0,
-        W_ReplyTitle: "",//图文回复标题
-        W_ReplyImage: "",//图文回复图片
-        W_LinkUrl: "",//微信访问链接
-        AreaId: 0,//区域ID
-        Name:"", //门店名称
-        TopImage:"", //顶部图片
-        Telephone:"", //电话
-        Address:"",
-        Remark:"",
-        Longitude:"",
-        Latitude:"",
-        Sort:99,
-        OrderPageTopImage:"",
-        OrderPageRemark:"",
+        Id: 0,
+        W_ReplyTitle: "", //图文回复标题
+        W_ReplyImage: "", //图文回复图片
+        W_LinkUrl: "", //微信访问链接
+        AreaId: 0, //区域ID
+        Name: "", //门店名称
+        TopImage: "", //顶部图片
+        Telephone: "", //电话
+        Address: "",
+        Remark: "",
+        Longitude: "",
+        Latitude: "",
+        Sort: 99,
+        OrderPageTopImage: "",
+        OrderPageRemark: ""
       },
       ruleCustom: {
         Telephone: [{ validator: validateTelephone, trigger: "blur" }],

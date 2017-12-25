@@ -186,7 +186,7 @@ export const editInlineAndCellColumn = [
         align: 'center',
         width: 200,
         key: 'handle',
-        handle: ['edit', 'delete']
+        handle: ['select','edit', 'delete']
     }
 ];
 
