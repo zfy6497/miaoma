@@ -11,8 +11,26 @@
 <script>
 import Util from '../../libs/util.js';
 
+//弹出编辑框
+const alertEditButton=(vm,h,currentRow,index,callback) =>{
+return h('Button', {
+        props: {
+            type: 'primary',
+            loading: currentRow.saving,
+            size:'small',
+        },
+        style: {
+            margin: '0 5px'
+        },
+        on: {
+            'click': () => {
+                 callback(vm,h,currentRow,index);
+            }
+        }
+    }, '编辑');
+}
 
-
+//当前编辑
 const editButton = (vm, h, currentRow, index) => {
 
 
@@ -36,6 +54,7 @@ const editButton = (vm, h, currentRow, index) => {
                     }
                     vm.edittingStore[index].editting = true;
                     vm.thisTableData = JSON.parse(JSON.stringify(vm.edittingStore));
+
                 } else {
                     let edittingRow = vm.edittingStore[index];
                     let pdata={};
@@ -66,6 +85,8 @@ const editButton = (vm, h, currentRow, index) => {
         }
     }, currentRow.editting ? '保存' : '编辑');
 };
+
+//删除
 const deleteButton = (vm, h, currentRow, index) => {
     return h('Poptip', {
         props: {
@@ -107,6 +128,33 @@ const deleteButton = (vm, h, currentRow, index) => {
         }, '删除')
     ]);
 };
+
+//查看
+const selectButton = (vm, h, currentRow, index,callback) => {
+    return h('Button', {
+        style: {
+            margin: '0 5px'
+        },
+        props: {
+             type: 'text',
+             size: 'small'
+        },                   
+        on: {
+            'click': () => {        
+                 let query = {Id: currentRow.Id};
+                 let routeName = vm.$route.name;
+                 console.log(vm.$route.path);
+                 vm.$router.push({
+                        name: routeName,
+                        query: query
+                 }); 
+                callback&&callback();
+            }
+        }
+    },'查看');
+};
+
+//初始化编辑行
 const incellEditBtn = (vm, h, param) => {
     if (vm.hoverShow) {
         return h('div', {
@@ -142,6 +190,8 @@ const incellEditBtn = (vm, h, param) => {
         });
     }
 };
+
+//保存编辑行信息
 const saveIncellEditBtn = (vm, h, param) => {
     return h('Button', {
         props: {
@@ -177,6 +227,7 @@ const saveIncellEditBtn = (vm, h, param) => {
         }
     });
 };
+
 const cellInput = (vm, h, param, item) => {
     return h('Input', {
         props: {
@@ -191,6 +242,7 @@ const cellInput = (vm, h, param, item) => {
         }
     });
 };
+
 export default {
     name: 'canEditTable',
     props: {
@@ -211,7 +263,8 @@ export default {
             default: true
         },
         updateUrl:String,
-        deleteUrl:String
+        deleteUrl:String,
+        editMessage:Function
     },
     data () {
         return {
@@ -315,7 +368,27 @@ export default {
                 if (item.handle) {
                     item.render = (h, param) => {
                         let currentRowData = this.thisTableData[param.index];
-                        if (item.handle.length === 2) {
+                        return  h('div', [
+                            item.handle.map((todo,i)=>{
+                                let type;
+                                switch (todo) {
+                                    case "edit":
+                                        type = editButton(this, h, currentRowData, param.index);
+                                        break;
+                                    case "alertEdit":
+                                        type = alertEditButton(this, h, currentRowData, param.index,this.editMessage);
+                                        break;
+                                    case "delete":
+                                        type = deleteButton(this, h, currentRowData, param.index)
+                                        break;
+                                    case "select":
+                                       type =  selectButton(this, h, currentRowData, param.index)
+                                        break;
+                                }
+                                return type;
+                            })
+                        ])
+                        /* if (item.handle.length === 2) {
                             return h('div', [ editButton(this, h, currentRowData, param.index),deleteButton(this, h, currentRowData, param.index)
                             ]);
                         } else if (item.handle.length === 1) {
@@ -328,7 +401,7 @@ export default {
                                     deleteButton(this, h, currentRowData, param.index)
                                 ]);
                             }
-                        }
+                        } */
                     };
                 }
                 if(item.formatType==="formatTime"){
