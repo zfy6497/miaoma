@@ -1,5 +1,5 @@
 <template>
-   <tree-grid :items='data' :columns='columns' @on-row-click='rowClick' @on-selection-change='selectionClick' @on-sort-change='sortClick'
+   <tree-grid :items='data' :columns='columns'
                 :modalWidth="500" :update-url="updateUrl" :delete-url="deleteUrl" :add-url="addUrl" :get-url="getUrl" :form-custom="formCustom"
                 :rule-custom="ruleCustom"  @set-form="setForm">
                 <template slot="formmodel">
@@ -8,7 +8,7 @@
                         <Input type="text" style="width: 300px" v-model="formCustom.Name"></Input>
                     </FormItem>
                     <FormItem label="分类图标" prop="Icon">
-                        <PhUpload @get-result="getresult" :upload-list="defaultIcon" :maxlength="2">
+                        <PhUpload @get-result="getresult"  :default-list="defaultIcon" :format="['jpg','jpeg','png']" :maxsize="1024*10" >
                         </PhUpload>
                     </FormItem>
                     <FormItem label="排序值" prop="DisplaySequence">
@@ -25,7 +25,7 @@
                                     </DropdownItem>
 
                                     <DropdownMenu slot="list" v-for="(c2,index2) in c1.childs">
-                                        <DropdownItem v-if="c2.childs.length<=0"> {{c2.name}}</DropdownItem>
+                                        <!--  <DropdownItem v-if="c2.childs.length<=0"> {{c2.name}}</DropdownItem>
                                         <Dropdown placement="right-start" v-if="c2.childs.length>0">
                                             <DropdownItem> {{c2.name}}
                                                 <Icon type="ios-arrow-right"></Icon>
@@ -33,7 +33,8 @@
                                             <DropdownMenu slot="list" v-for="(c3,index3) in c2.childs">
                                                 <DropdownItem> {{c3.name}}</DropdownItem>
                                             </DropdownMenu>
-                                        </Dropdown>
+                                        </Dropdown>-->  <DropdownItem> {{c2.name}}</DropdownItem>
+                                        
                                     </DropdownMenu>
                                 </Dropdown>
                             </DropdownMenu>
@@ -80,89 +81,12 @@ export default {
     };
 
     return {
-      columns: [
-        {
-          title: "分类名称",
-          key: "Name",
-          sortable: true,
-          width: "250"
-        },
-        {
-          title: "操作",
-          type: "action",
-          actions: [
-            {
-              type: "primary",
-              text: "编辑"
-            },
-            {
-              type: "error",
-              text: "删除"
-            }
-          ],
-          width: "150"
-        }
-      ],
-      data: [
-        {
-          Id: 1,
-          Name:'分类',
-          IsRecommend: true,
-          Icon: "",
-          DisplaySequence: 1,
-          ParentCategoryId: 0,
-          Depth:''
-        },
-        {
-           Id: 1,
-          Name:'分类',
-          IsRecommend: true,
-          Icon: "",
-          DisplaySequence: 1,
-          ParentCategoryId: 0,
-          Depth:'',
-          children: [
-            {
-          Id: 1,
-          Name:'分类',
-          IsRecommend: true,
-          Icon: "",
-          DisplaySequence: 1,
-          ParentCategoryId: 0,
-          Depth:''
-        },
-           {
-          Id: 2,
-          Name:'分类',
-          IsRecommend: true,
-          Icon: "",
-          DisplaySequence: 1,
-          ParentCategoryId: 0,
-          Depth:''
-        }]},
-        {
-          Id: 3,
-          Name:'分类',
-          IsRecommend: true,
-          Icon: "",
-          DisplaySequence: 1,
-          ParentCategoryId: 0,
-          Depth:''
-        },
-        {
-          Id: 4,
-          Name:'分类',
-          IsRecommend: true,
-          Icon: "",
-          DisplaySequence: 1,
-          ParentCategoryId: 0,
-          Depth:''
-        }
-      ],
-      updateUrl: "api/Admin/UpdateAdmin",
-      deleteUrl: "api/Admin/DeleteAdmin",
-      addUrl: "api/Admin/AddAdmin",
-      getUrl: "api/Admin/GetList",
+      columns: [ ],
+      data: [],
+      updateUrl: "api/Products/SaveCategories",
+      deleteUrl: "api/Products/DeleteCategories",
+      addUrl: "api/Products/SaveCategories",
+      getUrl: "api/Products/GetCategoriesList",
       formCustom: {
            Id: 0,
         Name: "",
@@ -170,7 +94,8 @@ export default {
         Icon: "",
         DisplaySequence: 1,
         ParentCategoryId: 0,
-        Depth: ""
+        Depth: 1,
+        Path:''
       },
       ruleCustom: {
         Name: [{ validator: validateName, trigger: "blur" }],
@@ -205,18 +130,6 @@ export default {
     PhUpload
   },
   methods: {
-    rowClick(data, index, event) {
-      console.log("当前行数据:" + data);
-      console.log("点击行号:" + index);
-      console.log("点击事件:" + event);
-    },
-    selectionClick(arr) {
-      console.log("选中数据id数组:" + arr);
-    },
-    sortClick(key, type) {
-      console.log("排序字段:" + key);
-      console.log("排序规则:" + type);
-    },
     getresult(data) {
       if (data.length > 0) {
         this.formCustom.Icon = data[0].url;
@@ -225,13 +138,20 @@ export default {
     setForm(data) {
        if(data)
        {
-        this.formCustom.Id=data.Id;
-        this.formCustom.Icon=data.Icon;
-        this.formCustom.Name=data.Name;
-        this.formCustom.IsRecommend=data.IsRecommend;
-        this.formCustom.DisplaySequence=data.DisplaySequence;
-        this.formCustom.ParentCategoryId=data.ParentCategoryId;
-        this.formCustom.Depth=data.Depth;
+         console.log(data);
+           for(let key in this.formCustom)
+           {
+              if(key==='Icon')
+              {
+                console.log(data[key]);
+                var item=[{'name':'111.png','url':data[key],'status':'finished'}];
+                 this.defaultIcon=item;
+                 console.log( this.defaultIcon.length);
+              }
+              this.formCustom[key]=data[key]
+             
+           }
+       
        }else{
           this.formCustom.Id=0;
         this.formCustom.Icon='';
@@ -239,7 +159,8 @@ export default {
         this.formCustom.IsRecommend=false;
         this.formCustom.DisplaySequence=1;
         this.formCustom.ParentCategoryId=0;
-        this.formCustom.Depth=''; 
+        this.formCustom.Depth=1; 
+        this.formCustom.Path='';
        }
         
     }

@@ -1,4 +1,3 @@
-
 <!--@events  @on-row-click 单击行或者单击操作按钮方法
             @on-selection-change  多选模式下 选中项变化时触发
             @on-sort-change  排序时有效，当点击排序时触发
@@ -6,69 +5,72 @@
             columns 表格列的配置描述 sortable:true 开启排序功能 
             type: 'selection'为多选功能 type: 'action' 为操作功能 actions:[{}] 操作按钮
  -->
- <style lang="less">
-@import "./treegrid.less";
+<style lang="less">
+  @import "./treegrid.less";
 </style>
 <template>
-    <Card>
-        <Row>
-            <div style="float: right;">
-                <span @click="addModal" style=""><Button type="primary"  icon="add">新增</Button></span>
-            </div>
-        </Row>
-        <Row class="margin-top-10">
-           <div :style="{width:tableWidth}" class='autoTbale'>
-                <table class="table table-bordered" id='hl-tree-table'>
-                    <thead>
-                        <tr>
-                            <th v-for="(column,index) in cloneColumns">
-                                <label v-if="column.type === 'selection'">
+  <Card>
+    <Row>
+      <div style="float: right;">
+        <span @click="addModal" style=""><Button type="primary"  icon="add">新增</Button></span>
+      </div>
+    </Row>
+    <Row class="margin-top-10">
+      <div :style="{width:tableWidth}" class='autoTbale'>
+        <table class="table table-bordered" id='hl-tree-table' :loading="loadingTable">
+          <thead>
+            <tr>
+              <th v-for="(column,index) in cloneColumns">
+                <label v-if="column.type === 'selection'">
                                     <input type="checkbox" v-model="checks" @click="handleCheckAll">
                                 </label>
-                                <label v-else>
+                <label v-else>
                                     {{ renderHeader(column, index) }}
                                     <span class="ivu-table-sort" v-if="column.sortable">
                                         <Icon type="arrow-up-b" :class="{on: column._sortType === 'asc'}" @click.native="handleSort(index, 'asc')" />
                                         <Icon type="arrow-down-b" :class="{on: column._sortType === 'desc'}" @click.native="handleSort(index, 'desc')" />
                                     </span>
                                 </label>
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for="(item,index) in initItems" :key="item.id" v-show="show(item)" :class="{'child-tr':item.parent}">
-                            <td v-for="(column,snum) in columns" :key="column.key" :style=tdStyle(column)>
-                                <label v-if="column.type === 'selection'">
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(item,index) in initItems" :key="item.id" v-show="show(item)" :class="{'child-tr':item.parent}">
+              <td v-for="(column,snum) in columns" :key="column.key" :style=tdStyle(column)>
+                <label v-if="column.type === 'selection'">
                                     <input type="checkbox" :value="item.id" v-model="checkGroup">
                                 </label>
-                                <template v-if="column.type === 'action'" v-for='action in (column.actions)'>
-                                    <Poptip class="ivu-poptip" v-if="action.text === '删除'" confirm title="您确认删除这条内容吗？" @on-ok="RowDelete(item)" > <Button  :type="action.type" size="small"  :key="action.text">{{action.text}}</Button></Poptip>
-                                    <Button style="margin: 0px 5px;" v-if="action.text !== '删除'" :type="action.type" size="small" @click="RowClick(item,$event,index,action.text)"  :key="action.text">{{action.text}}</Button>
-                                </template>
-                                <label @click="toggle(index,item)" v-if="!column.type">
+                <template v-if="column.type === 'handle'" v-for='action in (column.handle)'>
+                  <Poptip class="ivu-poptip" v-if="action === '删除'" confirm title="您确认删除这条内容吗？" @on-ok="RowDelete(item)">
+                    <Button type="error" size="small" :key="action">{{action}}</Button>
+                  </Poptip>
+                  <Button style="margin: 0px 5px;" v-if="action !== '删除'" type="primary" size="small" @click="RowClick(item,$event,index,action)"
+                    :key="action">{{action}}</Button>
+                </template>
+                <label @click="toggle(index,item)" v-if="!column.type">
                                     <span v-if='snum==iconRow()'>
                                         <i v-html='item.spaceHtml'></i>
                                         <i v-if="item.children&&item.children.length>0" class="ivu-icon" :class="{'ivu-icon-plus-circled':!item.expanded,'ivu-icon-minus-circled':item.expanded }"></i>
                                         <i v-else class="ms-tree-space"></i>
                                     </span> {{renderBody(item,column) }}
                                 </label>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            <Modal :width="modalWidth" v-model="showFrom"  @on-cancel="closeModal" :closable="false">
-                <Form ref="formCustom" :model="formCustom" :rules="ruleCustom" :label-width="80">
-                        <slot name="formmodel"></slot>
-                    </Form>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <Modal :width="modalWidth" v-model="showFrom" @on-cancel="closeModal" :closable="false">
+          <Form ref="formCustom" :model="formCustom" :rules="ruleCustom" :label-width="80">
+            <slot name="formmodel"></slot>
+          </Form>
 
-                    <div slot="footer">
-                        <Button type="ghost" @click="closeModal">取消</Button>
-                        <Button type="primary" @click="saveInfo" :loading="loading2">确定</Button>
-                    </div>
-            </Modal>
-            </div>
-        </Row>
-    </Card>
+          <div slot="footer">
+            <Button type="ghost" @click="closeModal">取消</Button>
+            <Button type="primary" @click="saveInfo" :loading="loading2">确定</Button>
+          </div>
+        </Modal>
+      </div>
+    </Row>
+  </Card>
 </template>
 
 <script>
@@ -76,13 +78,6 @@ import Util from '../../libs/util.js';
 export default {
   name: "treeGrid",
   props: {
-    columns: Array,
-    items: {
-      type: Array,
-      default: function() {
-        return [];
-      }
-    },
     updateUrl: String,
     deleteUrl: String,
     addUrl: String,
@@ -104,7 +99,19 @@ export default {
       dataLength: 0, //树形数据长度,
       showFrom: false,
       loading2: false,
-      editItem: ""
+      editItem: "",
+      loadingTable:false,
+      columns:[],
+      items:[],
+      query:{
+            Page:1,
+            Rows:10,
+            KeyWord:'',
+            StartDate:'',
+            EndDate:'',
+            Sidx:'Id',
+            Sord:'desc'
+      }
     };
   },
   computed: {
@@ -495,25 +502,23 @@ export default {
       this.showFrom = true;
     },
     saveInfo() {
-      // this.loading2=true;
+       this.loading2=true;
       this.$refs["formCustom"].validate(valid => {
         if (valid) {
           var vm = this;
-          Util.post(this.addUrl, this.formCustom, vm, function(res, msg) {
+          var  pdata=this.formCustom;
+          Util.post(this.addUrl, pdata, vm, function(res, msg) {
             if (res === "1") {
-              vm.$Message.success("新增成功");
-              for (var key in vm.formCustom) {
-                vm.formCustom[key] = "";
-              }
-              vm.getData();
+              vm.$Message.success("保存成功");
+                   vm.getData()
               vm.loading2 = false;
             } else {
               if (msg && msg != "") {
                 vm.$Message.error(msg);
               } else {
-                vm.$Message.error("新增失败");
+                vm.$Message.error("保存失败");
               }
-
+              vm.getData()
               vm.loading2 = false;
             }
           });
@@ -523,6 +528,33 @@ export default {
           return false;
         }
       });
+    },
+    getData () {
+            this.loadingTable=true;
+            var pdata=this.query;
+
+            let vm=this;
+
+            Util.post(vm.getUrl,pdata,vm,function(res,data){
+                if(res==='1')
+                {
+                    vm.totalCount=data.totalCount;
+                    vm.loadingTable=false;
+                    vm.columns = data.columns;
+                    if(data.totalCount>0)
+                    {
+                
+                        vm.items = data.data;
+                    
+                    }else{
+                        vm.items = [];
+                    }
+                }else{
+                    vm.$Message.error("数据获取失败");
+                    vm.loadingTable=false;
+                }
+            
+            });
     },
     closeModal() {
       this.showFrom = false;
@@ -534,6 +566,9 @@ export default {
   },
   beforeDestroy() {
     window.onresize = null;
-  }
+  },
+   mounted () {
+        this.getData();
+    }
 };
 </script>
