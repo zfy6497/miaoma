@@ -1,30 +1,14 @@
-<template>
-   <tree-grid :items='data' :columns='columns'
-                :modalWidth="500" :update-url="updateUrl" :delete-url="deleteUrl" :add-url="addUrl" :get-url="getUrl" :form-custom="formCustom"
-                :rule-custom="ruleCustom"  @set-form="setForm">
-                <template slot="formmodel">
-                    <FormItem label="名称" prop="Name">
-                        <input  type="hidden" :value='formCustom.Depth'/>
-                        <Input type="text" style="width: 300px" v-model="formCustom.Name"></Input>
-                    </FormItem>
-                    <FormItem label="分类图标" prop="Icon">
-                        <PhUpload @get-result="getresult"  :default-list="defaultIcon" :format="['jpg','jpeg','png']" :maxsize="1024*10" >
-                        </PhUpload>
-                    </FormItem>
-                    <FormItem label="排序值" prop="DisplaySequence">
-                        <Input type="text" style="width: 100px" v-model="formCustom.DisplaySequence" :number="true"></Input>
-                    </FormItem>
-                    <FormItem label="上级分类" prop="PassWordCheck">
-                        <Dropdown v-for="(c1,index) in ddd">
-                            <a href="javascript:void(0)">一级分类<Icon type="arrow-down-b"></Icon></a>
-                            <DropdownMenu slot="list">
-                                <DropdownItem v-if="c1.childs.length<=0">{{c1.name}}</DropdownItem>
-                                <Dropdown placement="right-start" v-if="c1.childs.length>0">
-                                    <DropdownItem> {{c1.name}}
+<!--
+  <Dropdown v-for="(c1,index) in categorylist" @on-click='checkcategory'>
+                            <a href="javascript:void(0)">{{selectcategoryname}}<Icon type="arrow-down-b"></Icon></a>
+                            <DropdownMenu slot="list"  >
+                                <DropdownItem :name='c1.Id+","+c1.Name+","+(c1.Depth+1)' v-if="c1.Childrens.length<=0">{{c1.Name}}</DropdownItem>
+                                <Dropdown placement="right-start" v-if="c1.Childrens.length>0">
+                                    <DropdownItem :name='c1.Id+","+c1.Name+","+(c1.Depth+1)'> {{c1.Name}}
                                         <Icon type="ios-arrow-right"></Icon>
                                     </DropdownItem>
 
-                                    <DropdownMenu slot="list" v-for="(c2,index2) in c1.childs">
+                                    <DropdownMenu slot="list" v-for="(c2,index2) in c1.Childrens" >
                                         <!--  <DropdownItem v-if="c2.childs.length<=0"> {{c2.name}}</DropdownItem>
                                         <Dropdown placement="right-start" v-if="c2.childs.length>0">
                                             <DropdownItem> {{c2.name}}
@@ -33,18 +17,41 @@
                                             <DropdownMenu slot="list" v-for="(c3,index3) in c2.childs">
                                                 <DropdownItem> {{c3.name}}</DropdownItem>
                                             </DropdownMenu>
-                                        </Dropdown>-->  <DropdownItem> {{c2.name}}</DropdownItem>
+                                        </Dropdown>  <DropdownItem :name='c2.Id+","+c2.Name+","+(c2.Depth+1)'> {{c2.Name}}</DropdownItem>
                                         
                                     </DropdownMenu>
                                 </Dropdown>
                             </DropdownMenu>
                         </Dropdown>
-                    </FormItem>
-                    <FormItem label="是否推荐" prop="IsRecommend">
-                        <Checkbox v-model="formCustom.IsRecommend" />
-                    </FormItem>
-                </template>
-            </tree-grid>
+-->
+
+
+<template>
+  <tree-grid :items='data' :columns='columns' :modalWidth="500" :update-url="updateUrl" :delete-url="deleteUrl" :add-url="addUrl"
+    :get-url="getUrl" :form-custom="formCustom" :rule-custom="ruleCustom" @set-form="setForm" @set-clist="setclist">
+    <template slot="formmodel">
+      <FormItem label="名称" prop="Name">
+        <input type="hidden" :value='formCustom.Depth' />
+        <Input type="text" style="width: 300px" v-model="formCustom.Name"></Input>
+      </FormItem>
+      <FormItem label="分类图标" prop="Icon">
+        <PhUpload @get-result="getresult" :default-list="defaultIcon" :format="['jpg','jpeg','png']" :maxsize="1024*10">
+        </PhUpload>
+      </FormItem>
+      <FormItem label="排序值" prop="DisplaySequence">
+        <Input type="text" style="width: 100px" v-model="formCustom.DisplaySequence" :number="true"></Input>
+      </FormItem>
+      <FormItem label="上级分类" prop="ParentCategoryId">
+
+        <Select v-model="formCustom.ParentCategoryId" @on-change="checkcategory" style="width:200px">
+                         <Option v-for="item in categorylist" :value="item.id" :key="item.id">{{ item.name }}</Option>
+                    </Select>
+      </FormItem>
+      <FormItem label="是否推荐" prop="IsRecommend">
+        <Checkbox v-model="formCustom.IsRecommend" />
+      </FormItem>
+    </template>
+  </tree-grid>
 </template>
 <script>
 import TreeGrid from "../main-components/treegrid.vue";
@@ -106,23 +113,9 @@ export default {
       },
       modalWidth: 500,
       defaultIcon: [],
-      ddd: [
-        {
-          name: "一级分类",
-          value: "1",
-          childs: [
-            { name: "二级分类", value: "2", childs: [] },
-            {
-              name: "二级分类2",
-              value: "3",
-              childs: [
-                { name: "三级分类", value: "4", childs: [] },
-                { name: "三级分类2", value: "5", childs: [] }
-              ]
-            }
-          ]
-        }
-      ]
+      categorylist: [],
+      selectcategoryname:'一级分类'
+
     };
   },
   components: {
@@ -135,18 +128,27 @@ export default {
         this.formCustom.Icon = data[0].url;
       }
     },
-    setForm(data) {
+    setForm(items,data) {
+ 
+      let  list=[{'id':0,'name':'一级分类','depth':1}];
+      items.forEach(res=>{
+         let  item={'id':res.Id,'name':"--"+res.Name,'depth':res.Depth+1};
+          list.push(item);
+          res.Childrens.forEach(tt=>{
+               let  tt2={'id':tt.Id,'name':"----"+tt.Name,'depth':tt.Depth+1};
+                  list.push(tt2);
+          })
+      });
+           this.categorylist=list;
        if(data)
        {
-         console.log(data);
+       
            for(let key in this.formCustom)
            {
               if(key==='Icon')
               {
-                console.log(data[key]);
-                var item=[{'name':'111.png','url':data[key],'status':'finished'}];
+                var item=[{'name':'','url':data[key],'status':'finished'}];
                  this.defaultIcon=item;
-                 console.log( this.defaultIcon.length);
               }
               this.formCustom[key]=data[key]
              
@@ -161,8 +163,17 @@ export default {
         this.formCustom.ParentCategoryId=0;
         this.formCustom.Depth=1; 
         this.formCustom.Path='';
+         this.defaultIcon=[];
        }
         
+    },
+    checkcategory(item,t){
+    
+     // this.formCustom.Depth=attrs[2]; 
+      console.log(t);
+    },
+    setclist(data){
+      categorylist=data;
     }
     
   }

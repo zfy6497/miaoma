@@ -11,7 +11,11 @@
                     <DatePicker type="date" v-if="showDate" placeholder="请选择开始日期" :format="formatDate" v-model="query.StartDate" style="width: 200px"></DatePicker>
                     <DatePicker type="date" v-if="showDate" placeholder="请选择结束日期" :format="formatDate" v-model="query.EndDate" style="width: 200px"></DatePicker>
                     <Input v-model="query.KeyWord" v-if="showKeyWord" placeholder="请输入关键字搜搜..." style="width: 200px" />
+                    <template slot="searchslot">
+
+                    </template>
                     <span @click="search" style="margin: 0 10px;"><Button type="primary" :loading="loading" icon="search">搜索</Button></span>
+                    
                     <Button @click="cancelSearch" type="ghost">取消</Button>
                 </template>
                 <template>
@@ -30,7 +34,7 @@
 
                 </div>
 
-                <Modal :width="modalWidth" v-model="showAdd" v-if="showAddButton">
+                <Modal :width="modalWidth" v-model="showFrom" v-if="showAddButton">
                     <Form ref="formCustom" :model="formCustom" :rules="ruleCustom" :label-width="80">
                         <slot name="frommodel"></slot>
                     </Form>
@@ -100,7 +104,7 @@ export default {
             loadingTable:true,
             searchConName3:'',
             formatDate:'yyyy-MM-dd',
-            showAdd:false,
+            showFrom:false,
             totalCount:0,
             current:1,
            
@@ -153,32 +157,35 @@ export default {
             this.getData();
         },
         addModal(){
-            this.showAdd=true;
+            this.showFrom=true;
+            this.$emit("set-form");
         },
         transfer(){
-            this.showAdd=true;
+            this.showFrom=true;
         },
         saveInfo(){
             this.loading2=true;
             this.$refs["formCustom"].validate((valid) => {
             if (valid) {
-                var vm=this;
-                 Util.post(this.addUrl,this.formCustom,vm,function(res,msg){
+                let vm=this;
+                let  pdata=this.formCustom;
+                 Util.post(this.addUrl,pdata,vm,function(res,msg){
                     if(res==='1')
                     {
-                        vm.$Message.success('新增成功');
-                        for(var key in  vm.formCustom)
-                        {
-                            vm.formCustom[key]="";
-                        }
+                        vm.$Message.success('保存成功');
                         vm.getData();
                         vm.loading2=false;
+                        vm.$emit("set-form");
+                        if(pdata.Id&&pdata.Id>0)
+                        {
+                          vm.showFrom = false;
+                        }
                     }else{
                         if(msg && msg!="")
                         {
                             vm.$Message.error(msg);
                         }else{
-                             vm.$Message.error('新增失败');
+                             vm.$Message.error('保存失败');
                         }
                       
                         vm.loading2=false;
@@ -193,7 +200,7 @@ export default {
            
         },
         closeModal(){
-            this.showAdd=false;
+            this.showFrom=false;
         },
         changePage(n){
              this.query.Page=n;

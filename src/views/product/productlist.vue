@@ -1,135 +1,126 @@
 <template>
-    <div>
-<div class="demo-upload-list" v-for="item in uploadList">
-        <template v-if="item.status === 'finished'">
-            <img :src="item.url">
-            <div class="demo-upload-list-cover">
-                <Icon type="ios-eye-outline" @click.native="handleView(item.name)"></Icon>
-                <Icon type="ios-trash-outline" @click.native="handleRemove(item)"></Icon>
-            </div>
+    <list :show-search="false" :show-date="true" :show-key-word="true" :show-add-button="true" :show-page="true" :update-url="updateUrl"
+        :delete-url="deleteUrl" :add-url="addUrl" :get-url="getUrl" :form-custom="formCustom" :rule-custom="ruleCustom" modal-Width="500" @set-form="setForm">
+        <template slot="frommodel">
+            <FormItem label="名称" prop="ProductName">
+                <Input type="text" style="width: 300px" v-model="formCustom.ProductName"></Input>
+            </FormItem>
+            <FormItem label="商品图片" prop="ImagePath">
+                <PhUpload @get-result="getresult" :default-list="defaultLogo" :format="['jpg','jpeg','png']" :maxsize="1024*10" :maxlength="5">
+                </PhUpload>
+            </FormItem>
+            <FormItem label="排序值" prop="DisplaySequence">
+                <Input type="text" style="width: 100px" v-model="formCustom.DisplaySequence" :number="true"></Input>
+            </FormItem>
+               <FormItem label="分佣金额" prop="ShareMoney">
+                <Input type="text" style="width: 100px" v-model="formCustom.ShareMoney" :number="true"></Input>
+            </FormItem>
+              <FormItem label="说明" prop="Description">
+                <Input type="text" style="width: 300px" v-model="formCustom.Description"></Input>
+            </FormItem>
         </template>
-        <template v-else>
-            <Progress v-if="item.showProgress" :percent="item.percentage" hide-info></Progress>
-        </template>
-    </div>
-    <Upload
-        ref="upload"
-        :show-upload-list="false"
-        :default-file-list="uploadList"
-        :on-success="handleSuccess"
-        :format="['jpg','jpeg','png']"
-        :max-size="2048"
-        :on-format-error="handleFormatError"
-        :on-exceeded-size="handleMaxSize"
-        :before-upload="handleBeforeUpload"
-        multiple
-        type="drag"
-        action="//jsonplaceholder.typicode.com/posts/"
-        style="display: inline-block;width:58px;">
-        <div style="width: 58px;height:58px;line-height: 58px;">
-            <Icon type="camera" size="20"></Icon>
-        </div>
-    </Upload>
-    <Modal title="View Image" v-model="visible">
-        <img :src="'https://o5wwk8baw.qnssl.com/' + imgName + '/large'" v-if="visible" style="width: 100%">
-    </Modal>
-    </div>
-    
+    </list>
 </template>
+
 <script>
-    export default {
-        data () {
-            return {
-                defaultList: [
+import PhUpload from "../main-components/phupload.vue";
+import list from '../main-components/list.vue';
+import Util from '../../libs/util.js';
+import {validateNum,validateRequired} from '../../libs/validate.js';
+export default {
+    name: 'page1-table',
+    components: {
+        list,
+        PhUpload
+    },
+    data () {
+
+       
+        
+        return {
+            updateUrl:"api/Products/SaveProducts",
+            deleteUrl:"api/Products/DeleteProducts",
+            addUrl:"api/Products/SaveProducts",
+            getUrl:"api/Products/GetProductsList",
+            formCustom:{
+                 Id:0,
+                 ProductName:'',
+                 ProductCode:'',
+                 ShortDescription:'',
+                 FreightTemplateId:0,
+                 Weight:0,
+                 Volume:0,
+                 DisplaySequence:'',
+                 ImagePath:'',
+                 Description:'',
+                 ShareMoney:0,
+                 BrandId:0,
+                 CategoryId:0,
+                 MarketPrice:0
+            },
+            ruleCustom: {
+                    ProductName: [
+                        { validator: validateRequired, trigger: 'blur' }
+                    ],
+                    DisplaySequence: [
+                          { validator: validateRequired, trigger: "blur" } ,
+                        { validator: validateNum, trigger: "blur" }
+                    ],
+                    ShareMoney: [
+                        { validator: validateRequired, trigger: "blur" } ,
+                        { validator: validateNum, trigger: "blur" }
+                    ],
+                    MarketPrice: [
+                        { validator: validateRequired, trigger: "blur" } ,
+                        { validator: validateNum, trigger: "blur" }
+                    ],
+                    ImagePath:[
+                        { validator: validateRequired, trigger: "blur" }  
+                    ]
+            },
+            modalWidth:500,
+            defaultLogo: [],
+        };
+    },
+    methods: {
+        getresult(data) {
+            if (data.length > 0) {
+                this.formCustom.Logo = data[0].url;
+            }
+        },
+        setForm(data) {
+            if(data)
+            {
+                for(let key in this.formCustom)
+                {
+                    if(key==='Logo')
                     {
-                        'name': 'a42bdcc1178e62b4694c830f028db5c0',
-                        'url': 'https://o5wwk8baw.qnssl.com/a42bdcc1178e62b4694c830f028db5c0/avatar'
-                    },
-                    {
-                        'name': 'bc7521e033abdd1e92222d733590f104',
-                        'url': 'https://o5wwk8baw.qnssl.com/bc7521e033abdd1e92222d733590f104/avatar'
+                        var item=[{'name':'','url':data[key],'status':'finished'}];
+                        this.defaultLogo=item;
                     }
-                ],
-                imgName: '',
-                visible: false,
-                uploadList: []
-            }
-        },
-        methods: {
-            handleView (name) {
-                this.imgName = name;
-                this.visible = true;
-            },
-            handleRemove (file) {
-                const fileList = this.$refs.upload.fileList;
-                this.$refs.upload.fileList.splice(fileList.indexOf(file), 1);
-            },
-            handleSuccess (res, file) {
-                file.url = 'https://o5wwk8baw.qnssl.com/7eb99afb9d5f317c912f08b5212fd69a/avatar';
-                file.name = '7eb99afb9d5f317c912f08b5212fd69a';
-            },
-            handleFormatError (file) {
-                this.$Notice.warning({
-                    title: 'The file format is incorrect',
-                    desc: 'File format of ' + file.name + ' is incorrect, please select jpg or png.'
-                });
-            },
-            handleMaxSize (file) {
-                this.$Notice.warning({
-                    title: 'Exceeding file size limit',
-                    desc: 'File  ' + file.name + ' is too large, no more than 2M.'
-                });
-            },
-            handleBeforeUpload () {
-                const check = this.uploadList.length < 5;
-                if (!check) {
-                    this.$Notice.warning({
-                        title: 'Up to five pictures can be uploaded.'
-                    });
+                    this.formCustom[key]=data[key]
                 }
-                return check;
+            
+            }else{
+                for(let key in this.formCustom)
+                {
+                    if(key==='IsRecommend')
+                    {
+                        this.formCustom[key]=false;
+                    }
+                    else
+                    {
+                        this.formCustom[key]="";
+                    }
+                    
+                }
+                this.defaultLogo=[];
             }
-        },
-        mounted () {
-            this.uploadList = this.$refs.upload.fileList;
+            
         }
+    },
+    created () {
+     
     }
+};
 </script>
-<style>
-    .demo-upload-list{
-        display: inline-block;
-        width: 60px;
-        height: 60px;
-        text-align: center;
-        line-height: 60px;
-        border: 1px solid transparent;
-        border-radius: 4px;
-        overflow: hidden;
-        background: #fff;
-        position: relative;
-        box-shadow: 0 1px 1px rgba(0,0,0,.2);
-        margin-right: 4px;
-    }
-    .demo-upload-list img{
-        width: 100%;
-        height: 100%;
-    }
-    .demo-upload-list-cover{
-        display: none;
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        background: rgba(0,0,0,.6);
-    }
-    .demo-upload-list:hover .demo-upload-list-cover{
-        display: block;
-    }
-    .demo-upload-list-cover i{
-        color: #fff;
-        font-size: 20px;
-        cursor: pointer;
-        margin: 0 2px;
-    }
-</style>

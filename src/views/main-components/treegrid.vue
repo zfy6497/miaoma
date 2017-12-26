@@ -50,7 +50,7 @@
                 <label @click="toggle(index,item)" v-if="!column.type">
                                     <span v-if='snum==iconRow()'>
                                         <i v-html='item.spaceHtml'></i>
-                                        <i v-if="item.children&&item.children.length>0" class="ivu-icon" :class="{'ivu-icon-plus-circled':!item.expanded,'ivu-icon-minus-circled':item.expanded }"></i>
+                                        <i v-if="item.Childrens&&item.Childrens.length>0" class="ivu-icon" :class="{'ivu-icon-plus-circled':!item.expanded,'ivu-icon-minus-circled':item.expanded }"></i>
                                         <i v-else class="ms-tree-space"></i>
                                     </span> {{renderBody(item,column) }}
                                 </label>
@@ -217,7 +217,7 @@ export default {
         if(text==="编辑")
         {
              this.showFrom = true;
-             this.$emit("set-form", result);
+             this.$emit("set-form",this.items, result);
         }
 
     },
@@ -231,10 +231,10 @@ export default {
         Util.post(vm.deleteUrl,pdata,vm,function(res){
         if(res==='1')
         {
-            vm.thisTableData.splice(index, 1);
-            vm.$emit('input', vm.handleBackdata(vm.thisTableData));
+           
         //vm.$emit('on-delete', vm.handleBackdata(vm.thisTableData), index);
             vm.$Message.success('删除成功');
+            vm.getData()
         }else{
             vm.$Message.error('删除失败');
         }
@@ -310,8 +310,8 @@ export default {
           load: item.expanded ? true : false
         });
         this.initItems.push(item);
-        if (item.children && item.expanded) {
-          this.initData(item.children, level + 1, item);
+        if (item.Childrens && item.expanded) {
+          this.initData(item.Childrens, level + 1, item);
         }
       });
     },
@@ -327,7 +327,7 @@ export default {
       for (var i = 1; i < level; i++) {
         spaceHtml += "<i class='ms-tree-space'></i>";
       }
-      if (item.children) {
+      if (item.Childrens) {
         if (item.expanded) {
           item.expanded = !item.expanded;
           this.close(index, item);
@@ -337,7 +337,7 @@ export default {
             this.open(index, item);
           } else {
             item.load = true;
-            item.children.forEach((child, childIndex) => {
+            item.Childrens.forEach((child, childIndex) => {
               this.initItems.splice(index + childIndex + 1, 0, child);
               //设置监听属性
               this.$set(this.initItems[index + childIndex + 1], "parent", item);
@@ -359,21 +359,21 @@ export default {
       }
     },
     open(index, item) {
-      if (item.children) {
-        item.children.forEach((child, childIndex) => {
+      if (item.Childrens) {
+        item.Childrens.forEach((child, childIndex) => {
           child.isShow = true;
-          if (child.children && child.expanded) {
+          if (child.Childrens && child.expanded) {
             this.open(index + childIndex + 1, child);
           }
         });
       }
     },
     close(index, item) {
-      if (item.children) {
-        item.children.forEach((child, childIndex) => {
+      if (item.Childrens) {
+        item.Childrens.forEach((child, childIndex) => {
           child.isShow = false;
           child.expanded = false;
-          if (child.children) {
+          if (child.Childrens) {
             this.close(index + childIndex + 1, child);
           }
         });
@@ -416,8 +416,8 @@ export default {
       let arr = [];
       data.forEach(item => {
         arr.push(item.id);
-        if (item.children && item.children.length > 0) {
-          arr = arr.concat(this.All(item.children));
+        if (item.Childrens && item.Childrens.length > 0) {
+          arr = arr.concat(this.All(item.Childrens));
         }
       });
       return arr;
@@ -426,8 +426,8 @@ export default {
     Length(data) {
       let length = data.length;
       data.forEach(child => {
-        if (child.children) {
-          length += this.Length(child.children);
+        if (child.Childrens) {
+          length += this.Length(child.Childrens);
         }
       });
       return length;
@@ -451,8 +451,8 @@ export default {
         if (item._checked) {
           arr.push(item.id);
         }
-        if (item.children && item.children.length > 0) {
-          arr = arr.concat(this.renderCheck(item.children));
+        if (item.Childrens && item.Childrens.length > 0) {
+          arr = arr.concat(this.renderCheck(item.Childrens));
         }
       });
       return arr;
@@ -510,8 +510,9 @@ export default {
           Util.post(this.addUrl, pdata, vm, function(res, msg) {
             if (res === "1") {
               vm.$Message.success("保存成功");
-                   vm.getData()
+              vm.getData()
               vm.loading2 = false;
+              vm.showFrom = false;
             } else {
               if (msg && msg != "") {
                 vm.$Message.error(msg);
@@ -561,7 +562,7 @@ export default {
     },
     addModal() {
         this.showFrom=true;
-        this.$emit("set-form");
+        this.$emit("set-form",this.items);
     }
   },
   beforeDestroy() {

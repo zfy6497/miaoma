@@ -85,13 +85,17 @@
             },
             handleSuccess (data,file){
                 let result= data.data;
-
-                result.forEach((res)=>{
+                if(data.totalCount>0)
+                {
+                    result.forEach((res)=>{
                    file.url = res.Url;
                    file.name = res.Name;
                    this.uploadList.push(file);
-                })
-                 this.$emit('get-result', this.uploadList);
+                   })
+
+                   this.$emit('get-result', this.uploadList);
+                }
+               
             },
             handleFormatError (file) {
                 this.$Notice.warning({
@@ -116,13 +120,13 @@
             }
         },
         mounted () {
-            this.uploadList = this.$refs.upload.fileList;
+             this.uploadList = this.$refs.upload.fileList;
         },
         watch:{
             defaultList:function(val,oldvalue){
                  this.uploadList = val;
                  this.$refs.upload.fileList=val;
-                 console.log(this.$refs.upload.fileList);
+                
             }
         }
     }
