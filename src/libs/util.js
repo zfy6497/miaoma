@@ -13,7 +13,7 @@ util.title = function (title) {
 const ajaxUrl = env === 'development'
     ? 'http://127.0.0.1:8888'
     : env === 'production'
-        ? 'http://localhost:49659'
+        ? 'http://localhost:8018'
         : 'http://43.247.89.26:1088';
 
 util.ajaxUrl = function () {
@@ -279,9 +279,11 @@ util.post = function (purl, pdata, vm, callback) {
             callback('1', data);
         }
         else {
+            console.log(data);
             callback('0', data.message);
         }
     }).catch(error => {
+          console.log(error+"   dddderror");
         callback('0');
     });
 };

@@ -12,7 +12,7 @@
 import Util from '../../libs/util.js';
 
 //弹出编辑框
-const alertEditButton=(vm,h,currentRow,index,callback) =>{
+const alertEditButton=(vm,h,currentRow,index) =>{
 return h('Button', {
         props: {
             type: 'primary',
@@ -24,7 +24,8 @@ return h('Button', {
         },
         on: {
             'click': () => {
-                 callback(vm,h,currentRow,index);
+                // callback(vm,h,currentRow,index);
+                  vm.$router.push({ name: vm.routername, params: { id: currentRow["Id"] } })
             }
         }
     }, '编辑');
@@ -264,7 +265,8 @@ export default {
         },
         updateUrl:String,
         deleteUrl:String,
-        editMessage:Function
+        editMessage:Function,
+        routername:String
     },
     data () {
         return {
@@ -376,7 +378,7 @@ export default {
                                         type = editButton(this, h, currentRowData, param.index);
                                         break;
                                     case "alertEdit":
-                                        type = alertEditButton(this, h, currentRowData, param.index,this.editMessage);
+                                        type = alertEditButton(this, h, currentRowData, param.index);
                                         break;
                                     case "delete":
                                         type = deleteButton(this, h, currentRowData, param.index)

@@ -72,9 +72,25 @@ export default {
                 }
             }
             if (willpush) {
-                this.$router.push({
-                    name: name
-                });
+                switch(name)
+                {
+                    case 'orderrefundlist':
+                       this.$router.push({
+                          name: name, params: { type: 0 }
+                       });
+                       break;
+                    case 'orderrefundlist1':
+                       this.$router.push({
+                          name: name, params: { type: 1 }
+                       });
+                       break;
+                    default:
+                       this.$router.push({
+                          name: name
+                       });
+                }
+                
+                
             }
             this.$emit('on-change', name);
         }

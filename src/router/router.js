@@ -49,7 +49,8 @@ export const otherRouter = {
     name: 'otherRouter',
     component: Main,
     children: [
-        { path: 'home', title: { i18n: 'home' }, name: 'home_index', component: resolve => { require(['@/views/home/home.vue'], resolve); } }
+        { path: 'home', title: { i18n: 'home' }, name: 'home_index', component: resolve => { require(['@/views/home/home.vue'], resolve); } },
+        { path: 'productdetail/:id', title: '商品详情', name: 'product_detail', component: resolve => { require(['@/views/product/productdetail.vue'], resolve); } }
     ]
 };
 
@@ -102,6 +103,35 @@ export const appRouter = [
                 name: 'brands',
                 title: '品牌管理',
                 component: resolve => { require(['@/views/product/brands.vue'], resolve); }
+            }
+        ]
+    },
+    {
+        path: '/orders',
+        icon: 'bag',
+        name: 'orders',
+        title: '订单管理',
+        component: Main,
+        children: [
+            {
+                path: 'orderlist',
+                icon: 'heart',
+                name: 'orderlist',
+                title: '订单列表',
+                component: resolve => { require(['@/views/orders/orderlist.vue'], resolve); }
+                
+            }, {
+                path: 'orderrefundlist/:type',
+                icon: 'levels',
+                name: 'orderrefundlist',
+                title: '退款处理',
+                component: resolve => { require(['@/views/orders/orderrefundlist.vue'], resolve); }
+            }, {
+                path: 'orderrefundlist1/:type',
+                icon: 'podium',
+                name: 'orderrefundlist1',
+                title: '退货处理',
+                component: resolve => { require(['@/views/orders/orderrefundlist.vue'], resolve); }
             }
         ]
     },
@@ -211,6 +241,9 @@ export const appRouter = [
         ]
     }
 ];
+
+
+
 
 // 所有上面定义的路由都要写在下面的routers里
 export const routers = [

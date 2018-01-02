@@ -21,27 +21,26 @@
                 <template>
                     <div style="float: right;">
                         <span @click="addModal" v-if="showAddButton" style=""><Button type="primary"  icon="add">新增</Button></span>
-                        <div slot="rightbtn">
-
-                        </div>
+                         <slot name="rightbtn"></slot>
                     </div>
                 </template>
             </Row>
             <Row>
                 <div class="margin-top-10">
                     <can-edit-table refs="table4" v-model="editInlineAndCellData" :hover-show="true" :editIncell="true" :columns-list="editInlineAndCellColumn"
-                        :loading="loadingTable" :update-url="updateUrl" :delete-url="deleteUrl" @on-reload="reload"></can-edit-table>
+                        :loading="loadingTable" :update-url="updateUrl" :delete-url="deleteUrl" @on-reload="reload" :routername="routername"></can-edit-table>
 
                 </div>
 
-                <Modal :width="modalWidth" v-model="showFrom" v-if="showAddButton">
+                <Modal :width="modalWidth" v-model="showFrom" v-if="showAddButton" :scrollable="scrollable" >
+                        <slot name="fromtop"></slot>
                     <Form ref="formCustom" :model="formCustom" :rules="ruleCustom" :label-width="80">
                         <slot name="frommodel"></slot>
                     </Form>
 
                     <div slot="footer">
                         <Button type="ghost" @click="closeModal">取消</Button>
-                        <Button type="primary" @click="saveInfo" :loading="loading2">确定</Button>
+                        <Button type="primary"  v-if="submitbtn" @click="saveInfo" :loading="loading2">确定</Button>
                     </div>
                 </Modal>
             </Row>
@@ -60,6 +59,7 @@ import canEditTable from '../../tables/components/canEditTable.vue';
 import tableData from '../../tables/components/table_data.js';
 import Util from '../../libs/util.js';
 import md5 from 'js-md5';
+
 export default {
     name: 'editable-table',
     components: {
@@ -86,14 +86,31 @@ export default {
             type: Boolean,
             default: false
         },
+        submitbtn:{
+            type: Boolean,
+            default: true
+        },
+        laststepbtn:{
+            type: Boolean,
+            default: false
+        },
+        scrollable:{
+            type: Boolean,
+            default: false
+        },
         updateUrl:String,
         deleteUrl:String,
         addUrl:String,
         getUrl:String,
         formCustom:Object,
         ruleCustom:Object,
-        modalWidth:Number,
+        modalWidth:{
+            type: Number,
+            default: 500
+        },
         modalLabel:Number,
+        routername:String
+        
     },
     data () {
         return {
@@ -121,6 +138,7 @@ export default {
     },
     methods: {
         getData () {
+
             this.loadingTable=true;
             var pdata=this.query;
 
