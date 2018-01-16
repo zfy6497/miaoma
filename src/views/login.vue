@@ -66,8 +66,7 @@ export default {
     methods: {
         getSign(){
 
-           
-           
+
         },
         handleSubmit () {
             this.$refs.loginForm.validate((valid) => {
