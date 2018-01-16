@@ -61,10 +61,10 @@ export default {
         }, 1000);
         };
         return {
-            updateUrl:"api/Products/SaveBrands",
-            deleteUrl:"api/Products/DeleteBrands",
-            addUrl:"api/Products/SaveBrands",
-            getUrl:"api/Products/GetBrandsList",
+            updateUrl:"admin/Products/SaveBrands",
+            deleteUrl:"admin/Products/DeleteBrands",
+            addUrl:"admin/Products/SaveBrands",
+            getUrl:"admin/Products/GetBrandsList",
             formCustom:{
                  Id:0,
                  Name:'',

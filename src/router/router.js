@@ -136,6 +136,29 @@ export const appRouter = [
         ]
     },
     {
+        path: '/configs',
+        icon: 'bag',
+        name: 'configs',
+        title: '配置管理',
+        component: Main,
+        children: [
+            {
+                path: 'homepage',
+                icon: 'heart',
+                name: 'homepage',
+                title: '平台主页',
+                component: resolve => { require(['@/views/configs/homepage.vue'], resolve); }
+                
+            }, {
+                path: 'shopping',
+                icon: 'levels',
+                name: 'shopping',
+                title: '商城首页',
+                component: resolve => { require(['@/views/configs/shopping.vue'], resolve); }
+            }
+        ]
+    },
+    {
         path: '/member',
         icon: 'person',
         title: '会员管理',

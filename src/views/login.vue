@@ -74,7 +74,7 @@ export default {
                 if (valid) {  
                     let t1=this.postdata;
                     t1["Sign"]=Util.createsign(t1,this.$store.state.app.mmkey);
-                    Util.ajax.post("/api/User/UserLogin",t1).then (res=>{
+                    Util.ajax.post("/admin/Admin/UserLogin",t1).then (res=>{
                         var data=res.data;
                         if(data.resultCode=="0")
                         {

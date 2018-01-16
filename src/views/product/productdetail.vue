@@ -19,7 +19,6 @@
                             <Input type="text" style="width: 400px" v-model="formCustom.ProductName"></Input>
                         </FormItem>
                          <FormItem label="商品编码" prop="ProductCode">
-                        
                             <Input type="text" style="width: 400px" v-model="formCustom.ProductCode"></Input>
                         </FormItem>
                         <FormItem label="售价" prop="MinSalePrice">
@@ -30,6 +29,10 @@
                         <FormItem label="原价" prop="MarketPrice">
                             <Input type="text" style="width: 100px" v-model="formCustom.MarketPrice" :number="true">
                             <span slot="prepend">￥</span>
+                            </Input>
+                        </FormItem>
+                          <FormItem label="库存" prop="Stock">
+                            <Input type="text" style="width: 100px" v-model="formCustom.Stock" :number="true">
                             </Input>
                         </FormItem>
                         <FormItem label="商品图片" prop="ImagePath">
@@ -93,7 +96,8 @@ import UEditor from '../main-components/ueditor.vue';
                     CategoryId:0,
                     CategoryPath:'',
                     MarketPrice:0,
-                    MinSalePrice:0
+                    MinSalePrice:0,
+                    Stock:0
                  },
                  ruleCustom: {
                     ProductName: [
@@ -117,6 +121,11 @@ import UEditor from '../main-components/ueditor.vue';
 
                         { validator: validateNum, trigger: "blur" }
                     ],
+                    Stock: [
+
+                        { validator: validateNum, trigger: "blur" }
+                    ],
+                    
                 },
                   defaultLogo: [],
             cdata:[],
@@ -130,7 +139,7 @@ import UEditor from '../main-components/ueditor.vue';
                 Sord:'desc'
             },
             loading2:false,
-            editurl:'api/Products/SaveProducts',
+            editurl:'admin/Products/SaveProducts',
             brandlist:[]
         }
         },
@@ -213,10 +222,15 @@ import UEditor from '../main-components/ueditor.vue';
             }else{
                 for(let key in this.formCustom)
                 {
-                    let iarr=['Id','FreightTemplateId','Weight','Volume','ShareMoney','BrandId','CategoryId','MarketPrice','SalePrice'];
+                    let iarr=['Id','FreightTemplateId','Weight','Volume','ShareMoney','MarketPrice','SalePrice'];
+                    let notclear=['BrandId','CategoryId','CategoryPath'];
                     if(iarr.indexOf(key)>=0)
                     {
                         this.formCustom[key]=0;
+                    }
+                    else if(notclear.indexOf(key)>=0)
+                    {
+
                     }
                     else
                     {
@@ -224,7 +238,9 @@ import UEditor from '../main-components/ueditor.vue';
                     }
                     
                 }
+               // this.value1=[];
                 this.defaultLogo=[];
+                this.$refs.ueditor1.setUEContent('');
             }
             
         },
@@ -247,7 +263,7 @@ import UEditor from '../main-components/ueditor.vue';
                 }
             
             });
-             Util.post("api/Products/GetBrandsList",pdata,vm,function(res,data){
+             Util.post("admin/Products/GetBrandsList",pdata,vm,function(res,data){
                 if(res==='1')
                 {
                     if(data.totalCount>0)
@@ -265,7 +281,7 @@ import UEditor from '../main-components/ueditor.vue';
 
             if(this.formCustom.Id&&this.formCustom.Id!=0)
             {
-                 Util.post("api/Products/GetProductsDetail",{Id:this.formCustom.Id},vm,function(res,data){
+                 Util.post("admin/Products/GetProductsDetail",{Id:this.formCustom.Id},vm,function(res,data){
                 if(res==='1')
                 {
                     vm.setForm(data.data);

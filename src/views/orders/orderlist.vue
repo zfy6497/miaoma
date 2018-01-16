@@ -1,5 +1,5 @@
 <template>
-    <list :show-search="false" :show-date="true" :show-key-word="true" :show-add-button="true" :show-page="true" :update-url="updateUrl"
+    <list :show-search="true" :show-date="true" :show-key-word="true" :show-add-button="false" :show-page="true" :update-url="updateUrl"
         :delete-url="deleteUrl" :add-url="addUrl" :get-url="getUrl" :form-custom="formCustom" :rule-custom="ruleCustom" modal-Width="500" @set-form="setForm">
         <template slot="frommodel">
             <FormItem label="名称" prop="Name">
@@ -61,10 +61,10 @@ export default {
         }, 1000);
         };
         return {
-            updateUrl:"api/Products/SaveBrands",
-            deleteUrl:"api/Products/DeleteBrands",
-            addUrl:"api/Products/SaveBrands",
-            getUrl:"api/Products/GetBrandsList",
+            updateUrl:"admin/Orders/Save",
+            deleteUrl:"admin/Orders/Delete",
+            addUrl:"admin/Orders/Save",
+            getUrl:"admin/Orders/GetList",
             formCustom:{
                  Id:0,
                  Name:'',

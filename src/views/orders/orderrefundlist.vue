@@ -1,9 +1,8 @@
 <template>
-    <list :show-search="false" :show-date="true" :show-key-word="true" :show-add-button="true" :show-page="true" :update-url="updateUrl"
+    <list :show-search="true" :show-date="true" :show-key-word="true" :show-add-button="true" :show-page="true" :update-url="updateUrl"
         :delete-url="deleteUrl" :add-url="addUrl" :get-url="getUrl" :form-custom="formCustom" :rule-custom="ruleCustom" modal-Width="500" @set-form="setForm">
         <template slot="frommodel">
             <FormItem label="名称" prop="Name">
-            {{ this.$route.params.type}}
                 <Input type="text" style="width: 300px" v-model="formCustom.Name"></Input>
             </FormItem>
             <FormItem label="分类图标" prop="Logo">
@@ -62,10 +61,10 @@ export default {
         }, 1000);
         };
         return {
-            updateUrl:"api/Products/SaveBrands",
-            deleteUrl:"api/Products/DeleteBrands",
-            addUrl:"api/Products/SaveBrands",
-            getUrl:"api/Products/GetBrandsList",
+            updateUrl:"admin/OrderRefunds/Save",
+            deleteUrl:"admin/OrderRefunds/Delete",
+            addUrl:"admin/OrderRefunds/Save",
+            getUrl:"admin/OrderRefunds/GetList",
             formCustom:{
                  Id:0,
                  Name:'',
@@ -132,7 +131,7 @@ export default {
         
     },
     mounted(){
-        alert(this.$route.params.type);
+        
     }
 };
 </script>

@@ -4,12 +4,32 @@
 
 <template>
     <div>
-        <Table :ref="refs" :columns="columnsList" :loading="loading" @on-sort-change="sortChange" :data="thisTableData" border disabled-hover ></Table>
+        <Table :ref="refs" :columns="columnsList" :loading="loading" @on-sort-change="sortChange" @on-selection-change="changeselect" :data="thisTableData" border disabled-hover ></Table>
     </div>
 </template>
 
 <script>
 import Util from '../../libs/util.js';
+
+//跳转新页面编辑框
+const newPageEditButton=(vm,h,currentRow,index) =>{
+return h('Button', {
+        props: {
+            type: 'primary',
+            loading: currentRow.saving,
+            size:'small',
+        },
+        style: {
+            margin: '0 5px'
+        },
+        on: {
+            'click': () => {
+                // callback(vm,h,currentRow,index);
+                  vm.$router.push({ name: vm.routername, params: { id: currentRow["Id"] } })
+            }
+        }
+    }, '编辑');
+}
 
 //弹出编辑框
 const alertEditButton=(vm,h,currentRow,index) =>{
@@ -24,8 +44,9 @@ return h('Button', {
         },
         on: {
             'click': () => {
-                // callback(vm,h,currentRow,index);
-                  vm.$router.push({ name: vm.routername, params: { id: currentRow["Id"] } })
+           
+                 vm.$emit("set-form", currentRow);
+                  //vm.$router.push({ name: vm.routername, params: { id: currentRow["Id"] } })
             }
         }
     }, '编辑');
@@ -380,6 +401,9 @@ export default {
                                     case "alertEdit":
                                         type = alertEditButton(this, h, currentRowData, param.index);
                                         break;
+                                         case "newPageEdit":
+                                        type = newPageEditButton(this, h, currentRowData, param.index);
+                                        break;
                                     case "delete":
                                         type = deleteButton(this, h, currentRowData, param.index)
                                         break;
@@ -429,6 +453,9 @@ export default {
         },
         sortChange(data){
             this.$emit('on-reload', data.key,data.order);
+        },
+        changeselect(selected){
+            this.$emit('set-selected', selected);
         }
     },
     watch: {

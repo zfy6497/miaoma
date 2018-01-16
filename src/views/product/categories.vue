@@ -90,10 +90,10 @@ export default {
     return {
       columns: [ ],
       data: [],
-      updateUrl: "api/Products/SaveCategories",
-      deleteUrl: "api/Products/DeleteCategories",
-      addUrl: "api/Products/SaveCategories",
-      getUrl: "api/Products/GetCategoriesList",
+      updateUrl: "admin/Products/SaveCategories",
+      deleteUrl: "admin/Products/DeleteCategories",
+      addUrl: "admin/Products/SaveCategories",
+      getUrl: "admin/Products/GetCategoriesList",
       formCustom: {
            Id: 0,
         Name: "",

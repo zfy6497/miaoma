@@ -71,10 +71,10 @@ export default {
     data () {
         return {
              value1: [],
-            updateUrl:"api/Products/SaveProducts",
-            deleteUrl:"api/Products/DeleteProducts",
-            addUrl:"api/Products/SaveProducts",
-            getUrl:"api/Products/GetProductsList",
+            updateUrl:"admin/Products/SaveProducts",
+            deleteUrl:"admin/Products/DeleteProducts",
+            addUrl:"admin/Products/SaveProducts",
+            getUrl:"admin/Products/GetProductsList",
             formCustom:{
                  Id:0,
                  ProductName:'',
@@ -168,7 +168,7 @@ export default {
             var pdata=this.query;
             let vm=this;
 
-            Util.post("api/Products/GetCategoriesSelectList",pdata,vm,function(res,data){
+            Util.post("admin/Products/GetCategoriesSelectList",pdata,vm,function(res,data){
                 if(res==='1')
                 {
                     if(data.totalCount>0)
