@@ -401,7 +401,7 @@ export default {
                                     case "alertEdit":
                                         type = alertEditButton(this, h, currentRowData, param.index);
                                         break;
-                                         case "newPageEdit":
+                                    case "newPageEdit":
                                         type = newPageEditButton(this, h, currentRowData, param.index);
                                         break;
                                     case "delete":
@@ -438,8 +438,53 @@ export default {
                     };
                    
                 }
-                
-
+                //单图
+                if(item.formatType=="image")
+                {
+                     item.render = (h, param) => {
+                        let currentRowData = this.thisTableData[param.index];
+                        return h('div', {
+                            attrs: {
+                                style: 'width: 40px;height: 40px;'
+                                },
+                                }, [
+                                    h('img', {
+                                        props: {
+                                            type: 'primary',
+                                            size: 'small'
+                                        },
+                                        attrs: {
+                                            src: currentRowData[item.key], style: 'width: 40px;height: 40px;border-radius: 2px;'
+                                        },
+                                        style: {},}),
+                                    ]);
+                    };
+                }
+                //多图显示
+                if(item.formatType=="multiImage")
+                {
+                     item.render = (h, param) => {
+                        let currentRowData = this.thisTableData[param.index];
+                        let multiImage=currentRowData[item.key].split(",");
+                        return h('div', {
+                            attrs: {
+                                style: 'width: 200px;height: 40px;text-align: left;'
+                                },
+                                }, [
+                                    multiImage.map((i,t) => {
+                                       return h('img', {
+                                        props: {
+                                            type: 'primary',
+                                            size: 'small'
+                                        },
+                                        attrs: {
+                                            src: i, style: 'width: 40px;height: 40px;border-radius: 2px;padding-right:2px'
+                                        },
+                                        style: {},});
+                                    })
+                                ]);
+                    };
+                }
             });
         },
         handleBackdata (data) {
