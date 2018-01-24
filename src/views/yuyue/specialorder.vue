@@ -1,213 +1,121 @@
 <style lang="less">
-@import "../../styles/common.less";
-@import "../../tables/components/table.less";
 @import "./form.less";
 </style>
 <template>
-    <div>
-        <Card>
-            <Row>
-                <DatePicker type="date" placeholder="请选择开始日期"  :format="formatDate" v-model="query.StartDate" style="width: 200px;display:none;"></DatePicker>
-                <DatePicker type="date" placeholder="请选择结束日期" :format="formatDate" v-model="query.EndDate" style="width: 200px;display:none;"></DatePicker>
-                <Input v-model="query.KeyWord" placeholder="请输入标题..." style="width: 200px" />
-                <span @click="search" ><Button type="primary" :loading="loading" icon="search">搜索</Button></span>
-                <Button @click="cancelSearch" type="ghost">取消</Button>
-            </Row>
-            <Row>
-                <div class="margin-top-10">
-                    <can-edit-table refs="table4" v-model="editInlineAndCellData" :hover-show="true"  :columns-list="editInlineAndCellColumn"
-                        :loading="loadingTable" :update-url="updateUrl" :delete-url="deleteUrl"></can-edit-table>
-                </div>
-                <Modal :width="560" :scrollable="true" v-model="showAdd"  class-name="vertical-center-modal" title="广告管理">
-                    <template>
-                        <Form ref="formCustom" :model="formCustom" :rules="ruleCustom" :label-width="120">
-                            <FormItem label="* 标题" prop="Name">
-                                <div style="display:inline-block;width:300px;">
-                                    <input type="hidden" v-model="formCustom.TypeId">
-                                    <Input type="text" placeholder="请输入标题" v-model="formCustom.Name"></Input>
-                                </div> 
-                            </FormItem>
-                            <FormItem label="* 图片" prop="ImageUrl">
-                                <div style="display:inline-block;width:300px;">
-                                    <Input type="text"  placeholder="请上传图片" v-model="formCustom.ImageUrl"></Input>
-                                </div>
-                            </FormItem>
-                            <FormItem label="* 链接" prop="Url">
-                                <div style="display:inline-block;width:300px;">
-                                    <Input type="text"  v-model="formCustom.Url" placeholder="请输入链接" ></Input>
-                                 </div>
-                            </FormItem>
-                            <FormItem label="* 排序" prop="Sort">
-                                 <div style="display:inline-block;width:300px;">
-                                    <Input type="text" v-model="formCustom.Sort" placeholder="排序号小的排在最前面" number></Input>
-                                 </div>
-                            </FormItem>
-                            <!-- <FormItem label="* 是否显示" prop="TopImage">
-                                 <div style="display:inline-block;width:300px;">
-                                    <RadioGroup v-model="formCustom.TopImage">
-                                        <Radio label="是">是</Radio>
-                                        <Radio label="否">否</Radio>
-                                    </RadioGroup>
-                                 </div>
-                                 
-                            </FormItem> -->
-                        </Form>
-                    </template>
-                    <div slot="footer">
-                        <Button type="ghost" @click="closeModal">取消</Button>
-                        <Button type="primary" @click="saveInfo" :loading="loading2">确定</Button>
-                    </div>
-
-                </Modal>
-            </Row>
-            <Row>
-                <div style="float: left;" class="margin-top-10">
-                    <Page :total="totalCount" :current="query.page" @on-change="changePage"></Page>
-                </div>
-            </Row>
-        </Card>
-    </div>
+    <list :show-search="true" :show-date="true" :show-key-word="true" :show-add-button="false" :show-page="true" :update-url="updateUrl"
+        :delete-url="deleteUrl" :routername="'specialorder_detail'" :add-url="addUrl" :get-url="getUrl" :form-custom="formCustom" :rule-custom="ruleCustom" :modal-Width="500" @set-form="setForm" :other-query="otherQuery">
+        <template slot="fromtop">
+          <div class="ivu-modal-header"><div class="ivu-modal-header-inner">门店管理</div></div>
+        </template>
+        <template slot="frommodel">
+            <FormItem label="* 所在区域" prop="AreaId">
+              <Select v-model="formCustom.AreaId" style="width:300px" number>
+                    <Option v-for="item in arealist" :value="item.Id" :key="item.Id">{{ item.Name }}</Option>
+              </Select>
+            </FormItem>
+            <FormItem label="* 名称" prop="Name">
+                <Input type="text" style="width: 300px"  v-model="formCustom.Name"></Input>
+            </FormItem>         
+            <FormItem label="* 排序" prop="Sort">
+                    <Input type="text" style="width: 300px"  v-model="formCustom.Sort" :number="true" placeholder="排序号码越小越靠前" ></Input>
+            </FormItem>
+        </template>
+    </list>
 </template>
 
 <script>
-import Cookies from "js-cookie";
-import canEditTable from "../../tables/components/canEditTable.vue";
-import tableData from "../../tables/components/table_data.js";
-import Util from "../../libs/util.js";
-import md5 from "js-md5";
+import PhUpload from "../main-components/phupload.vue";
+import Util from '../../libs/util.js';
+import list from "../main-components/list.vue";
+import { validateNum, validateRequired } from "../../libs/validate.js";
 export default {
-  name: "editable-table",
+  name: "special-table",
   components: {
-    canEditTable
+    list,
+    PhUpload
+  },
+  props: {
+    slideType: {
+      Type: Number,
+      default: 0
+    },
+    inputShow: {
+      type: Boolean,
+      default: true
+    },
   },
   data() {
-    const validateName = (rule, value, callback) => {
-      if (value === "") {
-        callback(new Error("请输入门店名称"));
-      }   
-      callback();
-    };
-    const validateImageUrl = (rule, value, callback) => {
-      if (!value) {
-        return callback(new Error("请上传图片"));
-      }
-      callback();
-    };
-    const validateUrl = (rule, value, callback) => {
-      if (!value) {
-        return callback(new Error("请输入链接"));
-      }
-      callback();
-    };
     return {
-      editInlineAndCellColumn: [],
-      editInlineAndCellData: [],
-      loading: false,
-      loading2: false,
-      loadingTable: true,
-      searchConName3: "",
-      formatDate: "yyyy-MM-dd",
-      showAdd: false,
-      totalCount: 0,
-      current: 1,
+      updateUrl: "",
+      deleteUrl: "admin/Special/Order/Delete",
+      addUrl: "",
+      getUrl: "admin/Special/Order/List",
       formCustom: {
-        Id:0,
-        Name:"", //名称
-        ImageUrl:"", //图片链接
-        Url:"", //链接
-        TypeId:0,
-        Sort:99
+        Id: 0,
+        AreaId: 0, //区域ID
+        Name: "", //名称
+        Sort: 99
       },
       ruleCustom: {
-        ImageUrl: [{ validator: validateImageUrl, trigger: "blur" }],
-        Name: [{ validator: validateName, trigger: "blur" }],
-        Url:[{validator:validateUrl,trigger:"blur"}]
+        Name: [{ validator: validateRequired, trigger: "blur" }],
+        AreaId: [{ validator: validateNum, trigger: "blur" }],
+        Sort: [{ validator: validateNum, trigger: "blur" }]
       },
-      query: {
-        ApiUid: Cookies.get("mmnum"),
-        Token: Cookies.get("token"),
-        Page: 1,
-        Rows: 10,
-        KeyWord: "",
-        StartDate: "",
-        EndDate: "",
-        TypeId:0 //滚动广告
+      modalWidth: 500,
+      defaultImageUrl: [],
+      otherQuery: {
+        TypeId: this.slideType
       },
-      updateUrl: "api/Special/AddOrUpdate",
-      deleteUrl: "api/Special/Delete",
-      addUrl: "api/Special/AddOrUpdate",
-      getUrl: "api/Special/Order/List"
+      arealist:[]
     };
   },
   methods: {
-    getData() {
-      this.loadingTable = true;
-      var pdata = this.query;
-      let vm = this;
-      Util.post(vm.getUrl, pdata, vm, function(res, data) {
-        if (res === "1") {
-          vm.totalCount = data.totalCount;
-          vm.loadingTable = false;
-          vm.editInlineAndCellColumn = data.columns;
-          if (data.totalCount > 0) {
-            vm.editInlineAndCellData = data.data;
-          } else {
-            vm.editInlineAndCellData = [];
+    getresult(data) {
+      if (data.length > 0) {
+        this.formCustom.TopImage = data[0].url;
+      }
+    },
+    setForm(data) {
+      if (data) {
+        for (let key in this.formCustom) {
+          if (key === "TopImage") {
+            var item = [{ name: "", url: data[key], status: "finished" }];
+            this.defaultImageUrl = item;
           }
-        } else {
-          vm.$Message.error("获取数据失败~");
-          vm.loadingTable = false;
+          this.formCustom[key] = data[key];
         }
-      });
-    },
-    search() {
-      this.getData();
-    },
-    cancelSearch() {
-      this.query.KeyWord = "";
-      this.query.StartDate = "";
-      this.query.EndDate = "";
-      this.getData();
-    },
-    transfer() {
-      this.showAdd = true;
-    },
-    saveInfo() {
-      this.loading2 = true;
-      this.$refs["formCustom"].validate(valid => {
-        if (valid) {
-          var vm = this;
-          let pdata = this.formCustom;
-          Util.post(this.addUrl, pdata, this, function(res) {
-            if (res === "1") {
-              vm.$Message.success("操作成功");
-              for (var key in vm.formCustom) {
-                vm.formCustom[key] = "";
-              }
-              vm.getData();
-              vm.loading2 = false;
-            } else {
-              vm.$Message.error("操作失败");
-              vm.loading2 = false;
-            }
-          });
-        } else {
-          console.log("error submit!!");
-          this.loading2 = false;
-          return false;
+      } else {
+        for (let key in this.formCustom) {
+          if (key === "Id") {
+            this.formCustom[key] = 0;
+          } else if (key != "TypeId") {
+            this.formCustom[key] = "";
+          }
+          else{
+              this.formCustom[key] = this.slideType;
+          }
         }
-      });
+        this.defaultImageUrl = [];
+      }
     },
-    closeModal() {
-      this.showAdd = false;
-    },
-    changePage(n) {
-      this.query.Page = n;
-      this.getData();
+    loadArea(){
+      let vm=this;
+      Util.post("admin/Area/GetAreaList",{Id:100},vm,function(res,data){
+            if(res==='1')
+                {
+                    if(data.totalCount>0)
+                    {
+                        vm.arealist = data.data;                
+                    }else{
+                        vm.arealist = [];
+                    }
+                }
+      });        
     }
   },
+  created() {},
   mounted() {
-    this.getData();
+    //load area this
   }
 };
 </script>

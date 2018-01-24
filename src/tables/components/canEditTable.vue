@@ -33,7 +33,7 @@ return h('Button', {
 
 //弹出编辑框
 const alertEditButton=(vm,h,currentRow,index) =>{
-return h('Button', {
+    return h('Button', {
         props: {
             type: 'primary',
             loading: currentRow.saving,
@@ -150,30 +150,41 @@ const deleteButton = (vm, h, currentRow, index) => {
         }, '删除')
     ]);
 };
-
-//查看
-const selectButton = (vm, h, currentRow, index,callback) => {
+//查看详情
+const selectDetailButton = (vm, h, currentRow, index,callback) => {
     return h('Button', {
+        props: {
+            type: 'default',
+            loading: currentRow.saving,
+            size:'small',
+        },
         style: {
             margin: '0 5px'
         },
-        props: {
-             type: 'text',
-             size: 'small'
-        },                   
         on: {
-            'click': () => {        
-                 let query = {Id: currentRow.Id};
-                 let routeName = vm.$route.name;
-                 console.log(vm.$route.path);
-                 vm.$router.push({
-                        name: routeName,
-                        query: query
-                 }); 
-                callback&&callback();
+            'click': () => {
+                  vm.$router.push({ name: vm.routername, params: { id: currentRow["Id"] } })
             }
         }
-    },'查看');
+    }, '查看详情');
+};
+//查看
+const selectButton = (vm, h, currentRow, index) => {
+    return h('Button', {
+        props: {
+            type: 'default',
+            loading: currentRow.saving,
+            size:'small',
+        },
+        style: {
+            margin: '0 5px'
+        },
+        on: {
+            'click': () => {
+                vm.$emit("set-form", currentRow);
+            }
+        }
+    }, '查看');
 };
 
 //初始化编辑行
@@ -409,6 +420,9 @@ export default {
                                         break;
                                     case "select":
                                        type =  selectButton(this, h, currentRowData, param.index)
+                                        break;
+                                    case "selectDetail":
+                                       type =  selectDetailButton(this, h, currentRowData, param.index)
                                         break;
                                 }
                                 return type;

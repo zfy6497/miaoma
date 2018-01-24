@@ -58,7 +58,7 @@ export default {
       ruleCustom: {
         Url: [{ validator: validateRequired, trigger: "blur" }],
         ImageUrl: [{ validator: validateRequired, trigger: "blur" }],
-        DisplaySequence: [{ validator: validateNum, trigger: "blur" }]
+        Sort: [{ validator: validateNum, trigger: "blur" }]
       },
       modalWidth: 500,
       defaultImageUrl: [],

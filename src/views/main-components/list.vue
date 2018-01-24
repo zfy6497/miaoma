@@ -32,7 +32,7 @@
 
                 </div>
 
-                <Modal :width="modalWidth" v-model="showFrom"  :scrollable="scrollable" v-if="modalList!=true" >
+                <Modal :width="modalWidth" v-model="showFrom"    :scrollable="scrollable" v-if="modalList!=true" >
                         <slot name="fromtop"></slot>
                     <Form ref="formCustom" :model="formCustom" :rules="ruleCustom" :label-width="80">
                         <slot name="frommodel"></slot>
