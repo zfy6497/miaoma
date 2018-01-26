@@ -127,7 +127,8 @@ export default {
       default: false
     },
     modalSelect: Array,
-    recommendType: Number //推荐类型 1:首页商品推荐;
+    recommendType: Number, //推荐类型 1:首页商品推荐;
+    defaultSidx:String
   },
   data() {
     return {
@@ -292,7 +293,14 @@ export default {
     }
   },
   mounted() {
+    if(this.defaultSidx){
+      this.query.Sidx=this.defaultSidx;
+    }
     this.getData();
-  }
+  },
+     watch: {
+    // 如果路由有变化，会再次执行该方法
+      '$route': 'getData'
+    }
 };
 </script>

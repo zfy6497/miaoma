@@ -19,7 +19,8 @@ const app = {
         currentPageName: '',
         tagsList: [...otherRouter.children],
         dontCache: ['text-editor', 'artical-publish'],
-        mmkey: 'ZD4417JEFFDDSCC50H3FAE3C787D0E23'
+        mmkey: 'ZD4417JEFFDDSCC50H3FAE3C787D0E23',
+        expressCompanys: ['顺丰快递', '圆通速递', '中通速递', '邮政小包', '申通快递', '天天快递', '宅急送', '全峰快递', 'EMS', '韵达快递', '芝麻开门', '德邦快递', '百世汇通']
     },
     mutations: {
         setTagsList (state, list) {

@@ -76,12 +76,12 @@ export default {
                 {
                     case 'orderrefundlist':
                        this.$router.push({
-                          name: name, params: { type: 0 }
+                          name: name, params: { type:1 }
                        });
                        break;
                     case 'orderrefundlist1':
                        this.$router.push({
-                          name: name, params: { type: 1 }
+                          name: name, params: { type:2 }
                        });
                        break;
                     default:

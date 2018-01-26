@@ -51,7 +51,8 @@ export const otherRouter = {
     children: [
         { path: 'home', title: { i18n: 'home' }, name: 'home_index', component: resolve => { require(['@/views/home/home.vue'], resolve); } },
         { path: 'productdetail/:id', title: '商品详情', name: 'product_detail', component: resolve => { require(['@/views/product/productdetail.vue'], resolve); } },
-        { path: 'specialorderdetail/:id', title: '预约订单详情', name: 'specialorder_detail', component: resolve => { require(['@/views/yuyue/specialorderdetail.vue'], resolve); } }        
+        { path: 'specialorderdetail/:id', title: '预约订单详情', name: 'specialorder_detail', component: resolve => { require(['@/views/yuyue/specialorderdetail.vue'], resolve); } },
+        { path: 'orderdetail/:id', title: '订单详情', name: 'order_detail', component: resolve => { require(['@/views/orders/orderdetail.vue'], resolve); } }
     ]
 };
 
@@ -120,7 +121,7 @@ export const appRouter = [
                 name: 'orderlist',
                 title: '订单列表',
                 component: resolve => { require(['@/views/orders/orderlist.vue'], resolve); }
-                
+
             }, {
                 path: 'orderrefundlist/:type',
                 icon: 'levels',
@@ -149,7 +150,7 @@ export const appRouter = [
                 name: 'homepage',
                 title: '平台主页',
                 component: resolve => { require(['@/views/configs/homepage.vue'], resolve); }
-                
+
             }, {
                 path: 'shopping',
                 icon: 'levels',

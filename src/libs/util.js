@@ -11,7 +11,7 @@ util.title = function (title) {
 };
 //http://localhost:49659
 const ajaxUrl = env === 'development'
-    ? 'http://localhost:49659'
+    ? 'http://localhost:8018'
     : env === 'production'
         ? 'http://localhost:8018'
         : 'http://43.247.89.26:1088';
@@ -283,7 +283,7 @@ util.post = function (purl, pdata, vm, callback) {
             callback('0', data.message);
         }
     }).catch(error => {
-          console.log(error+"   dddderror");
+        console.log(error + "   dddderror");
         callback('0');
     });
 };
@@ -313,6 +313,26 @@ util.formatDate = function (date) {
     let d = objDate.getDate();
     d = d < 10 ? ('0' + d) : d;
     return y + '-' + m + '-' + d;
+};
+
+util.formatDateFull = function (date) {
+    let objDate = new Date(date);
+    const y = objDate.getFullYear();
+    let m = objDate.getMonth() + 1;
+    m = m < 10 ? '0' + m : m;
+    let d = objDate.getDate();
+    d = d < 10 ? ('0' + d) : d;
+
+    let h = objDate.getHours();
+    h = h < 10 ? ('0' + h) : h;
+
+    let min = objDate.getMinutes();
+    min = min < 10 ? ('0' + min) : min;
+
+    let s = objDate.getSeconds();
+    s = s < 10 ? ('0' + s) : s;
+
+    return y + '-' + m + '-' + d + ' ' + h + ':' + min + ':' + s;
 };
 
 export default util;

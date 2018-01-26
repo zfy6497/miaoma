@@ -1,133 +1,65 @@
-<template>
+<template> 
     <list :show-search="true" :show-date="true" :show-key-word="true" :show-add-button="false" :show-page="true" :update-url="updateUrl"
-        :delete-url="deleteUrl" :add-url="addUrl" :get-url="getUrl" :form-custom="formCustom" :rule-custom="ruleCustom" modal-Width="500" @set-form="setForm">
+        :delete-url="deleteUrl" :add-url="addUrl" :get-url="getUrl" :form-custom="formCustom" :rule-custom="ruleCustom" :default-sidx="'OrderDate'" modal-Width="500" @set-form="setForm" :routername="'order_detail'">
+    
         <template slot="frommodel">
-            <FormItem label="名称" prop="Name">
-                <Input type="text" style="width: 300px" v-model="formCustom.Name"></Input>
+            <FormItem label="快递公司" prop="ExpressCompanyName">
+              <Select v-model="formCustom.ExpressCompanyName" style="width:300px">
+                         <Option v-for="item in expressCompanys" :value="item" :key="item">{{item}}</Option>
+                    </Select>
             </FormItem>
-            <FormItem label="分类图标" prop="Logo">
-                <PhUpload @get-result="getresult" :default-list="defaultLogo" :format="['jpg','jpeg','png']" :maxsize="1024*10">
-                </PhUpload>
+            <FormItem label="快递单号" prop="ShipOrderNumber">
+                
+                     <Input type="text" style="width: 300px" v-model="formCustom.ShipOrderNumber"></Input>
             </FormItem>
-            <FormItem label="排序值" prop="DisplaySequence">
-                <Input type="text" style="width: 100px" v-model="formCustom.DisplaySequence" :number="true"></Input>
-            </FormItem>
-              <FormItem label="说明" prop="Description">
-                <Input type="text" style="width: 300px" v-model="formCustom.Description"></Input>
-            </FormItem>
-            <FormItem label="是否推荐" prop="IsRecommend">
-                <Checkbox v-model="formCustom.IsRecommend" />
-            </FormItem>
+           
         </template>
     </list>
 </template>
 
 <script>
 import PhUpload from "../main-components/phupload.vue";
-import list from '../main-components/list.vue';
+import list from "../main-components/list.vue";
+import {validateNum,validateRequired} from '../../libs/validate.js';
 export default {
-    name: 'page1-table',
-    components: {
-        list,
-        PhUpload
-    },
-    data () {
-
-        const validateName = (rule, value, callback) => {
-        if (!value) {
-            return callback(new Error("请输入名称"));
+  name: "page1-table",
+  components: {
+    list,
+    PhUpload
+  },
+  data() {
+    return {
+      updateUrl: "admin/Orders/Deliver",
+      deleteUrl: "admin/Orders/Delete",
+      addUrl: "admin/Orders/Deliver",
+      getUrl: "admin/Orders/GetList",
+      formCustom: {
+        Id: 0,
+        ExpressCompanyName: "",
+        ShipOrderNumber: ""
+      },
+      ruleCustom: {
+        Name: [{ validator: validateRequired, trigger: "blur" }],
+        DisplaySequence: [
+          { validator: validateRequired, trigger: "blur" }
+        ]
+      },
+      modalWidth: 500,
+      defaultLogo: [],
+      expressCompanys: this.$store.state.app.expressCompanys
+    };
+  },
+  methods: {
+    getresult(data) {},
+    setForm(data) {
+      if (data) {
+        for (let key in this.formCustom) {
+          this.formCustom[key] = data[key];
         }
-        // 模拟异步验证效果
-        setTimeout(() => {
-            callback();
-        }, 1000);
-        };
-        const validateIcon = (rule, value, callback) => {
-        if (!value) {
-            return callback(new Error("请上传品牌图标"));
-        }
-        callback();
-        };
-        const validateDisplaySequence = (rule, value, callback) => {
-        if (!value) {
-            return callback(new Error("请输入排序值"));
-        }
-        setTimeout(() => {
-            if (!Number.isInteger(value)) {
-            callback(new Error("请输入数字"));
-            } else {
-            callback();
-            }
-        }, 1000);
-        };
-        return {
-            updateUrl:"admin/Orders/Save",
-            deleteUrl:"admin/Orders/Delete",
-            addUrl:"admin/Orders/Save",
-            getUrl:"admin/Orders/GetList",
-            formCustom:{
-                 Id:0,
-                 Name:'',
-                 DisplaySequence:'',
-                 Logo:'',
-                 Description:'',
-                 IsRecommend:false
-            },
-            ruleCustom: {
-                    Name: [
-                        { validator: validateName, trigger: 'blur' }
-                    ],
-                    DisplaySequence: [
-                        { validator: validateDisplaySequence, trigger: "blur" }
-                    ]
-            },
-            modalWidth:500,
-            defaultLogo: [],
-        };
-    },
-    methods: {
-        getresult(data) {
-            if (data.length > 0) {
-                this.formCustom.Logo = data[0].url;
-            }
-        },
-        setForm(data) {
-            if(data)
-            {
-                for(let key in this.formCustom)
-                {
-                    if(key==='Logo')
-                    {
-                        var item=[{'name':'','url':data[key],'status':'finished'}];
-                        this.defaultLogo=item;
-                    }
-                    this.formCustom[key]=data[key]
-                }
-            
-            }else{
-                for(let key in this.formCustom)
-                {
-                    if(key==='IsRecommend')
-                    {
-                        this.formCustom[key]=false;
-                    }
-                    else  if(key==='Id')
-                    {
-                        this.formCustom[key]=0;
-                    }
-                    else
-                    {
-                        this.formCustom[key]="";
-                    }
-                    
-                }
-                this.defaultLogo=[];
-            }
-            
-        }
-    },
-    created () {
-     
+      } else {
+      }
     }
+  },
+  created() {}
 };
 </script>
