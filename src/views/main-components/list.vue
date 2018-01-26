@@ -40,6 +40,7 @@
 
                     <div slot="footer">
                         <Button type="ghost" @click="closeModal">取消</Button>
+                          <Button type="ghost" @click="closeModal">拒绝</Button>
                         <Button type="primary"  v-if="submitbtn" @click="saveInfo" :loading="loading2">确定</Button>
                     </div>
                 </Modal>
