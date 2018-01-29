@@ -39,8 +39,8 @@ export default {
         ShipOrderNumber: ""
       },
       ruleCustom: {
-        Name: [{ validator: validateRequired, trigger: "blur" }],
-        DisplaySequence: [
+        ExpressCompanyName: [{ validator: validateRequired, trigger: "blur" }],
+        ShipOrderNumber: [
           { validator: validateRequired, trigger: "blur" }
         ]
       },

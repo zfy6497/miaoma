@@ -5,8 +5,19 @@
 <template>
     <div>
         <Table :ref="refs" :columns="columnsList" :loading="loading" @on-sort-change="sortChange" @on-selection-change="changeselect" :data="thisTableData" border disabled-hover ></Table>
+        <Modal
+            v-model="modalmsg"
+            title="Modal"
+            :loading="loadingbtn1">
+            <p><input class="ivu-input"  style="width:300px;" width=""  autocomplete="off" v-model="auditMsg" placeholder="请输入拒绝理由" /></p>
+                   <div slot="footer">
+                        <Button type="ghost" @click="closeModal">取消</Button>
+                        <Button type="primary"   @click="fail" :loading="loadingbtn1">确定</Button>
+                    </div>
+        </Modal>
     </div>
 </template>
+
 
 <script>
 import Util from "../../libs/util.js";
@@ -330,14 +341,14 @@ const deliverButton = (vm, h, currentRow, index) => {
 
 //审核
 
-
-const auditSuccessButton = (vm, h, currentRow, index) => {
+const auditSuccessButton = (vm, h, currentRow, index, btn) => {
+    if (currentRow[btn.CheckKey] != btn.CheckValue) return;
   return h(
     "Poptip",
     {
       props: {
         confirm: true,
-        title: "您确定同意审核这条数据吗?",
+        title: btn.Msg ? btn.Msg : "您确定执行此操作吗?",
         transfer: true
       },
       on: {
@@ -346,10 +357,13 @@ const auditSuccessButton = (vm, h, currentRow, index) => {
           if (currentRow["Id"] && currentRow["Id"] !== "0") {
             pdata["Id"] = currentRow["Id"];
           }
-          Util.post(vm.deleteUrl, pdata, vm, function(res) {
+          Util.post(btn.PostUrl, pdata, vm, function(res) {
             if (res === "1") {
-              vm.thisTableData.splice(index, 1);
-              vm.$emit("input", vm.handleBackdata(vm.thisTableData));
+              //  vm.thisTableData.splice(index, 1);
+
+              vm.$emit("reLoad");
+
+              // vm.$emit("input", vm.handleBackdata(vm.thisTableData));
               //vm.$emit('on-delete', vm.handleBackdata(vm.thisTableData), index);
               vm.$Message.success("操作成功");
             } else {
@@ -367,20 +381,21 @@ const auditSuccessButton = (vm, h, currentRow, index) => {
             margin: "0 5px"
           },
           props: {
-            type: "success",
+            type: btn.BtttonStyle,
             placement: "top",
             size: "small"
           }
         },
-        "同意"
+        btn.BtttonName
       )
     ]
   );
 };
 
+const auditFailButton = (vm, h, currentRow, index, btn) => {
+  console.log(currentRow[btn.CheckKey] + "," + btn.CheckValue + "222");
+  if (currentRow[btn.CheckKey] != btn.CheckValue) return;
 
-const auditRefuseButton = (vm, h, currentRow, index) => {
- if (currentRow.Status != 1) return;
   return h(
     "Button",
     {
@@ -394,19 +409,22 @@ const auditRefuseButton = (vm, h, currentRow, index) => {
       },
       on: {
         click: () => {
-
-            vm.handleRender();
+          vm.modalmsg = true;
+          vm.checkQuery.id = currentRow["Id"];
+          vm.checkQuery.posturl = btn.PostUrl;
+          // vm.handleRender(vm, currentRow, btn);
           // vm.$emit("set-form", currentRow);
           //vm.$router.push({ name: vm.routername, params: { id: currentRow["Id"] } })
         }
       }
     },
-    "拒绝"
+    btn.BtttonName
   );
 };
 //确认打款
 const confirmRefundButton = (vm, h, currentRow, index) => {
- 
+  console.log(currentRow[btn.CheckKey] + "," + btn.CheckValue + "111");
+  if (currentRow[btn.CheckKey] != btn.CheckValue) return;
   return h(
     "Button",
     {
@@ -421,6 +439,7 @@ const confirmRefundButton = (vm, h, currentRow, index) => {
       on: {
         click: () => {
           vm.$emit("set-form", currentRow);
+
           //vm.$router.push({ name: vm.routername, params: { id: currentRow["Id"] } })
         }
       }
@@ -428,7 +447,6 @@ const confirmRefundButton = (vm, h, currentRow, index) => {
     "确认打款"
   );
 };
-
 
 export default {
   name: "canEditTable",
@@ -460,7 +478,10 @@ export default {
       thisTableData: [],
       edittingStore: [],
       caneditcolumns: [],
-      value:''
+      auditMsg: "",
+      loadingbtn1: false,
+      modalmsg: false,
+      checkQuery: { id: 0, posturl: "" }
     };
   },
   created() {
@@ -613,15 +634,6 @@ export default {
                   case "deliver":
                     type = deliverButton(this, h, currentRowData, param.index);
                     break;
-                 case "auditSuccess":
-                    type = auditSuccessButton(this, h, currentRowData, param.index);
-                      break;
-                case "auditRefuse":
-                    type = auditRefuseButton(this, h, currentRowData, param.index);
-                    break;
-                case "confirmRefund":
-                    type = confirmRefundButton(this, h, currentRowData, param.index);
-                    break;
                 }
                 return type;
               })
@@ -640,6 +652,75 @@ export default {
                                 ]);
                             }
                         } */
+          };
+        }
+
+        if (item.BtnItems && item.BtnItems.length > 0) {
+          item.render = (h, param) => {
+            let currentRowData = this.thisTableData[param.index];
+            return h("div", [
+              item.BtnItems.map((btn, i) => {
+                let type;
+                switch (btn.ButtonType) {
+                  case "auditSuccess":
+                    type = auditSuccessButton(
+                      this,
+                      h,
+                      currentRowData,
+                      param.index,
+                      btn
+                    );
+                    break;
+
+                  case "auditFail":
+                    type = auditFailButton(
+                      this,
+                      h,
+                      currentRowData,
+                      param.index,
+                      btn
+                    );
+                    break;
+                     case "edit":
+                    type = editButton(this, h, currentRowData, param.index);
+                    break;
+                  case "alertEdit":
+                    type = alertEditButton(
+                      this,
+                      h,
+                      currentRowData,
+                      param.index
+                    );
+                    break;
+                  case "newPageEdit":
+                    type = newPageEditButton(
+                      this,
+                      h,
+                      currentRowData,
+                      param.index
+                    );
+                    break;
+                  case "delete":
+                    type = deleteButton(this, h, currentRowData, param.index);
+                    break;
+                  case "select":
+                    type = selectButton(this, h, currentRowData, param.index);
+                    break;
+                  case "selectDetail":
+                    type = selectDetailButton(
+                      this,
+                      h,
+                      currentRowData,
+                      param.index
+                    );
+                    break;
+                  case "deliver":
+                    type = deliverButton(this, h, currentRowData, param.index);
+                    break;
+                }
+                return type;
+              })
+            ]);
           };
         }
         if (item.formatType === "formatTime") {
@@ -723,24 +804,39 @@ export default {
     changeselect(selected) {
       this.$emit("set-selected", selected);
     },
-    handleRender () {
-                this.$Modal.confirm({
-                    render: (h) => {
-                        return h('Input', {
-                            props: {
-                                value: this.value,
-                                autofocus: true,
-                                placeholder: 'Please enter your name...'
-                            },
-                            on: {
-                                input: (val) => {
-                                    this.value = val;
-                                }
-                            }
-                        })
-                    }
-                })
-            }
+
+    closeModal() {
+      this.modalmsg = false;
+    },
+    fail: function() {
+      var vm = this;
+      vm.loadingbtn1 = true;
+      if (!vm.auditMsg) {
+        vm.$Message.error("请输入拒绝原因");
+        vm.loadingbtn1 = false;
+        return;
+      }
+      let pdata = {};
+      if (vm.checkQuery.id && vm.checkQuery.id !== "0") {
+        pdata["Id"] = vm.checkQuery.id;
+      } else {
+        vm.$Message.error("参数有误");
+        vm.loadingbtn1 = false;
+        return;
+      }
+      pdata["AuditMsg"] = vm.auditMsg;
+      Util.post(vm.checkQuery.posturl, pdata, vm, function(res) {
+        if (res === "1") {
+          vm.$emit("reLoad");
+          vm.$Message.success("操作成功");
+          vm.modalmsg = false;
+          vm.auditMsg = "";
+        } else {
+          vm.$Message.error("操作失败");
+        }
+        vm.loadingbtn1 = false;
+      });
+    }
   },
   watch: {
     value(data) {

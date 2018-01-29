@@ -28,7 +28,7 @@
             <Row>
                 <div class="margin-top-10">
                     <can-edit-table refs="table4" v-model="editInlineAndCellData" :hover-show="true" :editIncell="true" :columns-list="editInlineAndCellColumn"
-                        :loading="loadingTable" :update-url="updateUrl" :delete-url="deleteUrl" @on-reload="reload" :routername="routername"  @set-form="setForm" @set-selected="setSelected"></can-edit-table>
+                        :loading="loadingTable" :update-url="updateUrl" :delete-url="deleteUrl" @on-reload="reload" :routername="routername"  @set-form="setForm" @set-selected="setSelected" @reLoad="reLoad"></can-edit-table>
 
                 </div>
 
@@ -40,7 +40,6 @@
 
                     <div slot="footer">
                         <Button type="ghost" @click="closeModal">取消</Button>
-                          <Button type="ghost" @click="closeModal">拒绝</Button>
                         <Button type="primary"  v-if="submitbtn" @click="saveInfo" :loading="loading2">确定</Button>
                     </div>
                 </Modal>
@@ -58,7 +57,7 @@
             </Row>
             <Row v-if="showPage">
                 <div style="float: left;" class="margin-top-10">
-                    <Page :total="totalCount" :current="query.page" @on-change="changePage"></Page>
+                    <Page :total="totalCount" :page-size="query.Rows" :current="query.page" @on-change="changePage"></Page>
                 </div>
             </Row>
         </Card>
@@ -147,7 +146,7 @@ export default {
       current: 1,
       query: {
         Page: 1,
-        Rows: 10,
+        Rows: 20,
         KeyWord: "",
         StartDate: "",
         EndDate: "",
@@ -157,6 +156,10 @@ export default {
     };
   },
   methods: {
+    reLoad:function(){
+       var vm=this;
+       this.getData();
+    },
     getData() {
       this.loadingTable = true;
       let pdata = this.query;
@@ -165,7 +168,7 @@ export default {
         pdata[key] = oq[key];
       }
       let vm = this;
-
+      console.log(pdata);
       Util.post(vm.getUrl, pdata, vm, function(res, data) {
         if (res === "1") {
           vm.totalCount = data.totalCount;
