@@ -1,10 +1,18 @@
+<style lang="less">
+@import "./form.less";
+</style>
 <template>
     <list :show-search="true" :show-date="true" :show-key-word="true" :show-add-button="false" :show-page="true" :update-url="updateUrl"
         :delete-url="deleteUrl" :routername="'specialorder_detail'" :add-url="addUrl" :get-url="getUrl" :form-custom="formCustom" :rule-custom="ruleCustom" :modal-Width="500" @set-form="setForm" :other-query="otherQuery">
         <template slot="fromtop">
-          <div class="ivu-modal-header"><div class="ivu-modal-header-inner">会员查看</div></div>
+          <div class="ivu-modal-header"><div class="ivu-modal-header-inner">门店管理</div></div>
         </template>
         <template slot="frommodel">
+            <FormItem label="* 所在区域" prop="AreaId">
+              <Select v-model="formCustom.AreaId" style="width:300px" number>
+                    <Option v-for="item in arealist" :value="item.Id" :key="item.Id">{{ item.Name }}</Option>
+              </Select>
+            </FormItem>
             <FormItem label="* 名称" prop="Name">
                 <Input type="text" style="width: 300px"  v-model="formCustom.Name"></Input>
             </FormItem>         
@@ -21,7 +29,7 @@ import Util from '../../libs/util.js';
 import list from "../main-components/list.vue";
 import { validateNum, validateRequired } from "../../libs/validate.js";
 export default {
-  name: "member-table",
+  name: "special-table",
   components: {
     list,
     PhUpload
@@ -39,9 +47,9 @@ export default {
   data() {
     return {
       updateUrl: "",
-      deleteUrl: "admin/Member/Delete",
+      deleteUrl: "admin/Special/Order/Delete",
       addUrl: "",
-      getUrl: "admin/Member/GetList",
+      getUrl: "admin/Special/Order/List",
       formCustom: {
         Id: 0,
         AreaId: 0, //区域ID
@@ -56,7 +64,8 @@ export default {
       modalWidth: 500,
       defaultImageUrl: [],
       otherQuery: {
-        TypeId: this.slideType
+        TypeId: this.slideType,
+        SId:this.$route.params.id
       },
       arealist:[]
     };

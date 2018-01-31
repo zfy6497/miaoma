@@ -52,7 +52,10 @@ export const otherRouter = {
         { path: 'home', title: { i18n: 'home' }, name: 'home_index', component: resolve => { require(['@/views/home/home.vue'], resolve); } },
         { path: 'productdetail/:id', title: '商品详情', name: 'product_detail', component: resolve => { require(['@/views/product/productdetail.vue'], resolve); } },
         { path: 'specialorderdetail/:id', title: '预约订单详情', name: 'specialorder_detail', component: resolve => { require(['@/views/yuyue/specialorderdetail.vue'], resolve); } },
-        { path: 'orderdetail/:id', title: '订单详情', name: 'order_detail', component: resolve => { require(['@/views/orders/orderdetail.vue'], resolve); } }
+        { path: 'orderdetail/:id', title: '订单详情', name: 'order_detail', component: resolve => { require(['@/views/orders/orderdetail.vue'], resolve); } },
+        { path: 'specialorderlist/:id', title: '预约记录', name: 'specialorder_list', component: resolve => { require(['@/views/yuyue/specialorderlist.vue'], resolve); } },
+        { path: 'specialschedueslist/:id', title: '排课管理', name: 'specialschedues_list', component: resolve => { require(['@/views/yuyue/specialschedueslist.vue'], resolve); } }
+
     ]
 };
 
@@ -164,10 +167,10 @@ export const appRouter = [
         path: '/member',
         icon: 'person',
         title: '会员管理',
-        name: 'page',
+        name: 'member',
         component: Main,
         children: [
-            { path: 'index', title: '会员列表', name: 'index', component: resolve => { require(['@/views/member/index.vue'], resolve); } }
+            { path: 'index', icon: 'ios-list', title: '会员列表', name: 'index', component: resolve => { require(['@/views/member/index.vue'], resolve); } }
         ]
     },
     {
@@ -197,6 +200,13 @@ export const appRouter = [
                 name: 'storelist',
                 title: '门店管理',
                 component: resolve => { require(['@/views/yuyue/storelist.vue'], resolve); }
+            },
+            {
+                path: 'storemanagerlist',
+                icon: 'ios-list',
+                name: 'storemanagerlist',
+                title: '店长管理',
+                component: resolve => { require(['@/views/yuyue/storemanagerlist.vue'], resolve); }
             },
             {
                 path: 'homeads',

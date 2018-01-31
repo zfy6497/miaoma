@@ -29,4 +29,4 @@ export default {
   created() {},
   mounted() {}
 };
-</script>
+</script> 

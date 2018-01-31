@@ -176,7 +176,11 @@ const deleteButton = (vm, h, currentRow, index) => {
   );
 };
 //查看详情
-const selectDetailButton = (vm, h, currentRow, index, callback) => {
+const selectDetailButton = (vm, h, currentRow, index, btn) => {
+  let btnName = "查看详情"; ///btn.BtttonName
+  if(btn){
+    btnName=btn.BtttonName;
+  }
   return h(
     "Button",
     {
@@ -190,16 +194,82 @@ const selectDetailButton = (vm, h, currentRow, index, callback) => {
       },
       on: {
         click: () => {
-          vm.$router.push({
-            name: vm.routername,
-            params: { id: currentRow["Id"] }
+          //跳转特殊处理
+          switch (btnName) {
+            case "预约记录":
+               vm.$router.push({
+                name: "specialorder_list",
+                params: { id: currentRow["Id"] }
+              });
+              break;
+            case "排班管理":
+               vm.$router.push({
+                name: "specialschedues_list",
+                params: { id: currentRow["Id"] }
+              });
+            break;
+            default:
+              vm.$router.push({
+                name: vm.routername,
+                params: { id: currentRow["Id"] }
+              });
+              break;
+          }
+        }
+      }
+    },
+    btnName
+  );
+};
+
+
+//审核重置密码
+const resetPasswordButton = (vm, h, currentRow, index, btn) => {
+  return h(
+    "Poptip",
+    {
+      props: {
+        confirm: true,
+        title: btn.Msg ? btn.Msg : "您确定执行此操作吗?",
+        transfer: true
+      },
+      on: {
+        "on-ok": () => {
+          let pdata = {};
+          if (currentRow["Id"] && currentRow["Id"] !== "0") {
+            pdata["Id"] = currentRow["Id"];
+          }
+          Util.post(btn.PostUrl, pdata, vm, function(res) {
+            if (res === "1") {
+              vm.$emit("reLoad");
+              vm.$Message.success("操作成功");
+            } else {
+              vm.$Message.error("操作失败");
+            }
           });
         }
       }
     },
-    "查看详情"
+    [
+      h(
+        "Button",
+        {
+          style: {
+            margin: "0 5px"
+          },
+          props: {
+            type: btn.BtttonStyle,
+            placement: "top",
+            size: "small"
+          }
+        },
+        btn.BtttonName
+      )
+    ]
   );
 };
+
+
 //查看
 const selectButton = (vm, h, currentRow, index) => {
   return h(
@@ -711,12 +781,22 @@ export default {
                       this,
                       h,
                       currentRowData,
-                      param.index
+                      param.index,
+                      btn
                     );
                     break;
                   case "deliver":
                     type = deliverButton(this, h, currentRowData, param.index);
                     break;
+                  case "resetPassWord":
+                    type = resetPasswordButton(
+                      this,
+                      h,
+                      currentRowData,
+                      param.index,
+                      btn);
+                    break;
+                    
                 }
                 return type;
               })
