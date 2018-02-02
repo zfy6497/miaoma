@@ -72,8 +72,8 @@ export default {
                                      model:'StoreId'
                                 },
                                 on:{
-                                    'on-change':(event) => {
-                                        this.shopping_data[p.index].StoreId = event.target.value;
+                                    'on-change':(value) => {
+                                        this.shopping_data[p.index].StoreId = value;
                                     }
                                 }
                             },[
@@ -186,7 +186,7 @@ export default {
                                     click: () => {
                                         let thisTableData=this.shopping_data;
                                         thisTableData.splice(params.index,1);
-                                        thisTableData.$Message.success('删除成功');
+                                        this.$Message.success('删除成功');
                                     }
                                 }
                             },"删除")
@@ -205,6 +205,11 @@ export default {
                                 },
                                 style:{
                                     width:'80px'
+                                },
+                                on:{
+                                    'on-change':(value) => {
+                                        this.shopping_data[p.index].IsTemporary = value;
+                                    }
                                 }
                             },[
                                 templist.map((t,i)=>{
@@ -315,6 +320,18 @@ export default {
             storeId = vm.initCustom.StoreId;
             startTime= '2018-01-02 08:30'; //vm.initCustom.StartTime;
             endTime= '2018-01-02 17:00'; //vm.initCustom.EndTime;
+            if(storeId==0){
+                this.$Message.error('请选择门店');
+                return;
+            }
+            if(startTime==''){
+                this.$Message.error('请选择开始时间');
+                return;
+            }
+             if(endTime==''){
+                this.$Message.error('请选择结束时间');
+                return;
+            }
             //获取时间段
             Util.post("admin/Special/Schedues/GetDate",{SId:this.formCustom.Id,StoreId:storeId,Day:this.CurrentDate,Start:startTime,End:endTime},vm,function (res,data) {
                  if(res==='1'){

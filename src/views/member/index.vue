@@ -1,15 +1,21 @@
 <template>
     <list :show-search="true" :show-date="true" :show-key-word="true" :show-add-button="false" :show-page="true" :update-url="updateUrl"
-        :delete-url="deleteUrl" :routername="'specialorder_detail'" :add-url="addUrl" :get-url="getUrl" :form-custom="formCustom" :rule-custom="ruleCustom" :modal-Width="500" @set-form="setForm" :other-query="otherQuery">
+        :delete-url="deleteUrl" :routername="'specialorder_detail'" :submitbtn="false" :add-url="addUrl" :get-url="getUrl" :form-custom="formCustom" :rule-custom="ruleCustom" :modal-Width="500" @set-form="setForm" :other-query="otherQuery">
         <template slot="fromtop">
           <div class="ivu-modal-header"><div class="ivu-modal-header-inner">会员查看</div></div>
         </template>
         <template slot="frommodel">
-            <FormItem label="* 名称" prop="Name">
-                <Input type="text" style="width: 300px"  v-model="formCustom.Name"></Input>
+            <FormItem label="用户名" prop="UserName" >
+                  <label type="text" style="width: 500px" >{{formCustom.UserName}}</label>
             </FormItem>         
-            <FormItem label="* 排序" prop="Sort">
-                    <Input type="text" style="width: 300px"  v-model="formCustom.Sort" :number="true" placeholder="排序号码越小越靠前" ></Input>
+            <FormItem label="昵称" prop="Nick" >
+                  <label type="text" style="width: 500px" >{{formCustom.Nick}}</label>
+            </FormItem>
+            <FormItem label="创建时间" prop="CreateDate" >
+                  <label type="text" style="width: 500px" >{{formCustom.CreateDate | formatDate}}</label>
+            </FormItem>
+            <FormItem label="最后的登录时间" prop="LastLoginDate" >
+                  <label type="text" style="width: 500px" >{{formCustom.LastLoginDate |  formatDate}}</label>
             </FormItem>
         </template>
     </list>
@@ -44,33 +50,34 @@ export default {
       getUrl: "admin/Member/GetList",
       formCustom: {
         Id: 0,
-        AreaId: 0, //区域ID
-        Name: "", //名称
-        Sort: 99
+        UserName: "", //区域ID
+        Nick: "", //名称
+        Photo: "",
+        CreateDate:"",
+        LastLoginDate:""
       },
       ruleCustom: {
-        Name: [{ validator: validateRequired, trigger: "blur" }],
-        AreaId: [{ validator: validateNum, trigger: "blur" }],
-        Sort: [{ validator: validateNum, trigger: "blur" }]
+        UserName: [{ validator: validateRequired, trigger: "blur" }],
+        Photo: [{ validator: validateRequired, trigger: "blur" }],
+        Nick: [{ validator: validateRequired, trigger: "blur" }]
       },
       modalWidth: 500,
       defaultImageUrl: [],
       otherQuery: {
         TypeId: this.slideType
-      },
-      arealist:[]
+      }
     };
   },
   methods: {
     getresult(data) {
       if (data.length > 0) {
-        this.formCustom.TopImage = data[0].url;
+        this.formCustom.Photo = data[0].url;
       }
     },
     setForm(data) {
       if (data) {
         for (let key in this.formCustom) {
-          if (key === "TopImage") {
+          if (key === "Photo") {
             var item = [{ name: "", url: data[key], status: "finished" }];
             this.defaultImageUrl = item;
           }
@@ -89,25 +96,9 @@ export default {
         }
         this.defaultImageUrl = [];
       }
-    },
-    loadArea(){
-      let vm=this;
-      Util.post("admin/Area/GetAreaList",{Id:100},vm,function(res,data){
-            if(res==='1')
-                {
-                    if(data.totalCount>0)
-                    {
-                        vm.arealist = data.data;                
-                    }else{
-                        vm.arealist = [];
-                    }
-                }
-      });        
     }
   },
   created() {},
-  mounted() {
-    //load area this
-  }
+  mounted() {}
 };
 </script>
