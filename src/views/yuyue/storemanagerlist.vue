@@ -51,11 +51,7 @@ export default {
     slideType: {
       Type: Number,
       default: 0
-    },
-    inputShow: {
-      type: Boolean,
-      default: true
-    },
+    }
   },
   data() {
     return {

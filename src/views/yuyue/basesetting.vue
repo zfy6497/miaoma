@@ -6,29 +6,31 @@
        <p slot="title"><Icon type="compose"></Icon>基础信息管理</p>
        <p style="">
            <Row>
-                <Col span="10"> 
+                <Col span="6"> 
                      <Tree :data="data5" :render="renderContent" ></Tree>
                 </Col>
                 <Col span="2"> 
                 </Col>
-                <Col span="12">
-                     <Card  class="ivu-card1" :bordered="false" :dis-hover="false"  :shadow="false">
+                <Col span="16">
+                     <Card  class="ivu-card1" style="position: fixed;width: 600px;" :bordered="false" :dis-hover="false"  :shadow="false">
                           <p slot="title"></Icon>信息显示</p>
                           <p>
-                               <Form  v-if="modalList==true" :model="editdata" :rules="ruleCustom" :label-width="180" style="margin-top:20px;">
+                               <Form  v-if="modalList==true" :model="editdata" :rules="ruleCustom" :label-width="100" style="margin-top:20px;">
                                     <FormItem label="上级" prop="PId">
                                         <Select v-model="editdata.PId"  style="width: 300px"  placeholder="">
                                             <Option v-for="item in nextlist" :value="item.Id" :key="item.Id">{{ item.Name }}</Option>
                                         </Select>
+                                        <!-- <Cascader :data="data5"  trigger="hover"></Cascader> -->
                                     </FormItem>
-                                    <FormItem label="名称" prop="Title">
-                                        <Input type="text" v-model="editdata.Title" style="width: 300px" @on-change="setNodeName"   ></Input>
+                                    <FormItem label="名称" prop="title">
+                                         <input type="hidden" :value='editdata.Id' />
+                                        <Input type="text" v-model="editdata.title" style="width: 300px" @on-change="setNodeName"   ></Input>
                                     </FormItem>
-                                    <FormItem label="备注" prop="Remark">
-                                        <Input  type="text"  v-model="editdata.Remark" style="width: 300px"></Input>
+                                    <FormItem label="备注" prop="remark">
+                                        <Input  type="textarea" :rows="4" v-model="editdata.remark" style="width: 300px"></Input>
                                     </FormItem>
-                                    <FormItem label="排序" prop="Sort">
-                                        <Input  type="text"   v-model="editdata.Sort" style="width: 300px"></Input>
+                                    <FormItem label="诊费" prop="price">
+                                        <Input  type="text"   v-model="editdata.price" style="width: 300px"></Input>
                                     </FormItem>
                                      <div style="margin-top:20px;margin-left:200px">
                                         <Button type="primary"   @click="SaveArea" :loading="loading">保存</Button>
@@ -53,21 +55,24 @@ import {validateNum,validateRequired} from '../../libs/validate.js';
                 loading:false,
                 loading2:false,
                 editdata:{
-                    Name:'',
-                    Remark:'',
-                    Sort:99,
-                    PId:0
+                    title:'',
+                    remark:'',
+                    price:0,
+                    PId:0,
+                    Id:0,
                 },
                 ruleCustom: {
-                     Title: [{ validator: validateRequired, trigger: "blur" }],
-                     Sort: [{ validator: validateNum, trigger: "blur" }]
+                     title: [{ validator: validateRequired, trigger: "blur" }],
+                     price: [{ validator: validateNum, trigger: "blur" }]
                 },
                 selfNode:{},
                 nextlist:[],
                 data5: [
                     {
-                        title: '药房',
+                        title: '项名称',
                         expand: true,
+                        PId:0,
+                        Id:0,
                         render: (h, { root, node, data }) => {
                             return h('span', {
                                 style: {
@@ -103,26 +108,16 @@ import {validateNum,validateRequired} from '../../libs/validate.js';
                                             width: '52px'
                                         },
                                         on: {
-                                            click: () => { this.append(data) }
+                                            click: () => {
+                                                console.log(JSON.stringify(data));
+                                                this.append(data) 
+                                            }
                                         }
                                     })
                                 ])
                             ]);
                         },
-                        children: [
-                            {
-                                title: '基础方',
-                                expand: true
-                            },
-                            {
-                                title: '基础方',
-                                expand: true
-                            },
-                            {
-                                title: '基础方',
-                                expand: true
-                            }
-                        ]
+                        children: []
                     }
                 ],
                 buttonProps: {
@@ -209,7 +204,7 @@ import {validateNum,validateRequired} from '../../libs/validate.js';
                 parent.children.splice(index, 1);
             },
             setNodeName(){
-                this.selfNode.node.title = this.editdata.Name;
+                this.selfNode.node.title = this.editdata.title;
             },
             SetForm(data){
                 let vm=this;
@@ -220,10 +215,21 @@ import {validateNum,validateRequired} from '../../libs/validate.js';
             },
             ResetArea(){
                 let vm=this;
-                vm.editdata.Remark='';
-                vm.editdata.Name='';
-                vm.editdata.Sort=99;
+                vm.editdata.remark='';
+                vm.editdata.title='';
+                vm.editdata.price=0;
+            },
+            init(){
+                let  vm=this;
+                Util.post("admin/Special/Diagnosis",{},vm,function (res,data) {
+                    if(res==='1'){
+                        vm.data5[0].children = data.data;
+                    }
+                })
             }
+        },
+        mounted () {
+            this.init();
         }
     }
 </script>
