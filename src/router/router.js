@@ -53,8 +53,11 @@ export const otherRouter = {
         { path: 'productdetail/:id', title: '商品详情', name: 'product_detail', component: resolve => { require(['@/views/product/productdetail.vue'], resolve); } },
         { path: 'specialorderdetail/:id', title: '预约订单详情', name: 'specialorder_detail', component: resolve => { require(['@/views/yuyue/specialorderdetail.vue'], resolve); } },
         { path: 'orderdetail/:id', title: '订单详情', name: 'order_detail', component: resolve => { require(['@/views/orders/orderdetail.vue'], resolve); } },
+        { path: 'refunddetail/:id', title: '订单详情', name: 'refund_detail', component: resolve => { require(['@/views/orders/refunddetail.vue'], resolve); } },
         { path: 'specialorderlist/:id', title: '预约记录', name: 'specialorder_list', component: resolve => { require(['@/views/yuyue/specialorderlist.vue'], resolve); } },
-        { path: 'specialschedueslist/:id', title: '排课管理', name: 'specialschedues_list', component: resolve => { require(['@/views/yuyue/specialschedueslist.vue'], resolve); } }
+        { path: 'specialschedueslist/:id', title: '排课管理', name: 'specialschedues_list', component: resolve => { require(['@/views/yuyue/specialschedueslist.vue'], resolve); } },
+        { path: 'couponreceivers/:id', title: '领取详情', name: 'couponreceivers_list', component: resolve => { require(['@/views/marking/couponreceivers.vue'], resolve); } },
+        { path: 'coupondetail/:id', title: '优惠劵详情', name: 'coupon_detail', component: resolve => { require(['@/views/marking/coupondetail.vue'], resolve); } }
 
     ]
 };
@@ -137,6 +140,35 @@ export const appRouter = [
                 name: 'orderrefundlist1',
                 title: '退货处理',
                 component: resolve => { require(['@/views/orders/orderrefundlist.vue'], resolve); }
+            }, {
+                path: 'FreightTemplate/',
+                icon: 'podium',
+                name: 'FreightTemplate',
+                title: '运费模板',
+                component: resolve => { require(['@/views/FreightTemplate/add.vue'], resolve); }
+            }
+        ]
+    },
+    {
+        path: '/marking',
+        icon: 'bag',
+        name: 'marking',
+        title: '营销管理',
+        component: Main,
+        children: [
+            {
+                path: 'couponlist',
+                icon: 'heart',
+                name: 'couponlist',
+                title: '优惠劵管理',
+                component: resolve => { require(['@/views/marking/couponlist.vue'], resolve); }
+
+            }, {
+                path: 'vipcardlist',
+                icon: 'levels',
+                name: 'vipcardlist',
+                title: '会员卡管理',
+                component: resolve => { require(['@/views/marking/vipcardlist.vue'], resolve); }
             }
         ]
     },

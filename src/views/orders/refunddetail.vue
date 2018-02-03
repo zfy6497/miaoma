@@ -1,68 +1,77 @@
 <template>
     <div style="background:#eee;padding: 20px;padding-right:200px;">
         <Card :bordered="false" span="11">
-            <p slot="title">商品详情</p>
+            <p slot="title">退款商品</p>
           <Table :columns="columns" :data="result.Items" ></Table>
-           <h5  style=""><font>商品总价：￥ {{result.ProductTotalAmount}};  </font><font> 运费：￥{{result.Freight}} ;  </font> 会员卡抵扣金额:￥{{result.CardPayMoney}} ;<font>优惠券抵扣金额:￥{{result.DiscountAmount}} ;</font><font>实付金额：￥{{result.OrderAmountRedundancy}};</font></h5>
         </Card>
 
          <Row  style="margin-top: 20px;">
              <Col span="11">
                   <Card  >
-            <p slot="title">订单详情</p>
+            <p slot="title">申请信息</p>
             <Form  label-position="left" :label-width="100"   >
         <FormItem label="订单号" style="margin-bottom:2px;">
-            <span>{{result.Id}}</span>
+            <span>{{result.OrderId}}</span>
         </FormItem>
-         <FormItem label="创建时间" style="margin-bottom:2px;">
-            <span>{{result.OrderDate | formatDate}}</span>
+         <FormItem label="申请时间" style="margin-bottom:2px;">
+            <span>{{result.ApplyDate | formatDate}}</span>
         </FormItem>
-         <FormItem label="订单状态" style="margin-bottom:2px;">
-            <span>{{result.OrderStatusStr}}</span>
+         <FormItem label="状态" style="margin-bottom:2px;">
+            <span>{{result.StatusStr}}</span>
         </FormItem>
-         <FormItem label="下单会员" style="margin-bottom:2px;">
-            <span>{{result.UserName}}</span>
+          <FormItem label="退款模式" style="margin-bottom:2px;">
+            <span>{{result.RefundModeStr}}</span>
+        </FormItem>
+         <FormItem label="退款原因" style="margin-bottom:2px;">
+            <span>{{result.Reason}}</span>
         </FormItem>
         
-         <FormItem label="买家备注" style="margin-bottom:2px;">
-            <span>{{result.UserRemark}}</span>
+         <FormItem label="备注" style="margin-bottom:2px;">
+            <span>{{result.Applicant}}</span>
+        </FormItem>
+                  <FormItem label="退款数量" style="margin-bottom:2px;">
+            <span>{{result.RefundNum}}</span>
+        </FormItem>
+         <FormItem label="可退金额" style="margin-bottom:2px;">
+            <span>{{result.RefundMoney}}</span>
         </FormItem>
          </Form>
         </Card >
        </Col>
         <Col span="13" style="padding-left: 50px;">
          <Card >
-            <p slot="title">收货详情</p>
+            <p slot="title">审核信息</p>
             <Form  label-position="left" :label-width="100"   >
       
-          <FormItem label="收 货 人" style="margin-bottom:2px;">
-            <span>{{result.ShipTo}}</span>
+
+          <FormItem label="审核时间" style="margin-bottom:2px;"  v-if="result.Status>1" >
+            <span>{{result.SellerAuditDate}}</span>
         </FormItem>
-         <FormItem label="地 址" style="margin-bottom:2px;">
-            <span>{{result.RegionFullName+result.Address}}</span>
-        </FormItem>
-          <FormItem label="手机号码" style="margin-bottom:2px;">
-            <span>{{result.CellPhone}}</span>
+          <FormItem label="拒绝理由" v-if="result.SellerRemark"  style="margin-bottom:2px;">
+            <span>{{result.SellerRemark}}</span>
         </FormItem>
         <template v-if="result.ExpressCompanyName">
-             <FormItem label="快递公司" style="margin-bottom:2px;">
+           
+         <FormItem label="买家发货时间" style="margin-bottom:2px;">
+            <span>{{result.BuyerDeliverDate}}</span>
+        </FormItem>
+           <FormItem label="快递公司" style="margin-bottom:2px;">
             <span>{{result.ExpressCompanyName}}</span>
         </FormItem>
-         <FormItem label="发货单" style="margin-bottom:2px;">
+           <FormItem label="快递单号" style="margin-bottom:2px;">
             <span>{{result.ShipOrderNumber}}</span>
         </FormItem>
         </template>
-        
+           <FormItem v-if="result.Status>=5" label="确认收货时间" style="margin-bottom:2px;">
+            <span>{{result.SellerConfirmArrivalDate}}</span>
+        </FormItem>
+          <FormItem label="打款时间"  v-if="result.Status==7"  style="margin-bottom:2px;">
+            <span>{{result.ManagerConfirmDate}}</span>
+        </FormItem>
          </Form>
         </Card >
              </Col>
          </Row>
-
-        
-          <Card :bordered="false"  style="margin-top: 20px;">
-            <p slot="title">操作记录</p>
-          <Table :columns="columns1" :data="result.Operations" ></Table>
-        </Card>
     </div>
 </template>
 <script>
@@ -80,13 +89,12 @@ export default {
   methods: {
     init: function() {
       let vm = this;
-      Util.post("admin/Orders/GetModel", { Id: this.id }, vm, function(
+      Util.post("admin/OrderRefunds/GetModel", { Id: this.id }, vm, function(
         res,
         data
       ) {
         if (res === "1") {
           vm.columns = data.columns;
-          vm.columns1 = data.columns1;
           vm.result = data.data;
         } else {
           vm.$Message.error("订单信息有误");
@@ -97,11 +105,9 @@ export default {
   mounted() {
     this.init();
   },
-   watch: {
+  watch: {
     // 如果路由有变化，会再次执行该方法
-      '$route': function(){
-          
-      }
-    }
+    $route: function() {}
+  }
 };
 </script>

@@ -1,6 +1,6 @@
 <template>
     <list :show-search="true" :show-date="true" :show-key-word="true" :show-add-button="true" :show-page="true" :update-url="updateUrl"
-        :delete-url="deleteUrl" :add-url="addUrl" :get-url="getUrl" :form-custom="formCustom" :rule-custom="ruleCustom" modal-Width="500" @set-form="setForm" :other-query="otherQuery">
+        :delete-url="deleteUrl" :add-url="addUrl" :get-url="getUrl" :form-custom="formCustom" :rule-custom="ruleCustom" modal-Width="500" @set-form="setForm" :other-query="otherQuery" :routername="'refund_detail'">
         <template slot="frommodel">
             <FormItem label="名称" prop="Name">
                 <Input type="text" style="width: 300px" v-model="formCustom.Name"></Input>

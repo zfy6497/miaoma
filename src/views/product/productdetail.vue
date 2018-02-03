@@ -68,9 +68,6 @@
 import PhUpload from "../main-components/phupload.vue";
 import Util from '../../libs/util.js';
 import {validateNum,validateRequired} from '../../libs/validate.js';
-import '../../statics/ueditor/ueditor.config' 
-import '../../statics/ueditor/ueditor.all'; 
-import '../../statics/ueditor/lang/zh-cn/zh-cn'; 
 import UEditor from '../main-components/ueditor.vue';
     export default {
          name: 'page1-detail',

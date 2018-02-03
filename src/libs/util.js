@@ -9,12 +9,12 @@ util.title = function (title) {
     title = title || 'iView admin';
     window.document.title = title;
 };
-//http://localhost:49659
+//http://localhost:49659 http://43.247.89.26:8099 
 const ajaxUrl = env === 'development'
-    ? 'http://localhost:8018'
+    ? 'http://43.247.89.26:8099'
     : env === 'production'
-        ? 'http://localhost:8018'
-        : 'http://43.247.89.26:1088';
+        ? 'http://localhost:49659'
+        : 'http://43.247.89.26:8099';
 
 util.ajaxUrl = function () {
     return ajaxUrl;
@@ -279,8 +279,14 @@ util.post = function (purl, pdata, vm, callback) {
             callback('1', data);
         }
         else {
-            console.log(data);
-            callback('0', data.message);
+            if (data.errors == "token校验失败") {
+                vm.$store.commit('logout', vm);
+                vm.$store.commit('clearOpenedSubmenu');
+                vm.$router.push({
+                    name: 'login'
+                });
+            } else
+                callback('0', data.message);
         }
     }).catch(error => {
         console.log(error + "   dddderror");
@@ -291,7 +297,7 @@ util.post = function (purl, pdata, vm, callback) {
 util.createsign = function (pdata, skey) {
     let keys = new Array();
     let i = 0;
-    var nlist = ['key', 'Sign', 'StartDate', 'EndDate'];
+    var nlist = ['key', 'Sign', 'StartDate', 'EndDate', 'StartTime', 'EndTime', 'GetStartTime', 'GetEndTime'];
     for (var key in pdata) {
         let val = pdata[key];
         if (val !== '' && nlist.indexOf(key) < 0) {

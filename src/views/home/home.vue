@@ -3,7 +3,7 @@
 </style>
 <template>
     <div class="home-main">
-        fsdfsdfsdf
+        <h3>欢迎登录妙妈</h3>
     </div>
 </template>
 

@@ -178,7 +178,7 @@ const deleteButton = (vm, h, currentRow, index) => {
 //查看详情
 const selectDetailButton = (vm, h, currentRow, index, btn) => {
   let btnName = "查看详情"; ///btn.BtttonName
-  if(btn){
+  if(btn &&  btn.BtttonName){
     btnName=btn.BtttonName;
   }
   return h(
@@ -205,6 +205,12 @@ const selectDetailButton = (vm, h, currentRow, index, btn) => {
             case "排班管理":
                vm.$router.push({
                 name: "specialschedues_list",
+                params: { id: currentRow["Id"] }
+              });
+            break;
+            case "领取详情":
+               vm.$router.push({
+                name: "couponreceivers_list",
                 params: { id: currentRow["Id"] }
               });
             break;
