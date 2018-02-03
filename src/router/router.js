@@ -261,6 +261,14 @@ export const appRouter = [
                 title: '区域管理',
                 component: resolve => { require(['@/views/yuyue/arealist.vue'], resolve); }
             }
+            ,
+            {
+                path: 'basesetting',
+                icon: 'ios-list',
+                name: 'basesetting',
+                title: '基础设置',
+                component: resolve => { require(['@/views/yuyue/basesetting.vue'], resolve); }
+            }
         ]
     },
     {
