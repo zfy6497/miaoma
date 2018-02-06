@@ -318,7 +318,7 @@ export default {
     //  隐藏显示
     show(item) {
       return (
-        item.level == 1 || (item.parent && item.parent.expanded && item.isShow)
+        item.level == 1  || (item.parent && item.parent.expanded && item.isShow)
       );
     },
     toggle(index, item) {

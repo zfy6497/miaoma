@@ -12,18 +12,13 @@
                 <Col span="2"> 
                 </Col>
                 <Col span="16">
-                     <Card  class="ivu-card1" style="position: fixed;width: 600px;" :bordered="false" :dis-hover="false"  :shadow="false">
-                          <p slot="title"></Icon>信息显示</p>
+                     <Card v-if="modalAll==true" class="ivu-card1" style="position: fixed;width: 600px;" :bordered="false" :dis-hover="false"  :shadow="false">
+                          <p slot="title"></Icon>信息显示  {{OprName}}</p>
                           <p>
-                               <Form  v-if="modalList==true" :model="editdata" :rules="ruleCustom" :label-width="100" style="margin-top:20px;">
-                                    <FormItem label="上级" prop="PId">
-                                        <Select v-model="editdata.PId"  style="width: 300px"  placeholder="">
-                                            <Option v-for="item in nextlist" :value="item.Id" :key="item.Id">{{ item.Name }}</Option>
-                                        </Select>
-                                        <!-- <Cascader :data="data5"  trigger="hover"></Cascader> -->
-                                    </FormItem>
-                                    <FormItem label="名称" prop="title">
-                                         <input type="hidden" :value='editdata.Id' />
+                               <Form  v-if="modalEdit==true" :model="editdata" :rules="editRuleCustom" :label-width="100" style="margin-top:20px;">
+                                    <FormItem label="* 名称" prop="title">
+                                        <input type="hidden" :value='editdata.Id' />
+                                        <input type="hidden" :value='editdata.PId' />
                                         <Input type="text" v-model="editdata.title" style="width: 300px" @on-change="setNodeName"   ></Input>
                                     </FormItem>
                                     <FormItem label="备注" prop="remark">
@@ -33,13 +28,33 @@
                                         <Input  type="text"   v-model="editdata.price" style="width: 300px"></Input>
                                     </FormItem>
                                      <div style="margin-top:20px;margin-left:200px">
-                                        <Button type="primary"   @click="SaveArea" :loading="loading">保存</Button>
-                                        <Button type="default"   @click="ResetArea" :loading="loading2">重置</Button>
+                                        <Button type="primary"   @click="EditArea" :loading="loading">保存</Button>
+                                    </div>
+                                </Form>
+                                <Form  v-if="modalAdd==true" :model="adddata" :rules="addRuleCustom" :label-width="100" style="margin-top:20px;">
+                                    <FormItem label="* 名称" prop="title">
+                                        <input type="hidden" :value='adddata.Id' />
+                                        <input type="hidden" :value='adddata.PId' />
+                                        <Input type="text" v-model="adddata.title" style="width: 300px"    ></Input>
+                                    </FormItem>
+                                    <FormItem label="备注" prop="remark">
+                                        <Input  type="textarea" :rows="4" v-model="adddata.remark" style="width: 300px"></Input>
+                                    </FormItem>
+                                    <FormItem label="诊费" prop="price">
+                                        <Input  type="text"   v-model="adddata.price" style="width: 300px"></Input>
+                                    </FormItem>
+                                     <div style="margin-top:20px;margin-left:200px">
+                                        <Button type="primary"   @click="AddArea" :loading="loading2">保存</Button>
                                     </div>
                                 </Form>
                             </p>
                      </Card>
-                    
+                      <Modal
+        title="删除操作"
+        v-model="isDelModel" 
+        class-name="vertical-center-modal" @on-ok="Del">
+        <p>确定要删除吗?</p>
+    </Modal>
                 </Col>
             </Row>
        </p>
@@ -51,9 +66,16 @@ import {validateNum,validateRequired} from '../../libs/validate.js';
     export default {
         data () {
             return {
-                modalList:true,
+                rootx:[], 
+                nodex:{}, 
+                datax:[],
+                modalAdd:false,
+                modalAll:false,
+                modalEdit:false,
                 loading:false,
                 loading2:false,
+                isDelModel:false,
+                OprName:"",
                 editdata:{
                     title:'',
                     remark:'',
@@ -61,9 +83,20 @@ import {validateNum,validateRequired} from '../../libs/validate.js';
                     PId:0,
                     Id:0,
                 },
-                ruleCustom: {
+                adddata:{
+                    title:'',
+                    remark:'',
+                    price:0,
+                    PId:0,
+                    Id:0,
+                },
+                addRuleCustom: {
                      title: [{ validator: validateRequired, trigger: "blur" }],
-                     price: [{ validator: validateNum, trigger: "blur" }]
+                     //price: [{ validator: validateNum, trigger: "blur" }]
+                },
+                editRuleCustom: {
+                     title: [{ validator: validateRequired, trigger: "blur" }],
+                     //price: [{ validator: validateNum, trigger: "blur" }]
                 },
                 selfNode:{},
                 nextlist:[],
@@ -105,11 +138,13 @@ import {validateNum,validateRequired} from '../../libs/validate.js';
                                             type: 'primary'
                                         }),
                                         style: {
-                                            width: '52px'
+                                            width: '87px'
                                         },
                                         on: {
                                             click: () => {
-                                                console.log(JSON.stringify(data));
+                                                this.modalEdit=false;
+                                                this.modalAdd=true;
+                                                this.modalAll=true;
                                                 this.append(data) 
                                             }
                                         }
@@ -137,14 +172,6 @@ import {validateNum,validateRequired} from '../../libs/validate.js';
                     style: {
                         display: 'inline-block',
                         width: '100%'
-                    },
-                    on: {
-                        click: () => {
-                                console.log("------------------------------------");
-                                console.log(data);
-                                this.editdata = data; 
-                                this.selfNode = node;
-                            }
                     }
                 }, [
                     h('span', [
@@ -167,13 +194,38 @@ import {validateNum,validateRequired} from '../../libs/validate.js';
                     }, [
                         h('Button', {
                             props: Object.assign({}, this.buttonProps, {
+                                icon: 'edit'
+                            }),
+                            style: {
+                                marginRight: '8px'
+                            },
+                            on: {
+                                //行的编辑事件
+                                click: () => { 
+                                    this.modalEdit=true;
+                                    this.modalAdd=false;
+                                    this.modalAll=true;
+                                    this.editdata=data;
+                                    this.selfNode=node;
+                                    this.OprName="-- 编辑（"+data.title+"）"
+                                }
+                            }
+                        }),
+                        h('Button', {
+                            props: Object.assign({}, this.buttonProps, {
                                 icon: 'ios-plus-empty'
                             }),
                             style: {
                                 marginRight: '8px'
                             },
                             on: {
-                                click: () => { this.append(data) }
+                                //行的添加下级
+                                click: () => { 
+                                    this.modalEdit=false;
+                                    this.modalAdd=true;
+                                    this.modalAll=true;
+                                    this.append(data) 
+                                }
                             }
                         }),
                         h('Button', {
@@ -181,27 +233,43 @@ import {validateNum,validateRequired} from '../../libs/validate.js';
                                 icon: 'ios-minus-empty'
                             }),
                             on: {
-                                click: () => { this.remove(root, node, data) }
+                                //行的删除事件
+                                click: () => {
+                                    this.remove(root, node, data);
+                                }
                             }
                         })
                     ])
                 ]);
             },
             append (data) {
-                const children = data.children || [];
-                children.push({
-                    title: '新节点...',
-                    expand: true
-                });
-                this.$set(data, 'children', children);
-                this.SetForm(data);
+                let vm=this;
+                vm.OprName="-- 新增下级（"+data.title+"）";
+                vm.adddata.PId=data.Id;
             },
             remove (root, node, data) {
                 const parentKey = root.find(el => el === node).parent;
                 const parent = root.find(el => el.nodeKey === parentKey).node;
                 const index = parent.children.indexOf(data);
-                console.log("parentKey:"+parentKey+",this.key="+data.title);
-                parent.children.splice(index, 1);
+                let pdata = { Id: data.Id};
+                let vm=this;
+                Util.post("admin/Special/Diagnosis/Delete",pdata,vm,function (res,data) {
+                    if (res === "1") {
+                        if(data.resultCode==0){
+                            vm.$Message.success("删除成功");
+                            parent.children.splice(index, 1);
+                        }
+                    } else {
+                        vm.$Message.error(data.errors);
+                    }
+                })
+            },
+            Del(){
+                let vm=this;
+                let _rootx=vm.rootx;
+                let _nodex=vm.nodex;
+                let _datax=vm.datax;
+                this.remove(_rootx, _nodex, _datax);
             },
             setNodeName(){
                 this.selfNode.node.title = this.editdata.title;
@@ -210,14 +278,57 @@ import {validateNum,validateRequired} from '../../libs/validate.js';
                 let vm=this;
                 vm.editdata=data;
             },
-            SaveArea(){
-                console("保存12344");
+            EditArea(){
+                let  vm=this;
+                vm.loading=true;
+                if(vm.editdata.title=="")
+                {
+                     vm.$Message.error("请输入名称");vm.loading=false; return;
+                }
+                let pdata = { Id: vm.editdata.Id, PId: vm.editdata.PId,title:vm.editdata.title,price:vm.editdata.price,remark:vm.editdata.remark };
+                Util.post("admin/Special/Diagnosis/AddOrEdit",pdata,vm,function (res,data) {
+                    vm.loading=false;
+                    if(res==='1'){
+                        if(data.resultCode==0){
+                            vm.$Message.success("操作成功");
+                            //vm.init();
+                        }else{
+                            vm.$Message.error(data.errors);
+                        }
+                    }else{
+                        vm.$Message.error("操作出错了");
+                    }
+                })
+            },
+            AddArea(){
+                let  vm=this;
+                vm.loading2=true;
+                if(vm.adddata.title=="")
+                {
+                     vm.$Message.error("请输入名称"); vm.loading2=false; return;
+                }
+                let pdata = { Id: vm.adddata.Id, PId: vm.adddata.PId,title:vm.adddata.title,price:vm.adddata.price,remark:vm.adddata.remark };
+                Util.post("admin/Special/Diagnosis/AddOrEdit",pdata,vm,function (res,data) {
+                    vm.loading2=false;
+                    if(res==='1'){
+                        if(data.resultCode==0){
+                            vm.$Message.success("操作成功");
+                            vm.init();
+                        }else{
+                            vm.$Message.error(data.errors);
+                        }
+                    }else{
+                        vm.$Message.error("操作出错了");
+                    }
+                })
             },
             ResetArea(){
                 let vm=this;
                 vm.editdata.remark='';
                 vm.editdata.title='';
                 vm.editdata.price=0;
+                vm.editdata.Id=0;
+                vm.editdata.PId=0;
             },
             init(){
                 let  vm=this;
