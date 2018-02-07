@@ -1,6 +1,5 @@
 <style lang="less">
 @import "./form.less";
-
 </style>
 
 
@@ -25,7 +24,7 @@
                 <PhUpload @get-result="getresult" :default-list="defaultImageUrl" :format="['jpg','jpeg','png']" :maxsize="1024*10"></PhUpload>
             </FormItem>
             <FormItem label="* 所属门店" prop="TheirStores">
-                <Select v-model="TheirStores1"  style="width: 300px" multiple placeholder="请选择所属门店">
+                <Select v-model="TheirStores1"  style="width: 300px"  @on-change="GetTheirStores"  multiple placeholder="请选择所属门店">
                     <Option v-for="item in storelist" :value="item.Id" :key="item.Id">{{ item.Name }}</Option>
                 </Select>
             </FormItem>
@@ -56,7 +55,7 @@
 
 <script>
 import PhUpload from "../main-components/phupload.vue";
-import Util from '../../libs/util.js';
+import Util from "../../libs/util.js";
 import list from "../main-components/list.vue";
 import { validateNum, validateRequired } from "../../libs/validate.js";
 export default {
@@ -81,21 +80,21 @@ export default {
       deleteUrl: "admin/Special/Delete",
       addUrl: "admin/Special/AddOrUpdate",
       getUrl: "admin/Special/GetList",
-      TheirStores1:[],
+      TheirStores1: [],
       formCustom: {
         Id: 0,
         Name: "", //专家名称
         Sort: 99,
-        Job: '',//专家职称
-        Stars:'',
-        Profile:'',
-        Avatar:'',
-        Introduction:'',
-        Price:'',
-        TheirStores:[],
-        StartDate:'',
-        EndDate:'',//结束时间
-        CellPhone:'' //手机号码
+        Job: "", //专家职称
+        Stars: "",
+        Profile: "",
+        Avatar: "",
+        Introduction: "",
+        Price: "",
+        TheirStores:"",
+        StartDate: "",
+        EndDate: "", //结束时间
+        CellPhone: "" //手机号码
       },
       ruleCustom: {
         Name: [{ validator: validateRequired, trigger: "blur" }],
@@ -115,16 +114,20 @@ export default {
       otherQuery: {
         TypeId: this.slideType
       },
-      arealist:[],
-      storelist:[]
+      arealist: [],
+      storelist: []
     };
   },
   methods: {
     getresult(data) {
       if (data.length > 0) {
-        //头像
         this.formCustom.Avatar = data[0].url;
       }
+    },
+    GetTheirStores(value) {
+        //设置多选框的值
+        this.TheirStores1 = value;
+        this.formCustom.TheirStores=value.join(","); //转成string 
     },
     setForm(data) {
       if (data) {
@@ -133,65 +136,69 @@ export default {
             var item = [{ name: "", url: data[key], status: "finished" }];
             this.defaultImageUrl = item;
           }
-          if(key==="TheirStores")
-          {
-            var dataStrArr=data[key].split(",");//分割成字符串数组  
-            var dataIntArr=[];
-            dataStrArr.forEach(function(data,index,arr){  
-              dataIntArr.push(+data);  
+          if (key === "TheirStores") {
+            var dataStrArr = data[key].split(","); //分割成字符串数组
+            var dataIntArr = [];
+            dataStrArr.forEach(function(data, index, arr) {
+              dataIntArr.push(+data);
             });
-            console.log(dataIntArr); 
-            this.TheirStores1 =dataIntArr;
-            this.formCustom[key] =dataIntArr.join(',');
-          }else{
+            this.TheirStores1 = dataIntArr;
+            this.formCustom[key] = dataIntArr.join(","); //转成string
+          } else {
             this.formCustom[key] = data[key];
           }
         }
       } else {
         for (let key in this.formCustom) {
-          if (key === "Id") {
-            this.formCustom[key] = 0;
-          } else if (key != "TypeId") {
-            this.formCustom[key] = "";
-          }
-          else{
-            this.formCustom[key] = this.slideType;
+          switch (key) {
+            case "Id":
+              this.formCustom[key] = 0;
+              break;
+            case "TypeId":
+              this.formCustom[key] = this.slideType;
+              break;
+            case "Sort":
+              this.formCustom[key] = 99;
+              break;
+            default:
+              this.formCustom[key] = "";
+              break;
           }
         }
         this.defaultImageUrl = [];
-        this.TheirStores1=[];
+        this.TheirStores1 = [];
       }
     },
-    loadArea(){
-      let vm=this;
-      Util.post("admin/Area/GetAreaList",{Id:100},vm,function(res,data){
-         if(res==='1'){
-              if(data.totalCount>0){
-                        vm.arealist = data.data;                
-              }else{
-                   vm.arealist = [];
-              }
-          }   
-      });        
-    },
-    loadStore(){
-      let vm=this;
-      Util.post("admin/Store/GetAllStore",{},vm,function (res,data) {
-        if(res==='1'){
-            if(data.totalCount>0){
-                vm.storelist = data.data;                
-            }else{
-                vm.storelist = [];
-            }
+    loadArea() {
+      let vm = this;
+      Util.post("admin/Area/GetAreaList", { Id: 100 }, vm, function(res, data) {
+        if (res === "1") {
+          if (data.totalCount > 0) {
+            vm.arealist = data.data;
+          } else {
+            vm.arealist = [];
+          }
         }
-      })
+      });
+    },
+    loadStore() {
+      let vm = this;
+      Util.post("admin/Store/GetAllStore", {}, vm, function(res, data) {
+        if (res === "1") {
+          if (data.totalCount > 0) {
+            vm.storelist = data.data;
+          } else {
+            vm.storelist = [];
+          }
+        }
+      });
     }
   },
   created() {},
   mounted() {
     //load area this
     //this.loadArea();
-    //load store  this
+    //load store this
     this.loadStore();
   }
 };

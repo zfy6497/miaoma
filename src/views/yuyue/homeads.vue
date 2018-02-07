@@ -84,13 +84,19 @@ export default {
         }
       } else {
         for (let key in this.formCustom) {
-          if (key === "Id") {
-            this.formCustom[key] = 0;
-          } else if (key != "TypeId") {
-            this.formCustom[key] = "";
-          }
-          else{
+          switch (key) {
+            case "Id":
+              this.formCustom[key] = 0;
+              break;
+            case "TypeId":
               this.formCustom[key] = this.slideType;
+              break;
+            case "Sort":
+              this.formCustom[key] = 99;
+              break;
+            default:
+              this.formCustom[key] = "";
+              break;
           }
         }
         this.defaultImageUrl = [];

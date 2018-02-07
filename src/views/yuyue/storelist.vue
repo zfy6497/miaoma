@@ -56,7 +56,7 @@
 
 <script>
 import PhUpload from "../main-components/phupload.vue";
-import Util from '../../libs/util.js';
+import Util from "../../libs/util.js";
 import list from "../main-components/list.vue";
 import { validateNum, validateRequired } from "../../libs/validate.js";
 export default {
@@ -69,11 +69,7 @@ export default {
     slideType: {
       Type: Number,
       default: 0
-    },
-    inputShow: {
-      type: Boolean,
-      default: true
-    },
+    }
   },
   data() {
     return {
@@ -112,7 +108,7 @@ export default {
       otherQuery: {
         TypeId: this.slideType
       },
-      arealist:[]
+      arealist: []
     };
   },
   methods: {
@@ -132,31 +128,35 @@ export default {
         }
       } else {
         for (let key in this.formCustom) {
-          if (key === "Id") {
-            this.formCustom[key] = 0;
-          } else if (key != "TypeId") {
-            this.formCustom[key] = "";
-          }
-          else{
+          switch (key) {
+            case "Id":
+              this.formCustom[key] = 0;
+              break;
+            case "TypeId":
               this.formCustom[key] = this.slideType;
+              break;
+            case "Sort":
+              this.formCustom[key] = 99;
+              break;
+            default:
+              this.formCustom[key] = "";
+              break;
           }
         }
         this.defaultImageUrl = [];
       }
     },
-    loadArea(){
-      let vm=this;
-      Util.post("admin/Area/GetAreaList",{Id:100},vm,function(res,data){
-            if(res==='1')
-                {
-                    if(data.totalCount>0)
-                    {
-                        vm.arealist = data.data;                
-                    }else{
-                        vm.arealist = [];
-                    }
-                }
-      });        
+    loadArea() {
+      let vm = this;
+      Util.post("admin/Area/GetAreaList", { Id: 100 }, vm, function(res, data) {
+        if (res === "1") {
+          if (data.totalCount > 0) {
+            vm.arealist = data.data;
+          } else {
+            vm.arealist = [];
+          }
+        }
+      });
     }
   },
   created() {},

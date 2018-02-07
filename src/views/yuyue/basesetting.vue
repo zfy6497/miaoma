@@ -13,7 +13,7 @@
                 </Col>
                 <Col span="16">
                      <Card v-if="modalAll==true" class="ivu-card1" style="position: fixed;width: 600px;" :bordered="false" :dis-hover="false"  :shadow="false">
-                          <p slot="title"></Icon>信息显示  {{OprName}}</p>
+                          <p slot="title"></Icon>信息显示  {{OprName}} <span style="float:right"  @click="close"  ><Icon type="close"></Icon></span></p>
                           <p>
                                <Form  v-if="modalEdit==true" :model="editdata" :rules="editRuleCustom" :label-width="100" style="margin-top:20px;">
                                     <FormItem label="* 名称" prop="title">
@@ -244,7 +244,7 @@ import {validateNum,validateRequired} from '../../libs/validate.js';
             },
             append (data) {
                 let vm=this;
-                vm.OprName="-- 新增下级（"+data.title+"）";
+                vm.OprName="-- 新增（"+data.title+"）的下级";
                 vm.adddata.PId=data.Id;
             },
             remove (root, node, data) {
@@ -260,7 +260,7 @@ import {validateNum,validateRequired} from '../../libs/validate.js';
                             parent.children.splice(index, 1);
                         }
                     } else {
-                        vm.$Message.error(data.errors);
+                        vm.$Message.error(data);
                     }
                 })
             },
@@ -270,6 +270,11 @@ import {validateNum,validateRequired} from '../../libs/validate.js';
                 let _nodex=vm.nodex;
                 let _datax=vm.datax;
                 this.remove(_rootx, _nodex, _datax);
+            },
+            close(){
+                  this.modalEdit=false;
+                  this.modalAdd=false;
+                  this.modalAll=false;
             },
             setNodeName(){
                 this.selfNode.node.title = this.editdata.title;

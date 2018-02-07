@@ -40,7 +40,7 @@ export default {
       formCustom: {
            Id: 0,
            Name: "",
-           Sort: 1,
+           Sort: 99,
            ParentId: 0
       },
       ruleCustom: {
@@ -88,7 +88,7 @@ export default {
        }else{
             this.formCustom.Id=0;
             this.formCustom.Name='';
-            this.formCustom.Sort=1;
+            this.formCustom.Sort=99;
             this.formCustom.ParentId=0;
             this.defaultIcon=[];
        }
