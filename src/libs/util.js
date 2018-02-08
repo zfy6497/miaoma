@@ -11,11 +11,7 @@ util.title = function (title) {
 };
 //http://localhost:49659 http://43.247.89.26:8099  http://mmsoft.51jiuqu.com
 const ajaxUrl = env === 'development'
-<<<<<<< HEAD
     ? 'http://mmsoft.51jiuqu.com'
-=======
-    ? 'http://mmsoft.51jiuqu.com'
->>>>>>> 085c745cf7f0f3afdf56f9e99fd805443e8b12ab
     : env === 'production'
         ? 'http://mmsoft.51jiuqu.com'
         : 'http://mmsoft.51jiuqu.com';
