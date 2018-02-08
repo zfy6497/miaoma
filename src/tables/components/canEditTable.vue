@@ -214,6 +214,13 @@ const selectDetailButton = (vm, h, currentRow, index, btn) => {
                 params: { id: currentRow["Id"] }
               });
             break;
+            case "使用详情":
+               vm.$router.push({
+                name: "uservipcardrecord_list",
+                params: { id: currentRow["Id"] }
+              });
+            break;
+            
             default:
               vm.$router.push({
                 name: vm.routername,

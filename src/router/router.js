@@ -57,7 +57,9 @@ export const otherRouter = {
         { path: 'specialorderlist/:id', title: '预约记录', name: 'specialorder_list', component: resolve => { require(['@/views/yuyue/specialorderlist.vue'], resolve); } },
         { path: 'specialschedueslist/:id', title: '排课管理', name: 'specialschedues_list', component: resolve => { require(['@/views/yuyue/specialschedueslist.vue'], resolve); } },
         { path: 'couponreceivers/:id', title: '领取详情', name: 'couponreceivers_list', component: resolve => { require(['@/views/marking/couponreceivers.vue'], resolve); } },
-        { path: 'coupondetail/:id', title: '优惠劵详情', name: 'coupon_detail', component: resolve => { require(['@/views/marking/coupondetail.vue'], resolve); } }
+        { path: 'coupondetail/:id', title: '优惠劵详情', name: 'coupon_detail', component: resolve => { require(['@/views/marking/coupondetail.vue'], resolve); } },
+        { path: 'uservipcardrecord/:id', title: '会员卡使用详情', name: 'uservipcardrecord_list', component: resolve => { require(['@/views/marking/uservipcardrecord.vue'], resolve); } },
+        { path: 'FreightTemplate/:id', title: '运费模板详情', name: 'freight_detail', component: resolve => { require(['@/views/FreightTemplate/add.vue'], resolve); } }
 
     ]
 };
@@ -145,7 +147,7 @@ export const appRouter = [
                 icon: 'podium',
                 name: 'FreightTemplate',
                 title: '运费模板',
-                component: resolve => { require(['@/views/FreightTemplate/add.vue'], resolve); }
+                component: resolve => { require(['@/views/FreightTemplate/index.vue'], resolve); }
             }
         ]
     },
@@ -169,6 +171,12 @@ export const appRouter = [
                 name: 'vipcardlist',
                 title: '会员卡管理',
                 component: resolve => { require(['@/views/marking/vipcardlist.vue'], resolve); }
+            }, {
+                path: 'uservipcardlist',
+                icon: 'levels',
+                name: 'uservipcardlist',
+                title: '会员卡记录',
+                component: resolve => { require(['@/views/marking/uservipcardlist.vue'], resolve); }
             }
         ]
     },

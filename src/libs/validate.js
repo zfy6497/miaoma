@@ -7,12 +7,24 @@ export const validateRequired = (rule, value, callback) => {
     }
 };
 
-export const validateNum = (rule, value, callback) => {
+export const validateInteger = (rule, value, callback) => {
     setTimeout(() => {
         if (!Number.isInteger(value)) {
-            callback(new Error('请输入数字'));
+            callback(new Error('请输入整数'));
         } else {
             callback();
+        }
+    }, 1000);
+}
+
+export const validateNum = (rule, value, callback) => {
+    setTimeout(() => {
+        var regPos = /^\d+(\.\d+)?$/; //非负浮点数
+        var regNeg = /^(-(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*)))$/; //负浮点数
+        if (regPos.test(value) || regNeg.test(value)) {
+            callback();
+        } else {
+            callback(new Error('请输入数字'));
         }
     }, 1000);
 }

@@ -89,7 +89,7 @@ export default {
   created() {},
   watch: {
     slideType: function(val, old) {
-      alert(val);
+
     }
   },
   mounted() {}

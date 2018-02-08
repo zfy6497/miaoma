@@ -14,10 +14,10 @@ export default {
   },
   data() {
     return {
-      updateUrl: "admin/Couponrecord/Save",
-      deleteUrl: "admin/Couponrecord/Delete",
-      addUrl: "admin/Couponrecord/Save",
-      getUrl: "admin/Couponrecord/GetList",
+      updateUrl: "admin/Uservipcardrecord/Save",
+      deleteUrl: "admin/Uservipcardrecord/Delete",
+      addUrl: "admin/Uservipcardrecord/Save",
+      getUrl: "admin/Uservipcardrecord/GetList",
       formCustom:{},
       ruleCustom:{},
       otherQuery:{

@@ -14,14 +14,14 @@ export default {
   },
   data() {
     return {
-      updateUrl: "admin/Couponrecord/Save",
-      deleteUrl: "admin/Couponrecord/Delete",
-      addUrl: "admin/Couponrecord/Save",
-      getUrl: "admin/Couponrecord/GetList",
+      updateUrl: "admin/Uservipcard/Save",
+      deleteUrl: "admin/Uservipcard/Delete",
+      addUrl: "admin/Uservipcard/Save",
+      getUrl: "admin/Uservipcard/GetList",
       formCustom:{},
       ruleCustom:{},
       otherQuery:{
-            Type:this.$route.params.id
+            
       }
     };
   },

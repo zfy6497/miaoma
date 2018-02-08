@@ -42,6 +42,19 @@
                         <FormItem label="分佣金额" prop="ShareMoney">
                             <Input type="text" style="width: 100px" v-model="formCustom.ShareMoney" :number="true"></Input>
                         </FormItem>
+                        <FormItem label="运费模板" prop="FreightTemplateId">
+                        <Select v-model="formCustom.FreightTemplateId" style="width:400px">
+                         <Option v-for="item in freights" :value="item.Id" :key="item.Id">{{ item.Name }}</Option>
+                          </Select>
+                        </FormItem>
+                         <FormItem v-if="valuationMethod==1" label="重量(KG)" prop="Weight">
+                            <Input type="text" style="width: 100px" v-model="formCustom.Weight" :number="true">
+                            </Input>
+                        </FormItem>
+                         <FormItem  v-if="valuationMethod==2" label="体积(m3)" prop="Volume">
+                            <Input type="text" style="width: 100px" v-model="formCustom.Volume" :number="true">
+                            </Input>
+                        </FormItem>
                         <FormItem label="简介" prop="ShortDescription">
                             <Input type="textarea" :rows="4" style="width: 400px" v-model="formCustom.ShortDescription"></Input>
                         </FormItem>
@@ -67,7 +80,7 @@
 
 import PhUpload from "../main-components/phupload.vue";
 import Util from '../../libs/util.js';
-import {validateNum,validateRequired} from '../../libs/validate.js';
+import {validateNum,validateRequired,validateInteger} from '../../libs/validate.js';
 import UEditor from '../main-components/ueditor.vue';
     export default {
          name: 'page1-detail',
@@ -83,9 +96,9 @@ import UEditor from '../main-components/ueditor.vue';
                     ProductName:'',
                     ProductCode:'',
                     ShortDescription:'',
-                   // FreightTemplateId:0,
-                   // Weight:0,
-                   // Volume:0,
+                    FreightTemplateId:0,
+                    Weight:0,
+                    Volume:0,
                     ImagePath:'',
                     Description:'',
                     ShareMoney:0,
@@ -101,7 +114,7 @@ import UEditor from '../main-components/ueditor.vue';
                         { validator: validateRequired, trigger: 'blur' }
                     ],
                     DisplaySequence: [
-                        { validator: validateNum, trigger: "blur" }
+                        { validator: validateInteger, trigger: "blur" }
                     ],
                     MinSalePrice: [
 
@@ -120,9 +133,16 @@ import UEditor from '../main-components/ueditor.vue';
                     ],
                     Stock: [
 
+                        { validator: validateInteger, trigger: "blur" }
+                    ],
+                     Weight: [
+
                         { validator: validateNum, trigger: "blur" }
                     ],
-                    
+                    Volume: [
+
+                        { validator: validateNum, trigger: "blur" }
+                    ],
                 },
                   defaultLogo: [],
             cdata:[],
@@ -137,7 +157,8 @@ import UEditor from '../main-components/ueditor.vue';
             },
             loading2:false,
             editurl:'admin/Products/SaveProducts',
-            brandlist:[]
+            brandlist:[],
+            freights:[],
         }
         },
          beforeDestroy () {
@@ -146,6 +167,19 @@ import UEditor from '../main-components/ueditor.vue';
         destroyed () {
           
         },
+        computed:{
+            valuationMethod:function(){
+                let vm=this;
+                let temp=0;
+               let model=  vm.freights.filter(function(e){return e.Id==vm.formCustom.FreightTemplateId});
+             
+                if(model && model.length>0){
+                   temp=model[0].ValuationMethod;
+                }
+                return temp;
+            }
+        }
+        ,
         watch:{
             value1:function(val,oldvalue){
                  let t1=val.length;
@@ -219,7 +253,7 @@ import UEditor from '../main-components/ueditor.vue';
             }else{
                 for(let key in this.formCustom)
                 {
-                    let iarr=['Id','FreightTemplateId','Weight','Volume','ShareMoney','MarketPrice','SalePrice'];
+                    let iarr=['Id','FreightTemplateId','Weight','Volume','ShareMoney','MarketPrice','SalePrice','BrandId'];
                     let notclear=['BrandId','CategoryId','CategoryPath'];
                     if(iarr.indexOf(key)>=0)
                     {
@@ -245,37 +279,34 @@ import UEditor from '../main-components/ueditor.vue';
             var pdata=this.query;
             let vm=this;
 
-            Util.post("api/Products/GetCategoriesSelectList",pdata,vm,function(res,data){
+            Util.post("api/Products/GetOtherList",pdata,vm,function(res,data){
                 if(res==='1')
                 {
-                    if(data.totalCount>0)
-                    {
-                        vm.cdata = data.data;                
-                    }else{
-                        vm.cdata = [];
+                    var result=data.data
+                    if(result){
+                        if(result.Categories){
+                            vm.cdata =result.Categories;   
+                        }else{
+                             vm.cdata = [];
+                        }
+                        if(result.Brands){
+                            vm.brandlist = result.Brands;   
+                        }else{
+                             vm.brandlist = [];
+                        }
+                         if(result.Freights){
+                            vm.freights = result.Freights;   
+                        }else{
+                             vm.freights = [];
+                        }
                     }
+                   
                 }else{
                    
                     
                 }
             
             });
-             Util.post("admin/Products/GetBrandsList",pdata,vm,function(res,data){
-                if(res==='1')
-                {
-                    if(data.totalCount>0)
-                    {
-                        vm.brandlist = data.data;                
-                    }else{
-                        vm.brandlist = [];
-                    }
-                }else{
-                   
-                    
-                }
-            
-            });
-
             if(this.formCustom.Id&&this.formCustom.Id!=0)
             {
                  Util.post("admin/Products/GetProductsDetail",{Id:this.formCustom.Id},vm,function(res,data){

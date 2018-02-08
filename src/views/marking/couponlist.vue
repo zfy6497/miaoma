@@ -137,7 +137,7 @@ export default {
         for (let key in this.formCustom) {
           if (key === "IsRecommend") {
             this.formCustom[key] = false;
-          } else if (key === "Id") {
+          } else if (key === "Id" || key === "NeedValue") {
             this.formCustom[key] = 0;
           } else {
             this.formCustom[key] = "";

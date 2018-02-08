@@ -9,12 +9,12 @@ util.title = function (title) {
     title = title || 'iView admin';
     window.document.title = title;
 };
-//http://localhost:49659 http://43.247.89.26:8099 
+//http://localhost:49659 http://43.247.89.26:8099  http://mmsoft.51jiuqu.com
 const ajaxUrl = env === 'development'
-    ? 'http://43.247.89.26:8099'
+    ? 'http://mmsoft.51jiuqu.com'
     : env === 'production'
-        ? 'http://localhost:49659'
-        : 'http://43.247.89.26:8099';
+        ? 'http://mmsoft.51jiuqu.com'
+        : 'http://mmsoft.51jiuqu.com';
 
 util.ajaxUrl = function () {
     return ajaxUrl;
@@ -297,16 +297,23 @@ util.post = function (purl, pdata, vm, callback) {
 util.createsign = function (pdata, skey) {
     let keys = new Array();
     let i = 0;
-    var nlist = ['key', 'Sign', 'StartDate', 'EndDate', 'StartTime', 'EndTime', 'GetStartTime', 'GetEndTime'];
+    var nlist = ['key', 'Sign', 'StartDate', 'EndDate', 'StartTime', 'EndTime', 'GetStartTime', 'GetEndTime', 'defaultTemplate', 'templates'];
     for (var key in pdata) {
         let val = pdata[key];
         if (val !== '' && nlist.indexOf(key) < 0) {
-            keys[i] = key + '=' + val;
+            if (val == '[object Object]') {
+                var obj = JSON.stringify(val);
+                keys[i] = key + '=' + obj.toString();
+            } else {
+                keys[i] = key + '=' + val;
+            }
+
             i++;
         }
 
     }
     var t2 = keys.sort().join('&') + '&key=' + skey;
+    console.log(t2);
     return md5(t2).toLowerCase();
 };
 
