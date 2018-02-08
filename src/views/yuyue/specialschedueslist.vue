@@ -350,10 +350,10 @@ export default {
         },
         loadStore(){
             let vm=this;
-            Util.post("admin/Store/GetAllStore",{},vm,function (res,data) {
+            Util.post("admin/Store/GetAllStoreBySId",{SId:this.formCustom.Id},vm,function (res,data) {
                 if(res==='1'){
                     if(data.totalCount>0){
-                        vm.storelist = data.data;                
+                        vm.storelist = data.data; 
                     }else{
                         vm.storelist = [];
                     }
