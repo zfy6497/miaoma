@@ -2,10 +2,22 @@
 @import "./form.less";
 </style>
 <template>
+    
     <list :show-search="true" :show-date="true" :show-key-word="true" :show-add-button="false" :show-page="true" :update-url="updateUrl"
         :delete-url="deleteUrl" :routername="'specialorder_detail'" :add-url="addUrl" :get-url="getUrl" :form-custom="formCustom" :rule-custom="ruleCustom" :modal-Width="500" @set-form="setForm" :other-query="otherQuery">
+          <!-- <template slot="statuslistslot">
+            <Tabs :animated="false"    @on-click="setCurrentStatus"> 
+                <TabPane  label="所有订单" name="0"></TabPane>
+                <TabPane  label="预约单" name="1"></TabPane>
+                <TabPane  label="待服务" name="2"></TabPane>
+                <TabPane  label="待付款" name="3"></TabPane>
+                <TabPane  label="待确认" name="4"></TabPane>
+                <TabPane  label="已完成" name="5"></TabPane>
+            </Tabs>
+        </template> -->
+        <template slot="searchslot"> </template>
         <template slot="fromtop">
-          <div class="ivu-modal-header"><div class="ivu-modal-header-inner">门店管理</div></div>
+          <div class="ivu-modal-header"><div class="ivu-modal-header-inner">订单管理</div></div>
         </template>
         <template slot="frommodel">
             <FormItem label="* 所在区域" prop="AreaId">
@@ -25,7 +37,7 @@
 
 <script>
 import PhUpload from "../main-components/phupload.vue";
-import Util from '../../libs/util.js';
+import Util from "../../libs/util.js";
 import list from "../main-components/list.vue";
 import { validateNum, validateRequired } from "../../libs/validate.js";
 export default {
@@ -39,10 +51,10 @@ export default {
       Type: Number,
       default: 0
     },
-    inputShow: {
-      type: Boolean,
-      default: true
-    },
+    // CurrentStatus: {
+    //   type: Number,
+    //   default: 0
+    // }
   },
   data() {
     return {
@@ -66,7 +78,8 @@ export default {
       otherQuery: {
         TypeId: this.slideType
       },
-      arealist:[]
+      arealist: [],
+      CurrentStatus:0
     };
   },
   methods: {
@@ -90,27 +103,27 @@ export default {
             this.formCustom[key] = 0;
           } else if (key != "TypeId") {
             this.formCustom[key] = "";
-          }
-          else{
-              this.formCustom[key] = this.slideType;
+          } else {
+            this.formCustom[key] = this.slideType;
           }
         }
         this.defaultImageUrl = [];
       }
     },
-    loadArea(){
-      let vm=this;
-      Util.post("admin/Area/GetAreaList",{Id:100},vm,function(res,data){
-            if(res==='1')
-                {
-                    if(data.totalCount>0)
-                    {
-                        vm.arealist = data.data;                
-                    }else{
-                        vm.arealist = [];
-                    }
-                }
-      });        
+    loadArea() {
+      let vm = this;
+      Util.post("admin/Area/GetAreaList", { Id: 100 }, vm, function(res, data) {
+        if (res === "1") {
+          if (data.totalCount > 0) {
+            vm.arealist = data.data;
+          } else {
+            vm.arealist = [];
+          }
+        }
+      });
+    },
+    setCurrentStatus(){ //设置当前状态
+      console.log("----------------------------");
     }
   },
   created() {},

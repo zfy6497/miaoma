@@ -38,7 +38,7 @@ export default {
   props: {
     slideType: {
       Type: Number,
-      default: 0
+      default: 4
     }
   },
   data() {
@@ -53,7 +53,7 @@ export default {
         Sort: 99,
         ImageUrl: "",
         Description: "",
-        TypeId: 0
+        TypeId: 4
       },
       ruleCustom: {
         Url: [{ validator: validateRequired, trigger: "blur" }],

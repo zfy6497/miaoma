@@ -11,7 +11,11 @@ util.title = function (title) {
 };
 //http://localhost:49659 http://43.247.89.26:8099  http://mmsoft.51jiuqu.com
 const ajaxUrl = env === 'development'
+<<<<<<< HEAD
     ? 'http://mmsoft.51jiuqu.com'
+=======
+    ? 'http://mmsoft.51jiuqu.com'
+>>>>>>> 085c745cf7f0f3afdf56f9e99fd805443e8b12ab
     : env === 'production'
         ? 'http://mmsoft.51jiuqu.com'
         : 'http://mmsoft.51jiuqu.com';
@@ -348,6 +352,21 @@ util.formatDateFull = function (date) {
     return y + '-' + m + '-' + d + ' ' + h + ':' + min + ':' + s;
 };
 
+util.formatDateMin = function (date) {
+    let objDate = new Date(date);
+    const y = objDate.getFullYear();
+    let m = objDate.getMonth() + 1;
+    m = m < 10 ? '0' + m : m;
+    let d = objDate.getDate();
+    d = d < 10 ? ('0' + d) : d;
+
+    let h = objDate.getHours();
+    h = h < 10 ? ('0' + h) : h;
+
+    let min = objDate.getMinutes();
+    min = min < 10 ? ('0' + min) : min;
+
+    return y + '-' + m + '-' + d + ' ' + h + ':' + min;
+};
+
 export default util;
-
-

@@ -5,7 +5,7 @@
         </p>
         <Row>
              <Col span="12">
-                   <div style="background:#eee;padding: 20px">
+                   <div style="background:#eee;padding: 20px;height:300px;">
                        <Card>
                             <Form ref="formCustom" :model="formCustom" :label-width="130">
                                 <FormItem label="专家名称:" prop="SpecialName">
@@ -25,7 +25,7 @@
                        </div>
                 </Col>
                 <Col span="12">
-                    <div style="background:#eee;padding: 20px">
+                    <div style="background:#eee;padding: 20px;height:300px">
                         <Card>
                       <Form ref="formCustom" :model="formCustom" :label-width="130">
                          <FormItem label="预约状态:" prop="StatusName">
@@ -38,8 +38,8 @@
                             <label type="text" style="width: 400px" >{{formCustom.Order.PayPrice}}</label>
                         </FormItem>
                          <FormItem label="" prop="">
-                            <label type="text" style="width: 400px"  >
-                                  <div v-if="formCustom.PayStatus==-1 && formCustom.OrderStatus==0" style="margin-top:20px;margin-left:200px">
+                            <label type="text" style="width: 400px;margin: 0 0px;"  >
+                                  <div v-if="formCustom.PayStatus==-1 && formCustom.OrderStatus==0" >
                                         <Button type="primary"   @click="CancelOrder" :loading="loading">取消预约</Button>
                                     </div>
                             </label>
