@@ -35,7 +35,7 @@
                      <Button type="default" @click="addOneLine"><Icon type="plus" />&nbsp;&nbsp;新增时间段</Button>  <Checkbox v-model="Single">是否成为模板</Checkbox>
                 </p>
                 <p style="margin-top:20px;" v-if="showTable==true">
-                     <Button type="primary" @click="saveCurrent">保存当前</Button>
+                     <Button type="primary" :loading="loading" @click="saveCurrent">保存当前</Button>
                 </p>
             </Card>
         </Row>
@@ -59,6 +59,7 @@ export default {
       showTable: true,
       modalList: false,
       loading2: false,
+      loading:false,
       shopping_col: [
         {
           title: "门店",
@@ -298,12 +299,14 @@ export default {
     },
     getDataInfo() {
       let vm = this;
+      vm.loading=true;
       if (this.formCustom.Id && this.formCustom.Id != 0) {
         Util.post(
           this.geturl,
           { SId: this.formCustom.Id, Day: this.CurrentDate },
           vm,
           function(res, data) {
+            vm.loading=false;
             if (res === "1") {
               if (data.totalCount > 0) {
                 vm.showTable = true;
@@ -323,7 +326,24 @@ export default {
       var data2 = this.shopping_data;
       data2.map((t, i) => {
         t.SchedueDay = this.CurrentDate;
+        //数据验证
+        if(t.StoreId==0 || t.StoreId==''){
+             vm.$Message.success("排班门店信息填写不完整"); return ;
+        }
+        if(t.SchedueDate==''){
+             vm.$Message.success("排班时间信息填写不完整"); return ;
+        }
+        if(t.OrderPrice==''){
+             vm.$Message.success("排班预约金额信息填写不完整"); return ;
+        }
+        if(t.AnotherPrice==''){
+             vm.$Message.success("排班到店另付费用信息填写不完整"); return ;
+        }
+         if(t.Count==''){
+             vm.$Message.success("排班名额信息填写不完整"); return ;
+        }
       });
+      
       Util.post(
         "admin/Special/Schedues/Save",
         {

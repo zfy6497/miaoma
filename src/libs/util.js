@@ -11,7 +11,7 @@ util.title = function (title) {
 };
 //http://localhost:49659 http://43.247.89.26:8099 
 const ajaxUrl = env === 'development'
-    ? 'http://43.247.89.26:8099'
+    ? 'http://localhost:49659'
     : env === 'production'
         ? 'http://localhost:49659'
         : 'http://43.247.89.26:8099';
@@ -341,6 +341,21 @@ util.formatDateFull = function (date) {
     return y + '-' + m + '-' + d + ' ' + h + ':' + min + ':' + s;
 };
 
+util.formatDateMin = function (date) {
+    let objDate = new Date(date);
+    const y = objDate.getFullYear();
+    let m = objDate.getMonth() + 1;
+    m = m < 10 ? '0' + m : m;
+    let d = objDate.getDate();
+    d = d < 10 ? ('0' + d) : d;
+
+    let h = objDate.getHours();
+    h = h < 10 ? ('0' + h) : h;
+
+    let min = objDate.getMinutes();
+    min = min < 10 ? ('0' + min) : min;
+
+    return y + '-' + m + '-' + d + ' ' + h + ':' + min;
+};
+
 export default util;
-
-
