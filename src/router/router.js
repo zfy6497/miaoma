@@ -66,28 +66,7 @@ export const otherRouter = {
 
 // 作为Main组件的子页面展示并且在左侧菜单显示的路由写在appRouter里
 export const appRouter = [
-    {
-        path: '/admin',
-        icon: 'ios-folder',
-        name: 'admin',
-        title: '系统管理',
-        component: Main,
-        children: [
-            {
-                path: 'admin',
-                icon: 'ios-list-outline',
-                name: 'adminList',
-                title: '管理员管理',
-                component: resolve => { require(['@/views/admin/index.vue'], resolve); }
-            }, {
-                path: 'group',
-                icon: 'ios-list-outline',
-                name: 'adminConfig',
-                title: '系统配置',
-                component: resolve => { require(['@/views/group/page1/page1.vue'], resolve); }
-            }
-        ]
-    },
+
     {
         path: '/product',
         icon: 'bag',
@@ -268,8 +247,7 @@ export const appRouter = [
                 name: 'arealist',
                 title: '区域管理',
                 component: resolve => { require(['@/views/yuyue/arealist.vue'], resolve); }
-            }
-            ,
+            },
             {
                 path: 'basesetting',
                 icon: 'ios-list',
@@ -320,6 +298,28 @@ export const appRouter = [
                 name: 'coursedynamic',
                 title: '课程动态',
                 component: resolve => { require(['@/views/course/coursedynamic.vue'], resolve); }
+            }
+        ]
+    },
+    {
+        path: '/admin',
+        icon: 'ios-folder',
+        name: 'admin',
+        title: '系统管理',
+        component: Main,
+        children: [
+            {
+                path: 'admin',
+                icon: 'ios-list-outline',
+                name: 'adminList',
+                title: '管理员管理',
+                component: resolve => { require(['@/views/admin/index.vue'], resolve); }
+            }, {
+                path: 'group',
+                icon: 'ios-list-outline',
+                name: 'adminConfig',
+                title: '系统配置',
+                component: resolve => { require(['@/views/group/page1/page1.vue'], resolve); }
             }
         ]
     }

@@ -257,6 +257,8 @@ import UEditor from '../main-components/ueditor.vue';
                     let notclear=['BrandId','CategoryId','CategoryPath'];
                     if(iarr.indexOf(key)>=0)
                     {
+                       
+                        
                         this.formCustom[key]=0;
                     }
                     else if(notclear.indexOf(key)>=0)
@@ -327,6 +329,15 @@ import UEditor from '../main-components/ueditor.vue';
             if (valid) {
                 let vm=this;
                 let pdata=this.formCustom;
+                if(!pdata["BrandId"]){
+                    pdata["BrandId"]=0;
+                }
+                 if(!pdata["CategoryId"]){
+                    pdata["CategoryId"]=0;
+                }
+                 if(!pdata["FreightTemplateId"]){
+                    pdata["FreightTemplateId"]=0;
+                }
                 let cont=vm.$refs.ueditor1.getUEContent();
                pdata.Description=cont;
                 Util.post(this.editurl,pdata,vm,function(res,msg){

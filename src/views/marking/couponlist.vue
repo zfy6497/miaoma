@@ -104,7 +104,7 @@ export default {
         ValidDay: [{ validator: validateNum, trigger: "blur" }],
       },
       defaultLogo: [],
-      TypeList:[{name:'商城购物',id:1},{name:'预约挂号',id:2},{name:'游泳',id:3}],
+      TypeList:[{name:'商城购物',id:0},{name:'预约挂号',id:1},{name:'游泳',id:2}],
       modalWidth:600,
       isCheck:false
     };
@@ -133,6 +133,7 @@ export default {
           }
           this.formCustom[key] = data[key];
         }
+        console.log(this.formCustom);
       } else {
         for (let key in this.formCustom) {
           if (key === "IsRecommend") {
