@@ -8,12 +8,13 @@
         <Card>
             <Row>
                 <template v-if="showSearch">
+                    <slot name="statuslistslot">
+                    </slot>
                     <DatePicker type="date" v-if="showDate" placeholder="请选择开始日期" :format="formatDate" v-model="query.StartDate" style="width: 150px"></DatePicker>
                     <DatePicker type="date" v-if="showDate" placeholder="请选择结束日期" :format="formatDate" v-model="query.EndDate" style="width: 150px"></DatePicker>
                     <Input v-model="query.KeyWord" v-if="showKeyWord" placeholder="请输入关键字搜搜..." style="width: 150px" />
-                    <template slot="searchslot">
-
-                    </template>
+                    <slot name="searchslot">
+                    </slot>
                     <span @click="search" style="margin: 0 10px;"><Button type="primary" :loading="loading" icon="search">搜索</Button></span>
                     
                     <Button @click="cancelSearch" type="ghost">取消</Button>

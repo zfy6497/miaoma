@@ -91,7 +91,7 @@ export default {
         Avatar: "",
         Introduction: "",
         Price: "",
-        TheirStores:"",
+        TheirStores: "",
         StartDate: "",
         EndDate: "", //结束时间
         CellPhone: "" //手机号码
@@ -125,9 +125,9 @@ export default {
       }
     },
     GetTheirStores(value) {
-        //设置多选框的值
-        this.TheirStores1 = value;
-        this.formCustom.TheirStores=value.join(","); //转成string 
+      //设置多选框的值
+      this.TheirStores1 = value;
+      this.formCustom.TheirStores = value.join(","); //转成string
     },
     setForm(data) {
       if (data) {
