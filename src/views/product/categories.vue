@@ -41,6 +41,13 @@
       <FormItem label="排序值" prop="DisplaySequence">
         <Input type="text" style="width: 100px" v-model="formCustom.DisplaySequence" :number="true"></Input>
       </FormItem>
+       <FormItem label="所属类目" prop="TypeId">
+
+        <Select v-model="formCustom.TypeId"  style="width:200px">
+                         <Option value="0" key="0">请选择</Option>
+                         <Option v-for="item in typelist" :value="item.Id" :key="item.Id">{{ item.Name }}</Option>
+                    </Select>
+      </FormItem>
       <FormItem label="上级分类" prop="ParentCategoryId">
 
         <Select v-model="formCustom.ParentCategoryId" @on-change="checkcategory" style="width:200px">
@@ -56,6 +63,7 @@
 <script>
 import TreeGrid from "../main-components/treegrid.vue";
 import PhUpload from "../main-components/phupload.vue";
+import Util from "../../libs/util.js";
 
 export default {
   data() {
@@ -88,25 +96,26 @@ export default {
     };
 
     return {
-      columns: [ ],
+      columns: [],
       data: [],
       updateUrl: "admin/Products/SaveCategories",
       deleteUrl: "admin/Products/DeleteCategories",
       addUrl: "admin/Products/SaveCategories",
       getUrl: "admin/Products/GetCategoriesList",
       formCustom: {
-           Id: 0,
+        Id: 0,
         Name: "",
         IsRecommend: false,
         Icon: "",
         DisplaySequence: 1,
         ParentCategoryId: 0,
         Depth: 1,
-        Path:''
+        Path: "",
+        TypeId: 0
       },
       ruleCustom: {
         Name: [{ validator: validateName, trigger: "blur" }],
-       // Icon: [{ validator: validateIcon, trigger: "blur" }],
+        // Icon: [{ validator: validateIcon, trigger: "blur" }],
         DisplaySequence: [
           { validator: validateDisplaySequence, trigger: "blur" }
         ]
@@ -114,13 +123,16 @@ export default {
       modalWidth: 500,
       defaultIcon: [],
       categorylist: [],
-      selectcategoryname:'一级分类'
-
+      selectcategoryname: "一级分类",
+      typelist: []
     };
   },
   components: {
     TreeGrid,
     PhUpload
+  },
+  mounted() {
+    this.getOtherList();
   },
   methods: {
     getresult(data) {
@@ -128,54 +140,57 @@ export default {
         this.formCustom.Icon = data[0].url;
       }
     },
-    setForm(items,data) {
- 
-      let  list=[{'id':0,'name':'一级分类','depth':1}];
-      items.forEach(res=>{
-         let  item={'id':res.Id,'name':"--"+res.Name,'depth':res.Depth+1};
-          list.push(item);
-          res.Childrens.forEach(tt=>{
-               let  tt2={'id':tt.Id,'name':"----"+tt.Name,'depth':tt.Depth+1};
-                  list.push(tt2);
-          })
+    setForm(items, data) {
+      let list = [{ id: 0, name: "一级分类", depth: 1 }];
+      items.forEach(res => {
+        let item = { id: res.Id, name: "--" + res.Name, depth: res.Depth + 1 };
+        list.push(item);
+        res.Childrens.forEach(tt => {
+          let tt2 = { id: tt.Id, name: "----" + tt.Name, depth: tt.Depth + 1 };
+          list.push(tt2);
+        });
       });
-           this.categorylist=list;
-       if(data)
-       {
-       
-           for(let key in this.formCustom)
-           {
-              if(key==='Icon')
-              {
-                var item=[{'name':'','url':data[key],'status':'finished'}];
-                 this.defaultIcon=item;
-              }
-              this.formCustom[key]=data[key]
-             
-           }
-       
-       }else{
-          this.formCustom.Id=0;
-        this.formCustom.Icon='';
-        this.formCustom.Name='';
-        this.formCustom.IsRecommend=false;
-        this.formCustom.DisplaySequence=1;
-        this.formCustom.ParentCategoryId=0;
-        this.formCustom.Depth=1; 
-        this.formCustom.Path='';
-         this.defaultIcon=[];
-       }
-        
+      this.categorylist = list;
+      if (data) {
+        for (let key in this.formCustom) {
+          if (key === "Icon") {
+            var item = [{ name: "", url: data[key], status: "finished" }];
+            this.defaultIcon = item;
+          }
+          this.formCustom[key] = data[key];
+        }
+      } else {
+        this.formCustom.Id = 0;
+        this.formCustom.Icon = "";
+        this.formCustom.Name = "";
+        this.formCustom.IsRecommend = false;
+        this.formCustom.DisplaySequence = 1;
+        this.formCustom.ParentCategoryId = 0;
+        this.formCustom.Depth = 1;
+        this.formCustom.Path = "";
+        this.defaultIcon = [];
+      }
     },
-    checkcategory(item,t){
-    
-     // this.formCustom.Depth=attrs[2]; 
+    checkcategory(item, t) {
+      // this.formCustom.Depth=attrs[2];
       console.log(t);
     },
-    setclist(data){
-      categorylist=data;
+    setclist(data) {
+      categorylist = data;
+    },
+    getOtherList() {
+      let vm = this;
+      Util.post("admin/Products/GetDetailOtherList", {}, vm, function(res,data) {
+      
+      console.log(data);
+      console.log("---");
+        if (res === "1") {
+          vm.typelist = data.data.TypeList;
+        } else {
+          vm.$Message.error("信息有误");
+        }
+      });
     }
-    
   }
 };
 </script>

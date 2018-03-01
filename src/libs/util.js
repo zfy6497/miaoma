@@ -13,7 +13,7 @@ util.title = function (title) {
 const ajaxUrl = env === 'development'
     ? 'http://mmsoft.51jiuqu.com'
     : env === 'production'
-        ? 'http://mmsoft.51jiuqu.com'
+        ? 'http://localhost:49659'
         : 'http://mmsoft.51jiuqu.com';
 
 util.ajaxUrl = function () {
@@ -297,7 +297,7 @@ util.post = function (purl, pdata, vm, callback) {
 util.createsign = function (pdata, skey) {
     let keys = new Array();
     let i = 0;
-    var nlist = ['key', 'Sign', 'StartDate', 'EndDate', 'StartTime', 'EndTime', 'GetStartTime', 'GetEndTime', 'defaultTemplate', 'templates'];
+    var nlist = ['key', 'Sign', 'StartDate', 'EndDate', 'StartTime', 'EndTime', 'GetStartTime', 'GetEndTime', 'defaultTemplate', 'templates', 'attrs', 'AttrList', 'Skus'];
     for (var key in pdata) {
         let val = pdata[key];
         if (val !== '' && nlist.indexOf(key) < 0) {

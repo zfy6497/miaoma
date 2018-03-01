@@ -59,7 +59,8 @@ export const otherRouter = {
         { path: 'couponreceivers/:id', title: '领取详情', name: 'couponreceivers_list', component: resolve => { require(['@/views/marking/couponreceivers.vue'], resolve); } },
         { path: 'coupondetail/:id', title: '优惠劵详情', name: 'coupon_detail', component: resolve => { require(['@/views/marking/coupondetail.vue'], resolve); } },
         { path: 'uservipcardrecord/:id', title: '会员卡使用详情', name: 'uservipcardrecord_list', component: resolve => { require(['@/views/marking/uservipcardrecord.vue'], resolve); } },
-        { path: 'FreightTemplate/:id', title: '运费模板详情', name: 'freight_detail', component: resolve => { require(['@/views/FreightTemplate/add.vue'], resolve); } }
+        { path: 'FreightTemplate/:id', title: '运费模板详情', name: 'freight_detail', component: resolve => { require(['@/views/FreightTemplate/add.vue'], resolve); } },
+        { path: 'typedetail/:id', title: '类型详情', name: 'type_detail', component: resolve => { require(['@/views/Type/detail.vue'], resolve); } }
 
     ]
 };
@@ -92,6 +93,12 @@ export const appRouter = [
                 name: 'brands',
                 title: '品牌管理',
                 component: resolve => { require(['@/views/product/brands.vue'], resolve); }
+            }, {
+                path: 'types',
+                icon: 'levels',
+                name: 'types',
+                title: '类型管理',
+                component: resolve => { require(['@/views/type/index.vue'], resolve); }
             }
         ]
     },
