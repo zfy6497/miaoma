@@ -60,8 +60,8 @@ export const otherRouter = {
         { path: 'coupondetail/:id', title: '优惠劵详情', name: 'coupon_detail', component: resolve => { require(['@/views/marking/coupondetail.vue'], resolve); } },
         { path: 'uservipcardrecord/:id', title: '会员卡使用详情', name: 'uservipcardrecord_list', component: resolve => { require(['@/views/marking/uservipcardrecord.vue'], resolve); } },
         { path: 'FreightTemplate/:id', title: '运费模板详情', name: 'freight_detail', component: resolve => { require(['@/views/FreightTemplate/add.vue'], resolve); } },
-        { path: 'typedetail/:id', title: '类型详情', name: 'type_detail', component: resolve => { require(['@/views/Type/detail.vue'], resolve); } }
-
+        { path: 'typedetail/:id', title: '类型详情', name: 'type_detail', component: resolve => { require(['@/views/Type/detail.vue'], resolve); } },
+        { path: 'appraisaldetail/:id', title: '考评记录详情', name: 'appraisal_detail', component: resolve => { require(['@/views/yuyue/appraisaldetail.vue'], resolve); } }
     ]
 };
 
@@ -261,6 +261,20 @@ export const appRouter = [
                 name: 'basesetting',
                 title: '基础设置',
                 component: resolve => { require(['@/views/yuyue/basesetting.vue'], resolve); }
+            },
+            {
+                path: 'specialappraisal',
+                icon: 'ios-list',
+                name: 'specialappraisal',
+                title: '专家考评',
+                component: resolve => { require(['@/views/yuyue/specialappraisal.vue'], resolve); }
+            },
+            {
+                path: 'appraisalmanage',
+                icon: 'ios-list',
+                name: 'appraisalmanage',
+                title: '考评管理',
+                component: resolve => { require(['@/views/yuyue/appraisalmanage.vue'], resolve); }
             }
         ]
     },
