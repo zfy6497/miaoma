@@ -5,7 +5,7 @@
         </p>
         <Row>
              <Col span="12">
-                   <div style="background:#eee;padding: 20px;height:300px;">
+                   <div style="background:#eee;padding: 20px;height:560px;">
                        <Card>
                             <Form ref="formCustom" :model="formCustom" :label-width="130">
                                 <FormItem label="专家名称:" prop="SpecialName">
@@ -14,18 +14,33 @@
                                 <FormItem label="订单创建时间:" prop="CreateDate">
                                     <label type="text" style="width: 400px" >{{formCustom.Order.CreateDate | formatDate}}</label>
                                 </FormItem>
-                                <FormItem label="用户名:" prop="UserName">
+                                <FormItem label="下单用户名:" prop="UserName">
                                     <label type="text" style="width: 400px" >{{formCustom.Order.UserName}}</label>
                                 </FormItem>
-                                <FormItem label="用户手机号码:" prop="UserName">
+                                <FormItem label="下单用户手机号码:" prop="UserCellPhone">
                                     <label type="text" style="width: 400px" >{{formCustom.Order.UserCellPhone}}</label>
                                 </FormItem>
-                            </Form>  
+                                 <FormItem label="联系人:" prop="ContactName">
+                                    <label type="text" style="width: 400px" >{{formCustom.Order.ContactName}}</label>
+                                </FormItem>
+                                  <FormItem label="联系人电话:" prop="ContactName">
+                                    <label type="text" style="width: 400px" >{{formCustom.Order.ContactMobile}}</label>
+                                </FormItem>
+                                <FormItem label="服务对象:" prop="ContactName">
+                                    <label type="text" style="width: 400px" >{{formCustom.Order.ServiceName}}</label>
+                                </FormItem>
+                                  <FormItem label="服务对象性别/年龄:" prop="ContactName">
+                                    <label type="text" style="width: 400px" >{{formCustom.Order.ServiceSex}}|{{formCustom.Order.ServiceAge}}</label>
+                                </FormItem>
+                                <FormItem label="服务时间:" prop="PayPrice">
+                                    <label type="text" style="width: 400px" >{{formCustom.Order.ServiceDay}}</label>
+                                </FormItem>
+                            </Form>
                          </Card>
                        </div>
                 </Col>
                 <Col span="12">
-                    <div style="background:#eee;padding: 20px;height:300px">
+                    <div style="background:#eee;padding: 20px;height:560px">
                         <Card>
                       <Form ref="formCustom" :model="formCustom" :label-width="130">
                          <FormItem label="预约状态:" prop="StatusName">
@@ -34,8 +49,23 @@
                           <FormItem label="门店名称:" prop="UserName">
                             <label type="text" style="width: 400px" >{{formCustom.Order.StoreName}}</label>
                         </FormItem>
-                        <FormItem label="订单金额:" prop="PayPrice">
-                            <label type="text" style="width: 400px" >{{formCustom.Order.PayPrice}}</label>
+                        <FormItem label="推拿订单金额:" prop="PayPrice">
+                            <label type="text" style="width: 400px" >{{formCustom.Order.OrderPrice}} (元)</label>
+                        </FormItem>
+                        <FormItem label="预付订单金额:" prop="PayPrice">
+                            <label type="text" style="width: 400px" >{{formCustom.Order.PrepaidPrice}} (元)</label>
+                        </FormItem>
+                        <FormItem label="实付订单金额:" prop="PayPrice">
+                            <label type="text" style="width: 400px" >{{formCustom.Order.PayPrice}} (元)</label>
+                        </FormItem>
+                          <FormItem label="优惠劵抵扣金额:" prop="PayPrice">
+                            <label type="text" style="width: 400px" >{{formCustom.Order.DiscountPrice}} (元)</label>
+                        </FormItem>
+                          <FormItem label="会员卡优惠金额:" prop="PayPrice">
+                            <label type="text" style="width: 400px" >{{formCustom.Order.CardDiscount}}  (元)</label>
+                        </FormItem>
+                           <FormItem label="会员卡抵扣金额:" prop="PayPrice">
+                            <label type="text" style="width: 400px" >{{formCustom.Order.CardPrice}} (元)</label>
                         </FormItem>
                          <FormItem label="" prop="">
                             <label type="text" style="width: 400px;margin: 0 0px;"  >
