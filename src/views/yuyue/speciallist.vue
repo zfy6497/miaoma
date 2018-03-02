@@ -40,7 +40,7 @@
             <FormItem label="* 资质介绍" prop="Introduction">
                   <Input type="textarea" style="width: 300px"  v-model="formCustom.Introduction"></Input>
             </FormItem>
-            <FormItem label="* 价格提示" prop="Price">
+            <FormItem label="* 服务价格" prop="Price">
                   <Input type="text" style="width: 300px"  v-model="formCustom.Price"></Input>
             </FormItem>
             <FormItem label="* 排序" prop="Sort">

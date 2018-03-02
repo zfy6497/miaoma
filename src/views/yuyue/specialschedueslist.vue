@@ -137,7 +137,7 @@ export default {
             });
           }
         },
-        {
+        /* {
           title: "到店另付费用",
           key: "AnotherPrice",
           align: "center",
@@ -156,7 +156,7 @@ export default {
               }
             });
           }
-        },
+        }, */
         {
           title: "名额",
           key: "Count",
@@ -336,9 +336,9 @@ export default {
         if(t.OrderPrice==''){
              vm.$Message.success("排班预约金额信息填写不完整"); return ;
         }
-        if(t.AnotherPrice==''){
+        /* if(t.AnotherPrice==''){
              vm.$Message.success("排班到店另付费用信息填写不完整"); return ;
-        }
+        } */
          if(t.Count==''){
              vm.$Message.success("排班名额信息填写不完整"); return ;
         }
