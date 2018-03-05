@@ -60,8 +60,10 @@ export const otherRouter = {
         { path: 'coupondetail/:id', title: '优惠劵详情', name: 'coupon_detail', component: resolve => { require(['@/views/marking/coupondetail.vue'], resolve); } },
         { path: 'uservipcardrecord/:id', title: '会员卡使用详情', name: 'uservipcardrecord_list', component: resolve => { require(['@/views/marking/uservipcardrecord.vue'], resolve); } },
         { path: 'FreightTemplate/:id', title: '运费模板详情', name: 'freight_detail', component: resolve => { require(['@/views/FreightTemplate/add.vue'], resolve); } },
-        { path: 'typedetail/:id', title: '类型详情', name: 'type_detail', component: resolve => { require(['@/views/Type/detail.vue'], resolve); } },
-        { path: 'appraisaldetail/:id', title: '考评记录详情', name: 'appraisal_detail', component: resolve => { require(['@/views/yuyue/appraisaldetail.vue'], resolve); } }
+        { path: 'appraisaldetail/:id', title: '考评记录详情', name: 'appraisal_detail', component: resolve => { require(['@/views/yuyue/appraisaldetail.vue'], resolve); } },
+        { path: 'babylist/:id', title: '婴泳项目', name: 'baby_list', component: resolve => { require(['@/views/yuyue/babylist.vue'], resolve); } },
+        { path: 'babyorder/:id', title: '婴泳预约', name: 'baby_order', component: resolve => { require(['@/views/yuyue/babyorder.vue'], resolve); } },
+        { path: 'babyschedueslist/:id', title: '婴泳排班', name: 'babyschedues_list', component: resolve => { require(['@/views/yuyue/babyschedueslist.vue'], resolve); } }
     ]
 };
 
@@ -93,12 +95,6 @@ export const appRouter = [
                 name: 'brands',
                 title: '品牌管理',
                 component: resolve => { require(['@/views/product/brands.vue'], resolve); }
-            }, {
-                path: 'types',
-                icon: 'levels',
-                name: 'types',
-                title: '类型管理',
-                component: resolve => { require(['@/views/type/index.vue'], resolve); }
             }
         ]
     },

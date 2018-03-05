@@ -178,8 +178,8 @@ const deleteButton = (vm, h, currentRow, index) => {
 //查看详情
 const selectDetailButton = (vm, h, currentRow, index, btn) => {
   let btnName = "查看详情"; ///btn.BtttonName
-  if(btn &&  btn.BtttonName){
-    btnName=btn.BtttonName;
+  if (btn && btn.BtttonName) {
+    btnName = btn.BtttonName;
   }
   return h(
     "Button",
@@ -197,30 +197,48 @@ const selectDetailButton = (vm, h, currentRow, index, btn) => {
           //跳转特殊处理
           switch (btnName) {
             case "预约记录":
-               vm.$router.push({
+              vm.$router.push({
                 name: "specialorder_list",
                 params: { id: currentRow["Id"] }
               });
               break;
             case "排班管理":
-               vm.$router.push({
+              vm.$router.push({
                 name: "specialschedues_list",
                 params: { id: currentRow["Id"] }
               });
-            break;
+              break;
             case "领取详情":
-               vm.$router.push({
+              vm.$router.push({
                 name: "couponreceivers_list",
                 params: { id: currentRow["Id"] }
               });
-            break;
+              break;
             case "使用详情":
-               vm.$router.push({
+              vm.$router.push({
                 name: "uservipcardrecord_list",
                 params: { id: currentRow["Id"] }
               });
-            break;
-            
+              break;
+
+            case "婴泳项目":
+              vm.$router.push({
+                name: "baby_list",
+                params: { id: currentRow["Id"] }
+              });
+              break;
+            case "婴泳预约":
+              vm.$router.push({
+                name: "baby_order",
+                params: { id: currentRow["Id"] }
+              });
+              break;
+            case "婴泳排班":
+              vm.$router.push({
+                name: "babyschedues_list",
+                params: { id: currentRow["Id"] }
+              });
+              break;
             default:
               vm.$router.push({
                 name: vm.routername,
@@ -234,7 +252,6 @@ const selectDetailButton = (vm, h, currentRow, index, btn) => {
     btnName
   );
 };
-
 
 //审核重置密码
 const resetPasswordButton = (vm, h, currentRow, index, btn) => {
@@ -281,7 +298,6 @@ const resetPasswordButton = (vm, h, currentRow, index, btn) => {
     ]
   );
 };
-
 
 //查看
 const selectButton = (vm, h, currentRow, index) => {
@@ -425,7 +441,7 @@ const deliverButton = (vm, h, currentRow, index) => {
 //审核
 
 const auditSuccessButton = (vm, h, currentRow, index, btn) => {
-    if (currentRow[btn.CheckKey] != btn.CheckValue) return;
+  if (currentRow[btn.CheckKey] != btn.CheckValue) return;
   return h(
     "Poptip",
     {
@@ -764,7 +780,7 @@ export default {
                       btn
                     );
                     break;
-                     case "edit":
+                  case "edit":
                     type = editButton(this, h, currentRowData, param.index);
                     break;
                   case "alertEdit":
@@ -807,9 +823,9 @@ export default {
                       h,
                       currentRowData,
                       param.index,
-                      btn);
+                      btn
+                    );
                     break;
-                    
                 }
                 return type;
               })
