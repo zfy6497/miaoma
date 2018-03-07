@@ -438,6 +438,30 @@ const deliverButton = (vm, h, currentRow, index) => {
   );
 };
 
+//确认服务
+const confirmButton = (vm, h, currentRow, index) => {
+  if (currentRow.OrderStatus != 0) return;
+  return h(
+    "Button",
+    {
+      props: {
+        type: "primary",
+        loading: currentRow.saving,
+        size: "small"
+      },
+      style: {
+        margin: "0 5px"
+      },
+      on: {
+        click: () => {
+          vm.$emit("set-form", currentRow);
+        }
+      }
+    },
+    "确认服务"
+  );
+};
+
 //审核
 
 const auditSuccessButton = (vm, h, currentRow, index, btn) => {
@@ -733,6 +757,9 @@ export default {
                   case "deliver":
                     type = deliverButton(this, h, currentRowData, param.index);
                     break;
+                  case "confirm":
+                    type = confirmButton(this, h, currentRowData, param.index);
+                    break;
                 }
                 return type;
               })
@@ -816,6 +843,9 @@ export default {
                     break;
                   case "deliver":
                     type = deliverButton(this, h, currentRowData, param.index);
+                    break;
+                  case "confirm":
+                    type = confirmButton(this, h, currentRowData, param.index);
                     break;
                   case "resetPassWord":
                     type = resetPasswordButton(

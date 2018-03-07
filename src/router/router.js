@@ -63,7 +63,8 @@ export const otherRouter = {
         { path: 'appraisaldetail/:id', title: '考评记录详情', name: 'appraisal_detail', component: resolve => { require(['@/views/yuyue/appraisaldetail.vue'], resolve); } },
         { path: 'babylist/:id', title: '婴泳项目', name: 'baby_list', component: resolve => { require(['@/views/yuyue/babylist.vue'], resolve); } },
         { path: 'babyorder/:id', title: '婴泳预约', name: 'baby_order', component: resolve => { require(['@/views/yuyue/babyorder.vue'], resolve); } },
-        { path: 'babyschedueslist/:id', title: '婴泳排班', name: 'babyschedues_list', component: resolve => { require(['@/views/yuyue/babyschedueslist.vue'], resolve); } }
+        { path: 'babyschedueslist/:id', title: '婴泳排班', name: 'babyschedues_list', component: resolve => { require(['@/views/yuyue/babyschedueslist.vue'], resolve); } },
+        { path: 'babyorderdetail/:id', title: '婴泳订单详情', name: 'babyorder_detail', component: resolve => { require(['@/views/yuyue/babyorderdetail.vue'], resolve); } }
     ]
 };
 

@@ -3,21 +3,18 @@
 </style>
 <template>
     <list :show-search="true" :show-date="true" :show-key-word="true" :show-add-button="false" :show-page="true" :update-url="updateUrl"
-        :delete-url="deleteUrl" :routername="'specialorder_detail'" :add-url="addUrl" :get-url="getUrl" :form-custom="formCustom" :rule-custom="ruleCustom" :modal-Width="500" @set-form="setForm" :other-query="otherQuery">
+        :delete-url="deleteUrl" :routername="'babyorder_detail'" :add-url="addUrl" :get-url="getUrl" :form-custom="formCustom" :rule-custom="ruleCustom" :modal-Width="500" @set-form="setForm" :other-query="otherQuery">
         <template slot="fromtop">
-          <div class="ivu-modal-header"><div class="ivu-modal-header-inner">门店管理</div></div>
+          <div class="ivu-modal-header"><div class="ivu-modal-header-inner">确认服务</div></div>
         </template>
         <template slot="frommodel">
-            <FormItem label="* 所在区域" prop="AreaId">
-              <Select v-model="formCustom.AreaId" style="width:300px" number>
-                    <Option v-for="item in arealist" :value="item.Id" :key="item.Id">{{ item.Name }}</Option>
+            <FormItem label="选择项目" prop="AreaId">
+              <Select v-model="formCustom.BabyStrokeId" style="width:300px" number>
+                    <Option v-for="item in projectlist" :value="item.Id" :key="item.Id">{{ item.Name }}</Option>
               </Select>
             </FormItem>
-            <FormItem label="* 名称" prop="Name">
-                <Input type="text" style="width: 300px"  v-model="formCustom.Name"></Input>
-            </FormItem>         
-            <FormItem label="* 排序" prop="Sort">
-                    <Input type="text" style="width: 300px"  v-model="formCustom.Sort" :number="true" placeholder="排序号码越小越靠前" ></Input>
+            <FormItem label="项目价格" prop="OrderPrice">
+                <Input type="text" style="width: 300px"   v-model="formCustom.OrderPrice"></Input>
             </FormItem>
         </template>
     </list>
@@ -46,20 +43,17 @@ export default {
   },
   data() {
     return {
-      updateUrl: "",
-      deleteUrl: "admin/Special/Order/Delete",
+      updateUrl: "admin/Store/Order/UpdateStatus",
+      deleteUrl: "admin/Store/Order/Delete",
       addUrl: "",
-      getUrl: "admin/Special/Order/List",
+      getUrl: "admin/Store/Order/List",
       formCustom: {
-        Id: 0,
-        AreaId: 0, //区域ID
-        Name: "", //名称
-        Sort: 99
+        BabyStrokeId: 0, //项目Id
+        OrderPrice: 0
       },
       ruleCustom: {
-        Name: [{ validator: validateRequired, trigger: "blur" }],
-        AreaId: [{ validator: validateNum, trigger: "blur" }],
-        Sort: [{ validator: validateNum, trigger: "blur" }]
+        ProjectId: [{ validator: validateNum, trigger: "blur" }],
+        OrderPrice: [{ validator: validateNum, trigger: "blur" }]
       },
       modalWidth: 500,
       defaultImageUrl: [],
@@ -67,7 +61,7 @@ export default {
         TypeId: this.slideType,
         SId: this.$route.params.id
       },
-      arealist: []
+      projectlist:[]
     };
   },
   methods: {
@@ -98,20 +92,24 @@ export default {
         this.defaultImageUrl = [];
       }
     },
-    loadArea() {
-      let vm = this;
-      Util.post("admin/Area/GetAreaList", { Id: 100 }, vm, function(res, data) {
+    loadProject(){
+      let vm=this;
+      Util.post("admin/Store/GetProjectByStoreId", { Id: this.$route.params.id }, vm, function(res, data) {
         if (res === "1") {
           if (data.totalCount > 0) {
-            vm.arealist = data.data;
+            vm.projectlist = data.data;
           } else {
-            vm.arealist = [];
+            vm.projectlist = [];
           }
         }
       });
     }
   },
-  created() {},
-  mounted() {}
+  created() {
+    
+  },
+  mounted() {
+    this.loadProject();
+    }
 };
 </script>

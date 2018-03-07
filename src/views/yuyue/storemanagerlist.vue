@@ -23,13 +23,13 @@
             <FormItem label="* 用户手机号" prop="UserName">
                   <Input type="text" style="width: 300px" placeholder="店长端登录手机号(默认密码123456)"  v-model="formCustom.UserName"></Input>
             </FormItem>
-            <FormItem label="是否管理员" style="display:none"  prop="IsAdmin">
+            <FormItem label="是否管理员" style="display:none"  >
                   <Input type="text" style="width: 300px"  v-model="formCustom.IsAdmin"></Input>
             </FormItem>
-            <FormItem label="是否启用" style="display:none"  prop="IsEnable">
+            <FormItem label="是否启用" style="display:none"  >
                     <Input type="text" style="width: 300px"  v-model="formCustom.IsEnable"></Input>
             </FormItem>
-            <FormItem label="是否删除" style="display:none"  prop="IsDeleted">
+            <FormItem label="是否删除" style="display:none"  >
                     <Input type="text" style="width: 300px"  v-model="formCustom.IsDeleted"></Input>
             </FormItem>
         </template>
@@ -38,7 +38,7 @@
 
 <script>
 import PhUpload from "../main-components/phupload.vue";
-import Util from '../../libs/util.js';
+import Util from "../../libs/util.js";
 import list from "../main-components/list.vue";
 import { validateNum, validateRequired } from "../../libs/validate.js";
 export default {
@@ -61,12 +61,12 @@ export default {
       getUrl: "admin/Store/Manager/GetList",
       formCustom: {
         Id: 0,
-        RealName: '', //真实姓名
-        UserName:'',//用户手机号码
+        RealName: "", //真实姓名
+        UserName: "", //用户手机号码
         IsAdmin: true, //是否管理员
         Avatar: "", //头像
         IsDeleted: false, //是否删除
-        StoreId: 0,//门店信息
+        StoreId: 0, //门店信息
         IsEnable: true //是否启用
       },
       ruleCustom: {
@@ -79,7 +79,7 @@ export default {
       otherQuery: {
         TypeId: this.slideType
       },
-      storelist:[]
+      storelist: []
     };
   },
   methods: {
@@ -101,15 +101,17 @@ export default {
         for (let key in this.formCustom) {
           switch (key) {
             case "Id":
-                this.formCustom[key] = 0;
+              this.formCustom[key] = 0;
               break;
             case "IsAdmin":
+               this.formCustom[key] = true;
+              break;
             case "IsEnable":
-                this.formCustom[key] = true;
+              this.formCustom[key] = true;
               break;
             case "IsDeleted":
-                this.formCustom[key] = false;
-              break;  
+              this.formCustom[key] = false;
+              break;
             default:
               this.formCustom[key] = "";
               break;
@@ -118,19 +120,17 @@ export default {
         this.defaultImageUrl = [];
       }
     },
-    loadStore(){
-      let vm=this;
-      Util.post("admin/Store/GetAllStore",{},vm,function(res,data){
-         if(res==='1')
-                {
-                    if(data.totalCount>0)
-                    {
-                        vm.storelist = data.data;                
-                    }else{
-                        vm.storelist = [];
-                    }
-                }
-      });        
+    loadStore() {
+      let vm = this;
+      Util.post("admin/Store/GetAllStore", {}, vm, function(res, data) {
+        if (res === "1") {
+          if (data.totalCount > 0) {
+            vm.storelist = data.data;
+          } else {
+            vm.storelist = [];
+          }
+        }
+      });
     }
   },
   mounted() {
