@@ -1,5 +1,5 @@
 <style lang="less">
-    @import './login.less';
+@import "./login.less";
 </style>
 
 <template>
@@ -7,11 +7,12 @@
         <div class="login-con">
             <Card :bordered="false">
                 <p slot="title">
-                    <Icon type="log-in"></Icon>
                     欢迎登录
+                    <span style="float:right;cursor: pointer;"  v-on:click="loginmethod(0)"  v-if="platadmin==true" > 店长 <Icon type="log-in"></Icon></span>
+                    <span style="float:right;cursor: pointer;"  v-on:click="loginmethod(99)"  v-if="storeadmin==true" > 平台 <Icon type="log-in"></Icon></span>
                 </p>
                 <div class="form-con">
-                    <Form ref="loginForm" :model="form" :rules="rules">
+                    <Form ref="loginForm"  :model="form" :rules="rules">
                         <FormItem prop="userName">
                             <Input v-model="form.userName" placeholder="请输入用户名">
                             <span slot="prepend">
@@ -38,74 +39,115 @@
 </template>
 
 <script>
-import Cookies from 'js-cookie';
-import md5 from 'js-md5';
-import Util from '../libs/util';
+import Cookies from "js-cookie";
+import md5 from "js-md5";
+import Util from "../libs/util";
 export default {
-    data () {
-        return {
-            form: {
-                userName: 'admin',
-                password: '123456'
-            },
-            rules: {
-                userName: [
-                    { required: true, message: '账号不能为空', trigger: 'blur' }
-                ],
-                password: [
-                    { required: true, message: '密码不能为空', trigger: 'blur' }
-                ]
-            }
-        };
+  data() {
+    return {
+      storeadmin: false,
+      platadmin: true,
+      form: {
+        userName: "",
+        password: "",
+        type: "99"
+      },
+      rules: {
+        userName: [
+          { required: true, message: "账号不能为空", trigger: "blur" }
+        ],
+        password: [{ required: true, message: "密码不能为空", trigger: "blur" }]
+      }
+    };
+  },
+  computed: {
+    postdata: function() {
+      return {
+        UserName: this.form.userName,
+        PassWord: md5(this.form.password),
+        CheckCode: "",
+        AutoLogin: "",
+        Type: this.form.type
+      };
     },
-    computed:{
-        postdata:function(){
-             return {'UserName':this.form.userName,'PassWord':md5(this.form.password),'CheckCode':'','AutoLogin':'','Type':'99'};
-        }
-    },
-    methods: {
-        getSign(){
-
-
-        },
-        handleSubmit () {
-            this.$refs.loginForm.validate((valid) => {
-                if (valid) {  
-                    let t1=this.postdata;
-                    t1["Sign"]=Util.createsign(t1,this.$store.state.app.mmkey);
-                    Util.ajax.post("/admin/Admin/UserLogin",t1).then (res=>{
-                        var data=res.data;
-                        if(data.resultCode=="0")
-                        {
-                            Cookies.set('user', this.form.userName);
-                            Cookies.set('token', data.data.Token);
-                            Cookies.set('mmnum', data.data.MemberID);
-                           // this.$store.commit('loginin', data.data.Token);
-                            if (this.form.userName === 'iview_admin') {
-                                Cookies.set('access', 0);
-                            } else {
-                                Cookies.set('access', 1);
-                            }
-                            this.$router.push({
-                                name: 'home_index'
-                            });
-                        }
-                        else{
-                            this.$Message.error(data.message);
-                        }
-
-                    }).catch(error=>{
-                        console.log(error);
-                        this.$Message.error("请求错误");
-                    });
-
-                }
-            });
-        }
+    _postdata: function() {
+      return {
+        UserName: this.form.userName,
+        PassWord: md5(this.form.password),
+        Type: this.form.type
+      };
     }
+  },
+  methods: {
+    loginmethod(type) {
+      this.form.userName = "";
+      this.form.password = "";
+      if (type == 0) {
+        this.platadmin = false;
+        this.storeadmin = true;
+      } else {
+        this.platadmin = true;
+        this.storeadmin = false;
+      }
+      this.form.type = type;
+      Cookies.set("mmtype", type);
+    },
+    getSign() {},
+    handleSubmit() {
+      this.$refs.loginForm.validate(valid => {
+        if (valid) {
+          let t1 = this.postdata;
+          let loginurl = "/admin/Admin/UserLogin";
+          if (this.form.type == 0) {
+            loginurl = "/api/UserApi/Login";
+            t1 = this._postdata;
+            t1["Sign"] = Util.createsign(t1, this.$store.state.app.mmkey);
+            Util.ajax
+              .post(loginurl, t1)
+              .then(res => {
+                var data = res.data;
+                if (data.resultCode == "0") {
+                  Cookies.set(
+                    "user",
+                    data.data.StoreName + "(" + this.form.userName + ")"
+                  );
+                  Cookies.set("token", data.data.Token);
+                  Cookies.set("mmnum", data.data.ApiUid);
+                  this.$router.push({ name: "home_index" }); //店长登录首页可修改
+                } else {
+                  this.$Message.error(data.message);
+                }
+              })
+              .catch(error => {
+                this.$Message.error("请求错误");
+              });
+          } else {
+            t1["Sign"] = Util.createsign(t1, this.$store.state.app.mmkey);
+            Util.ajax
+              .post(loginurl, t1)
+              .then(res => {
+                var data = res.data;
+                if (data.resultCode == "0") {
+                  Cookies.set("user", this.form.userName);
+                  Cookies.set("token", data.data.Token);
+                  Cookies.set("mmnum", data.data.MemberID);
+                  this.$router.push({ name: "home_index" });
+                } else {
+                  this.$Message.error(data.message);
+                }
+              })
+              .catch(error => {
+                this.$Message.error("请求错误");
+              });
+          }
+        }
+      });
+    }
+  },
+  mounted() {
+    Cookies.set("mmtype", 99);
+    this.form.userName = "";
+    this.form.password = "";
+  }
 };
 </script>
-
-<style>
-
-</style>

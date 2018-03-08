@@ -1,5 +1,5 @@
 <style lang="less">
-    @import "./main.less";
+@import "./main.less";
 </style>
 <template>
     <div class="main" :class="{'main-hide-text': shrink}">
@@ -49,59 +49,63 @@
     </div>
 </template>
 <script>
-    import Cookies from 'js-cookie';
-    import shrinkableMenu from './main-components/shrinkable-menu/shrinkable-menu.vue';
-    import tagsPageOpened from './main-components/tags-page-opened.vue';
-    import fullScreen from './main-components/fullscreen.vue';
-    import lockScreen from './main-components/lockscreen/lockscreen.vue';
-    export default {
-    components: {
-        shrinkableMenu,
-        tagsPageOpened,
-        fullScreen,
-        lockScreen,
+import Cookies from "js-cookie";
+import shrinkableMenu from "./main-components/shrinkable-menu/shrinkable-menu.vue";
+import tagsPageOpened from "./main-components/tags-page-opened.vue";
+import fullScreen from "./main-components/fullscreen.vue";
+import lockScreen from "./main-components/lockscreen/lockscreen.vue";
+export default {
+  components: {
+    shrinkableMenu,
+    tagsPageOpened,
+    fullScreen,
+    lockScreen
+  },
+  data() {
+    return {
+      shrink: false,
+      userName: "",
+      isFullScreen: false,
+      openedSubmenuArr: this.$store.state.app.openedSubmenuArr
+    };
+  },
+  computed: {
+    menuList() {
+      return this.$store.state.app.menuList;
     },
-    data () {
-        return {
-            shrink: false,
-            userName: '',
-            isFullScreen: false,
-            openedSubmenuArr: this.$store.state.app.openedSubmenuArr
-        };
-    },
-    computed: {
-        menuList () {
-            return this.$store.state.app.menuList;
-        },
-        pageTagsList () {
-            return this.$store.state.app.pageOpenedList; // 打开的页面的页面对象
-        }
-    },
-    methods: {
-        init () {
-            this.userName = Cookies.get('user');
-            this.$store.commit('loginin', {'token':Cookies.get('token'),'id': Cookies.get('mmnum')});
-        },
-        toggleClick () {
-            this.shrink = !this.shrink;
-        },
-        handleClickUserDropdown (name) {
-
-            if (name === 'loginout') {
-                    // 退出登录
-                    this.$store.commit('logout', this);
-                    this.$store.commit('clearOpenedSubmenu');
-                    this.$router.push({
-                        name: 'login'
-                    });
-        }
-        },
-        fullscreenChange (isFullScreen) {
-            // console.log(isFullScreen);
-        }
-    },
-    created () {
-        this.init();
+    pageTagsList() {
+      return this.$store.state.app.pageOpenedList; // 打开的页面的页面对象
     }
+  },
+  methods: {
+    init() {
+      this.userName = Cookies.get("user");
+      this.$store.commit("loginin", {
+        token: Cookies.get("token"),
+        id: Cookies.get("mmnum")
+      });
+      //更新菜单
+      this.$store.commit('updateMenulist');
+    },
+    toggleClick() {
+      this.shrink = !this.shrink;
+    },
+    handleClickUserDropdown(name) {
+      if (name === "loginout") {
+        // 退出登录
+        this.$store.commit("logout", this);
+        this.$store.commit("clearOpenedSubmenu");
+        this.$router.push({
+          name: "login"
+        });
+      }
+    },
+    fullscreenChange(isFullScreen) {
+      // console.log(isFullScreen);
+    }
+  },
+  created() {
+    this.init();
+  }
 };
 </script>

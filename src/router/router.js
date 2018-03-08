@@ -64,11 +64,13 @@ export const otherRouter = {
         { path: 'babylist/:id', title: '婴泳项目', name: 'baby_list', component: resolve => { require(['@/views/yuyue/babylist.vue'], resolve); } },
         { path: 'babyorder/:id', title: '婴泳预约', name: 'baby_order', component: resolve => { require(['@/views/yuyue/babyorder.vue'], resolve); } },
         { path: 'babyschedueslist/:id', title: '婴泳排班', name: 'babyschedues_list', component: resolve => { require(['@/views/yuyue/babyschedueslist.vue'], resolve); } },
-        { path: 'babyorderdetail/:id', title: '婴泳订单详情', name: 'babyorder_detail', component: resolve => { require(['@/views/yuyue/babyorderdetail.vue'], resolve); } }
+        { path: 'babyorderdetail/:id', title: '婴泳订单详情', name: 'babyorder_detail', component: resolve => { require(['@/views/yuyue/babyorderdetail.vue'], resolve); } },
+        { path: 'seller/appraisaldetail/:id', title: '考评记录详情', name: 'seller_appraisal_detail', component: resolve => { require(['@/views/seller/yuyue/appraisaldetail.vue'], resolve); } }
+        
     ]
 };
 
-// 作为Main组件的子页面展示并且在左侧菜单显示的路由写在appRouter里
+// 平台中心  作为Main组件的子页面展示并且在左侧菜单显示的路由写在appRouter里
 export const appRouter = [
 
     {
@@ -343,8 +345,56 @@ export const appRouter = [
     }
 ];
 
-
-
+// 店长登录
+export const appStoreRouter = [
+    {
+        path: '/seller/member',
+        icon: 'person',
+        title: '会员管理',
+        name: 'sellermember',
+        component: Main,
+        children: [
+            { path: '_index', icon: 'ios-list', title: '会员列表', name: '_index', component: resolve => { require(['@/views/seller/member/index.vue'], resolve); } }
+        ]
+    },
+    {
+        path: '/seller/yuyue',
+        icon: 'soup-can',
+        title: '预约管理',
+        name: 'selleryuyue',
+        component: Main,
+        children: [
+            {
+                path: '_speciallist',
+                icon: 'ios-list',
+                name: '_speciallist',
+                title: '专家列表',
+                component: resolve => { require(['@/views/seller/yuyue/speciallist.vue'], resolve); }
+            },
+            {
+                path: '_specialorder',
+                icon: 'ios-list',
+                name: '_specialorder',
+                title: '预约订单',
+                component: resolve => { require(['@/views/seller/yuyue/specialorder.vue'], resolve); }
+            },
+            {
+                path: '_commentlist',
+                icon: 'ios-list',
+                name: '_commentlist',
+                title: '评价管理',
+                component: resolve => { require(['@/views/seller/yuyue/commentlist.vue'], resolve); }
+            },
+            {
+                path: '_appraisalmanage',
+                icon: 'ios-list',
+                name: '_appraisalmanage',
+                title: '考评管理',
+                component: resolve => { require(['@/views/seller/yuyue/appraisalmanage.vue'], resolve); }
+            }
+        ]
+    }
+];
 
 // 所有上面定义的路由都要写在下面的routers里
 export const routers = [
@@ -352,6 +402,7 @@ export const routers = [
     otherRouter,
     locking,
     ...appRouter,
+    ...appStoreRouter,
     page500,
     page403,
     page404

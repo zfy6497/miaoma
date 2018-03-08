@@ -1,12 +1,14 @@
-import {otherRouter, appRouter} from '@/router/router';
+import { otherRouter, appRouter, appStoreRouter} from '@/router/router';
 import Util from '@/libs/util';
+import Cookies from 'js-cookie';
 const app = {
     state: {
         cachePage: [],
         menuList: [],
         routers: [
             otherRouter,
-            ...appRouter
+            ...appRouter,
+            ...appStoreRouter
         ],
         openedSubmenuArr: [], // 要展开的菜单数组
         pageOpenedList: [{
@@ -26,7 +28,11 @@ const app = {
             state.tagsList.push(...list);
         },
         updateMenulist (state) {
-            state.menuList = appRouter;
+            if (Cookies.get('mmtype') && Cookies.get('mmtype') === '0') {
+                state.menuList = appStoreRouter;
+            } else {
+                state.menuList = appRouter;
+            }
         },
         clearOpenedSubmenu (state) {
             state.openedSubmenuArr.length = 0;

@@ -2,8 +2,8 @@
 @import "./form.less";
 </style>
 <template>
-    <list :show-search="true" :show-date="false" :show-key-word="true" :show-add-button="false" :show-page="true" :update-url="updateUrl"
-        :delete-url="deleteUrl" :add-url="addUrl"  :get-url="getUrl" :form-custom="formCustom" :rule-custom="ruleCustom" :modal-Width="500" @set-form="setForm" :other-query="otherQuery">
+    <list :show-search="true" :show-date="true" :show-key-word="true" :show-add-button="false" :show-page="true" :update-url="updateUrl"
+        :delete-url="deleteUrl" :add-url="addUrl"  :routername="'seller_appraisal_detail'"  :get-url="getUrl" :form-custom="formCustom" :rule-custom="ruleCustom" :modal-Width="500" @set-form="setForm" :other-query="otherQuery">
         <template slot="fromtop">
           <div class="ivu-modal-header"><div class="ivu-modal-header-inner">考评管理</div></div>
         </template>
@@ -30,10 +30,10 @@
 </template>
 
 <script>
-import PhUpload from "../main-components/phupload.vue";
-import Util from "../../libs/util.js";
-import list from "../main-components/list.vue";
-import { validateNum, validateRequired } from "../../libs/validate.js";
+import PhUpload from "../../main-components/phupload.vue";
+import Util from "../../../libs/util.js";
+import list from "../../main-components/list.vue";
+import { validateNum, validateRequired } from "../../../libs/validate.js";
 export default {
   name: "appraisalmanage-table",
   components: {
@@ -51,7 +51,7 @@ export default {
       updateUrl: "",
       deleteUrl: "",
       addUrl: "",
-      getUrl: "admin/Appraisal/GetDetailList",
+      getUrl: "api/StoreApi/GetAppraisalList",
       formCustom: {
         Id: 0,
         Title: "", //标题
@@ -67,8 +67,9 @@ export default {
       modalWidth: 500,
       defaultImageUrl: [],
       otherQuery: {
-        Type:this.$route.params.id,
-      }
+        TypeId: this.slideType
+      },
+      arealist: []
     };
   },
   methods: {
@@ -97,8 +98,8 @@ export default {
             case "Id":
               this.formCustom[key] = 0;
               break;
-            case "AppraisalId":
-              this.formCustom[key] =this.slideType;
+            case "TypeId":
+              this.formCustom[key] = this.slideType;
               break;
             case "IsShow":
               this.formCustom[key] = true;

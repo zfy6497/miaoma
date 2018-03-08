@@ -30,12 +30,12 @@
 </template>
 
 <script>
-import PhUpload from "../main-components/phupload.vue";
-import Util from "../../libs/util.js";
-import list from "../main-components/list.vue";
-import { validateNum, validateRequired } from "../../libs/validate.js";
+import PhUpload from "../../main-components/phupload.vue";
+import Util from "../../../libs/util.js";
+import list from "../../main-components/list.vue";
+import { validateNum, validateRequired } from "../../../libs/validate.js";
 export default {
-  name: "appraisalmanage-table",
+  name: "seller-appraisalmanage-table",
   components: {
     list,
     PhUpload
@@ -51,7 +51,7 @@ export default {
       updateUrl: "",
       deleteUrl: "",
       addUrl: "",
-      getUrl: "admin/Appraisal/GetDetailList",
+      getUrl: "api/StoreApi/GetAppraisalDetailList",
       formCustom: {
         Id: 0,
         Title: "", //标题
