@@ -9,10 +9,11 @@
         </template>
         <template slot="frommodel">
             <FormItem label="选择项目" prop="AreaId">
-              <Select v-model="formCustom.BabyStrokeId" style="width:300px" number>
+              <Select v-model="formCustom.BabyStrokeId"  @on-change="getPrice" style="width:300px" number>
                     <Option v-for="item in projectlist" :value="item.Id" :key="item.Id">{{ item.Name }}</Option>
               </Select>
             </FormItem>
+             <input type="hidden" v-model="formCustom.OrderId" />
             <FormItem label="项目价格" prop="OrderPrice">
                 <Input type="text" style="width: 300px"   v-model="formCustom.OrderPrice"></Input>
             </FormItem>
@@ -43,13 +44,14 @@ export default {
   },
   data() {
     return {
-      updateUrl: "admin/Store/Order/UpdateStatus",
+      updateUrl: "admin/Store/Order/UpdatePrice",
       deleteUrl: "admin/Store/Order/Delete",
-      addUrl: "",
+      addUrl: "admin/Store/Order/UpdatePrice",
       getUrl: "admin/Store/Order/List",
       formCustom: {
         BabyStrokeId: 0, //项目Id
-        OrderPrice: 0
+        OrderPrice: 0,
+        OrderId: 0
       },
       ruleCustom: {
         ProjectId: [{ validator: validateNum, trigger: "blur" }],
@@ -101,6 +103,18 @@ export default {
           } else {
             vm.projectlist = [];
           }
+        }
+      });
+    },
+    getPrice(value){
+      let vm=this;
+      let projectId=value;
+      console.log("price:"+projectId);
+      Util.post("admin/Store/GetProjectPrice", { Id:  projectId}, vm, function(res, data) {
+        if (res === "1") {
+           vm.formCustom.OrderPrice = data.data.Price;
+        }else{
+           vm.formCustom.OrderPrice=0;
         }
       });
     }
