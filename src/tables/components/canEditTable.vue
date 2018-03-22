@@ -21,7 +21,7 @@
 
 <script>
 import Util from "../../libs/util.js";
-
+import D from "../../libs/date.js";
 //跳转新页面编辑框
 const newPageEditButton = (vm, h, currentRow, index) => {
   return h(
@@ -865,7 +865,7 @@ export default {
         if (item.formatType === "formatTime") {
           item.render = (h, param) => {
             let currentRowData = this.thisTableData[param.index];
-            return h("span", Util.formatDate(currentRowData[item.key]));
+            return h("span", D.date(currentRowData[item.key]));
           };
         }
         //单图
