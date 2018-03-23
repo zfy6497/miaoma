@@ -70,7 +70,7 @@
                          <FormItem label="" prop="">
                             <label type="text" style="width: 400px;margin: 0 0px;"  >
                                   <div v-if="formCustom.OrderStatus==0" >
-                                        <Button type="primary"    :loading="loading">取消预约</Button>
+                                       <!--  <Button type="primary"    :loading="loading">取消预约</Button> -->
                                     </div>
                             </label>
                         </FormItem>
@@ -159,7 +159,7 @@ export default {
           OperName: null,
           RefundPrice: 0,
           ServiceDay: "",
-          BabyStrokeName:""
+          BabyStrokeName: ""
         }
       },
       geturl: "admin/Store/Order/Detail"
@@ -170,7 +170,10 @@ export default {
       let vm = this;
       //load message
       if (this.formCustom.Id && this.formCustom.Id != 0) {
-        Util.post(this.geturl, { Id: this.formCustom.Id }, vm, function(res,data) {
+        Util.post(this.geturl, { Id: this.formCustom.Id }, vm, function(
+          res,
+          data
+        ) {
           if (res === "1") {
             vm.formCustom = data.data;
           } else {
@@ -178,10 +181,10 @@ export default {
           }
         });
       }
+    },
+    CancelOrder() {
+      let vm = this;
     }
-  },
-  CancelOrder() {
-    let vm = this;
   },
   mounted() {
     this.init();

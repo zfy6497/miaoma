@@ -70,7 +70,7 @@
                          <FormItem label="" prop="">
                             <label type="text" style="width: 400px;margin: 0 0px;"  >
                                   <div v-if="formCustom.PayStatus==-1 && formCustom.OrderStatus==0" >
-                                        <Button type="primary"   @click="CancelOrder" :loading="loading">取消预约</Button>
+                                        <!-- <Button type="primary"   @click="CancelOrder" :loading="loading">取消预约</Button> -->
                                     </div>
                             </label>
                         </FormItem>
@@ -315,191 +315,193 @@
 
 <script>
 import PhUpload from "../main-components/phupload.vue";
-import Util from '../../libs/util.js';
-import {validateNum,validateRequired} from '../../libs/validate.js';
+import Util from "../../libs/util.js";
+import { validateNum, validateRequired } from "../../libs/validate.js";
 
 export default {
-    name: 'specialorder_detail',
-    components: {
-          PhUpload
+  name: "specialorder_detail",
+  components: {
+    PhUpload
+  },
+  data() {
+    return {
+      showInfo: false,
+      loading: false,
+      formCustom: {
+        Id: this.$route.params.id,
+        StatusName: "",
+        PayStatus: 0,
+        OrderStatus: 0,
+        OrderType: 0,
+        Serivce: {
+          Id: 0,
+          OrderId: 0,
+          UserId: 0,
+          SpecialId: 2,
+          Brith: "",
+          PregnantWeek: "",
+          PregnancyIllness: "",
+          BornSituation: "",
+          BornWeight: "",
+          BornHeight: "",
+          CurrWeight: "",
+          CurrHeight: "",
+          BeWeaning: "",
+          SideDishMonbtn: "",
+          AddFood: "",
+          AddAfter: "",
+          Allergy: "",
+          LongMedication: "",
+          Symptoms: "",
+          BeDisease: "",
+          NowDisease: "",
+          TongueBody: "",
+          TongueMass: "",
+          TongueMoss: "",
+          Face: "",
+          FaceImg: null,
+          TongueImg: null,
+          TongueUpImg: null,
+          FingerPrint: "",
+          Abnormal: "",
+          DiagnosisJson: "",
+          Period: "",
+          MeasuresJson: "",
+          Diet: "",
+          Avoid: "",
+          Advice: "",
+          TotalPrice: 100049,
+          CardPrice: 0,
+          CardDiscount: 0,
+          PayPrice: 100045.2,
+          PayStatus: 0,
+          PayDate: "",
+          PayGatewayOrderId: "",
+          PaymentTypeGateway: "2",
+          PayTypeName: "",
+          CreateDate: "",
+          Type: 1,
+          DiagnosisId: 9,
+          MeasuresIds: "",
+          FinishDate: ""
+        },
+        Special: {
+          StoreId: 2,
+          StoreName: "",
+          Telephone: "",
+          Address: "",
+          Id: 2,
+          Stars: 0,
+          Sort: 0,
+          Name: "",
+          Job: "",
+          Profile: "",
+          Introduction: "",
+          Price: 150,
+          PriceRemark: null,
+          Avatar: "",
+          Status: 0,
+          StartDate: null,
+          EndDate: null,
+          TheirStores: null,
+          PayMethod: 0
+        },
+        Order: {
+          Id: this.$route.params.id,
+          SpecialId: 2,
+          SpecialName: "",
+          CreateDate: "",
+          UserNick: "",
+          UserName: "",
+          UserCellPhone: "",
+          UserId: 0,
+          StoreId: 0,
+          StoreName: "",
+          Address: "",
+          OrderId: 0,
+          OrderStatus: 1,
+          CardPrice: 5,
+          CardDiscount: 1.2,
+          OrderPrice: 0,
+          DiscountPrice: 0,
+          PrepaidPrice: 10,
+          PayDate: null,
+          PayTypeName: null,
+          PaymentTypeGateway: null,
+          PayGatewayOrderId: null,
+          PayPrice: 3.8,
+          OffLinePayTypeName: null,
+          OffLinePayPrice: 0,
+          FinishDate: null,
+          OrderDate: "",
+          ContactId: 0,
+          ContactMobile: "",
+          ContactName: "",
+          ServiceId: 20,
+          ServiceName: "",
+          ServiceSex: "",
+          ServiceAge: "",
+          Remark: "",
+          OperName: null,
+          RefundPrice: 0,
+          ServiceDay: ""
+        },
+        Diagnosis: {
+          Name: "",
+          DepartmentType: "",
+          SickReason: "",
+          CertType: "",
+          CardContent: "",
+          ClinicalType: "",
+          ClinicalContent: ""
+        },
+        Measures: [
+          {
+            Name: "",
+            Type: "",
+            MedicatedBathType: "",
+            SetOfType: "",
+            Content: "",
+            ChildItems: [
+              {
+                PartsName: "",
+                AcupunctureName: ""
+              }
+            ]
+          }
+        ]
+      },
+      geturl: "admin/Special/Order/Detail"
+    };
+  },
+  methods: {
+    init() {
+      let vm = this;
+      //load message
+      if (this.formCustom.Id && this.formCustom.Id != 0) {
+        Util.post(this.geturl, { Id: this.formCustom.Id }, vm, function(
+          res,
+          data
+        ) {
+          if (res === "1") {
+            vm.formCustom = data.data;
+          } else {
+            this.$Message.error("获取订单信息出错了");
+          }
+        });
+      }
     },
-    data () {
-        return {
-            showInfo: false,
-            loading:false,
-            formCustom:{
-                    Id:this.$route.params.id, 
-                    StatusName:"",
-                    PayStatus:0,
-                    OrderStatus:0,
-                    OrderType:0,
-                    Serivce:{
-                        Id:0,
-                        OrderId:0,
-                        UserId:0,
-                        SpecialId:2,
-                        Brith:"",
-                        PregnantWeek:"",
-                        PregnancyIllness:"",
-                        BornSituation:"",
-                        BornWeight:"",
-                        BornHeight:"",
-                        CurrWeight:"",
-                        CurrHeight:"",
-                        BeWeaning:"",
-                        SideDishMonbtn:"",
-                        AddFood:"",
-                        AddAfter:"",
-                        Allergy:"",
-                        LongMedication:"",
-                        Symptoms:"",
-                        BeDisease:"",
-                        NowDisease:"",
-                        TongueBody:"",
-                        TongueMass:"",
-                        TongueMoss:"",
-                        Face:"",
-                        FaceImg:null,
-                        TongueImg:null,
-                        TongueUpImg:null,
-                        FingerPrint:"",
-                        Abnormal:"",
-                        DiagnosisJson:'',
-                        Period:"",
-                        MeasuresJson: '',
-                        Diet:"",
-                        Avoid:"",
-                        Advice:"",
-                        TotalPrice:100049,
-                        CardPrice:0,
-                        CardDiscount:0,
-                        PayPrice:100045.2,
-                        PayStatus:0,
-                        PayDate:"",
-                        PayGatewayOrderId:"",
-                        PaymentTypeGateway:"2",
-                        PayTypeName:"",
-                        CreateDate:"",
-                        Type:1,
-                        DiagnosisId:9,
-                        MeasuresIds:"",
-                        FinishDate:""
-                    },
-                    Special:{
-                        StoreId:2,
-                        StoreName:"",
-                        Telephone:"",
-                        Address:"",
-                        Id:2,
-                        Stars:0,
-                        Sort:0,
-                        Name:"",
-                        Job:"",
-                        Profile:"",
-                        Introduction:"",
-                        Price:150,
-                        PriceRemark:null,
-                        Avatar:"",
-                        Status:0,
-                        StartDate:null,
-                        EndDate:null,
-                        TheirStores:null,
-                        PayMethod:0,
-                      
-                    },
-                    Order:{
-                        Id:this.$route.params.id,
-                        SpecialId:2,
-                        SpecialName:"",
-                        CreateDate:"",
-                        UserNick:"",
-                        UserName:"",
-                        UserCellPhone:"",
-                        UserId:0,
-                        StoreId:0,
-                        StoreName:"",
-                        Address:"",
-                        OrderId:0,
-                        OrderStatus:1,
-                        CardPrice:5,
-                        CardDiscount:1.2,
-                        OrderPrice:0,
-                        DiscountPrice:0,
-                        PrepaidPrice:10,
-                        PayDate:null,
-                        PayTypeName:null,
-                        PaymentTypeGateway:null,
-                        PayGatewayOrderId:null,
-                        PayPrice:3.8,
-                        OffLinePayTypeName:null,
-                        OffLinePayPrice:0,
-                        FinishDate:null,
-                        OrderDate:"",
-                        ContactId:0,
-                        ContactMobile:"",
-                        ContactName:"",
-                        ServiceId:20,
-                        ServiceName:"",
-                        ServiceSex:"",
-                        ServiceAge:"",
-                        Remark:"",
-                        OperName:null,
-                        RefundPrice:0,
-                        ServiceDay:""
-                    },
-                    Diagnosis:{
-                        Name:"",
-                        DepartmentType:"",
-                        SickReason:"",
-                        CertType:"",
-                        CardContent:"",
-                        ClinicalType:"",
-                        ClinicalContent:""
-                    },
-                    Measures:[
-                    {
-                        Name:"",
-                        Type:"",
-                        MedicatedBathType:"",
-                        SetOfType:"",
-                        Content:"",
-                        ChildItems:[
-                            {
-                                PartsName:"",
-                                AcupunctureName:""
-                            }
-                        ]
-                    }]
-                    
-            },
-            geturl:'admin/Special/Order/Detail'
-        };
-    },
-    methods: {
-        init () {
-            let vm=this;
-            //load message
-            if(this.formCustom.Id&&this.formCustom.Id!=0){
-                Util.post(this.geturl,{Id:this.formCustom.Id},vm,function(res,data){
-                    if(res==='1'){
-                         vm.formCustom=data.data;
-                    }else{
-                         this.$Message.error('获取订单信息出错了');
-                    }
-               });
-            }
-        }
-    },
-    CancelOrder(){
-        let vm=this;
-    },
-    mounted () {
-        this.init();
-    },
-    watch: {
-        '$route' () {
-            this.init();
-        }
+    CancelOrder() {
+      let vm = this;
     }
+  },
+  mounted() {
+    this.init();
+  },
+  watch: {
+    $route() {
+      this.init();
+    }
+  }
 };
 </script>
