@@ -3,7 +3,7 @@
 </style>
 <template>
     <list :show-search="true" :show-date="false" :show-key-word="true" :show-add-button="true" :show-page="true" :update-url="updateUrl"
-        :delete-url="deleteUrl" :add-url="addUrl" :get-url="getUrl" :form-custom="formCustom" :rule-custom="ruleCustom" :modal-Width="500" @set-form="setForm" :other-query="otherQuery">
+        :delete-url="deleteUrl" :add-url="addUrl" :get-url="getUrl" :form-custom="formCustom" :rule-custom="ruleCustom" :modal-Width="500" @set-form="setForm" :other-query="otherQuery" :routername="'store_map'">
         <template slot="fromtop">
           <div class="ivu-modal-header"><div class="ivu-modal-header-inner">门店管理</div></div>
         </template>

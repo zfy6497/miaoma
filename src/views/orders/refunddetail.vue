@@ -45,7 +45,7 @@
       
 
           <FormItem label="审核时间" style="margin-bottom:2px;"  v-if="result.Status>1" >
-            <span>{{result.SellerAuditDate}}</span>
+            <span>{{result.SellerAuditDate | formatDate}}</span>
         </FormItem>
           <FormItem label="拒绝理由" v-if="result.SellerRemark"  style="margin-bottom:2px;">
             <span>{{result.SellerRemark}}</span>
@@ -53,7 +53,7 @@
         <template v-if="result.ExpressCompanyName">
            
          <FormItem label="买家发货时间" style="margin-bottom:2px;">
-            <span>{{result.BuyerDeliverDate}}</span>
+            <span>{{result.BuyerDeliverDate | formatDate}}</span>
         </FormItem>
            <FormItem label="快递公司" style="margin-bottom:2px;">
             <span>{{result.ExpressCompanyName}}</span>
@@ -66,7 +66,7 @@
             <span>{{result.SellerConfirmArrivalDate}}</span>
         </FormItem>
           <FormItem label="打款时间"  v-if="result.Status==7"  style="margin-bottom:2px;">
-            <span>{{result.ManagerConfirmDate}}</span>
+            <span>{{result.ManagerConfirmDate | formatDate}}</span>
         </FormItem>
          </Form>
         </Card >

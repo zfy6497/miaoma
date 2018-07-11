@@ -197,6 +197,7 @@ export default {
           }
         );
       } else {
+           vm.loading2 = false;
         vm.$Message.error("没有任何数据");
       }
     },

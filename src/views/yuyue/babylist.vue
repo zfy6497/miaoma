@@ -56,7 +56,7 @@ export default {
         Price: 0,
         Avatar: "",
         Remark: "",
-        StoreId:this.$route.params.id
+        StoreId:this.$store.state.user.type==0? 0:this.$route.params.id
       },
       ruleCustom: {
         Title: [{ validator: validateRequired, trigger: "blur" }],
@@ -67,7 +67,7 @@ export default {
       defaultImageUrl: [],
       otherQuery: {
         TypeId: this.slideType,
-        SId: this.$route.params.id
+        SId: this.$store.state.user.type==0? 0:this.$route.params.id
       },
       storelist: []
     };

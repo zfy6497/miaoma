@@ -202,7 +202,6 @@ export default {
             if (valid) {
                 var vm=this;
                  let pdata=this.formCustom;
-                 pdata["PassWord"]=md5(pdata["PassWord"]);
                  Util.post(this.addUrl,pdata,this,function(res){
                     if(res==='1')
                     {

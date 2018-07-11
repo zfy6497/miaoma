@@ -61,7 +61,7 @@ export default {
       defaultImageUrl: [],
       otherQuery: {
         TypeId: this.slideType,
-        SId: this.$route.params.id
+        SId: this.$store.state.user.type==0? 0:this.$route.params.id
       },
       projectlist:[]
     };
@@ -96,7 +96,7 @@ export default {
     },
     loadProject(){
       let vm=this;
-      Util.post("admin/Store/GetProjectByStoreId", { Id: this.$route.params.id }, vm, function(res, data) {
+      Util.post("admin/Store/GetProjectByStoreId", { Id: this.otherQuery.SId }, vm, function(res, data) {
         if (res === "1") {
           if (data.totalCount > 0) {
             vm.projectlist = data.data;

@@ -13,7 +13,7 @@ util.title = function (title) {
 const ajaxUrl = env === 'development'
     ? 'http://mmsoft.51jiuqu.com'
     : env === 'production'
-        ? 'http://localhost:49659'
+        ? 'http://43.247.89.26:8099'
         : 'http://mmsoft.51jiuqu.com';
 
 util.ajaxUrl = function () {
@@ -260,13 +260,15 @@ util.fullscreenEvent = function (vm) {
 
 util.post = function (purl, pdata, vm, callback) {
     pdata['ApiUid'] = vm.$store.state.user.id;
+    pdata['UserType'] = vm.$store.state.user.type;
     pdata['Token'] = vm.$store.state.user.token;
-    var nlist = ['StartDate', 'EndDate'];
+    var nlist = ['StartDate', 'EndDate', 'StartTime', 'EndTime', 'GetStartTime', 'GetEndTime'];
     var md5list = ['PassWord'];
     for (var key in pdata) {
         let val = pdata[key];
         if (nlist.indexOf(key) >= 0 && val != '') {
-            pdata[key] = util.formatDate(pdata[key]);
+
+            pdata[key] = util.formatDate(pdata[key]).toString();
         }
         if (md5list.indexOf(key) >= 0 && val != '') {
             pdata[key] = md5(pdata[key]);
@@ -297,17 +299,11 @@ util.post = function (purl, pdata, vm, callback) {
 util.createsign = function (pdata, skey) {
     let keys = new Array();
     let i = 0;
-    var nlist = ['key', 'Sign', 'StartDate', 'EndDate', 'StartTime', 'EndTime', 'GetStartTime', 'GetEndTime', 'defaultTemplate', 'templates', 'attrs', 'AttrList', 'Skus'];
+    var nlist = ['key', 'Sign', 'StartDate', 'EndDate', 'StartTime', 'EndTime', 'GetStartTime', 'GetEndTime', 'defaultTemplate', 'templates', 'attrs', 'AttrList', 'Skus', 'Items'];
     for (var key in pdata) {
         let val = pdata[key];
         if (val !== '' && nlist.indexOf(key) < 0) {
-            if (val == '[object Object]') {
-                var obj = JSON.stringify(val);
-                keys[i] = key + '=' + obj.toString();
-            } else {
-                keys[i] = key + '=' + val;
-            }
-
+            keys[i] = key + '=' + val;
             i++;
         }
 

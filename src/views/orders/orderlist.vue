@@ -1,7 +1,7 @@
 <template> 
     <list :show-search="true" :show-date="true" :show-key-word="true" :show-add-button="false" :show-page="true" :update-url="updateUrl"
-        :delete-url="deleteUrl" :add-url="addUrl" :get-url="getUrl" :form-custom="formCustom" :rule-custom="ruleCustom" :default-sidx="'OrderDate'" modal-Width="500" @set-form="setForm" :routername="'order_detail'">
-    
+        :delete-url="deleteUrl" :add-url="addUrl" :get-url="getUrl" :form-custom="formCustom" :rule-custom="ruleCustom" :default-sidx="'OrderDate'"   modal-Width="500" @set-form="setForm" :routername="'order_detail'">
+
         <template slot="frommodel">
             <FormItem label="快递公司" prop="ExpressCompanyName">
               <Select v-model="formCustom.ExpressCompanyName" style="width:300px">
@@ -46,7 +46,10 @@ export default {
       },
       modalWidth: 500,
       defaultLogo: [],
-      expressCompanys: this.$store.state.app.expressCompanys
+      expressCompanys: this.$store.state.app.expressCompanys,
+       otherQuery:{
+         name:''
+      }
     };
   },
   methods: {

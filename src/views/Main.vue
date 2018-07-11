@@ -82,7 +82,8 @@ export default {
       this.userName = Cookies.get("user");
       this.$store.commit("loginin", {
         token: Cookies.get("token"),
-        id: Cookies.get("mmnum")
+        id: Cookies.get("mmnum"),
+        type: Cookies.get("mmtype")
       });
       //更新菜单
       this.$store.commit('updateMenulist');

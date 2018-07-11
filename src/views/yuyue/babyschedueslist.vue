@@ -222,7 +222,7 @@ export default {
       ],
       shopping_data: [],
       formCustom: {
-        Id: this.$route.params.id
+        Id:  this.$store.state.user.type==0? 1:this.$route.params.id
       },
       initCustom: {
         SpecialId: "",

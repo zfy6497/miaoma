@@ -571,6 +571,31 @@ const confirmRefundButton = (vm, h, currentRow, index) => {
   );
 };
 
+//弹出当前页的编辑
+const openPageEdit = (vm, h, currentRow, index, btn) => {
+  if (currentRow[btn.CheckKey] != btn.CheckValue) return;
+  return h(
+    "Button",
+    {
+      props: {
+        type: btn.BtttonStyle,
+        loading: currentRow.saving,
+        size: "small"
+      },
+      style: {
+        margin: "0 5px"
+      },
+      on: {
+        click: () => {
+          vm.$emit("set-form", currentRow, btn.ShowModelType);
+          //vm.$router.push({ name: vm.routername, params: { id: currentRow["Id"] } })
+        }
+      }
+    },
+    btn.BtttonName
+  );
+};
+
 export default {
   name: "canEditTable",
   props: {
@@ -849,6 +874,15 @@ export default {
                     break;
                   case "resetPassWord":
                     type = resetPasswordButton(
+                      this,
+                      h,
+                      currentRowData,
+                      param.index,
+                      btn
+                    );
+                    break;
+                  case "openPageEdit":
+                    type = openPageEdit(
                       this,
                       h,
                       currentRowData,

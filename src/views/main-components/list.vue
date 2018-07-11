@@ -18,6 +18,7 @@
                     <span @click="search" style="margin: 0 10px;"><Button type="primary" :loading="loading" icon="search">搜索</Button></span>
                     
                     <Button @click="cancelSearch" type="ghost">取消</Button>
+                      <slot name="endsearchbtn"></slot>
                 </template>
                 <template>
                     <div style="float: right;">
@@ -41,7 +42,7 @@
 
                     <div slot="footer">
                         <Button type="ghost" @click="closeModal">取消</Button>
-                        <Button type="primary"  v-if="submitbtn" @click="saveInfo" :loading="loading2">确定</Button>
+                        <Button type="primary"  v-if="showbtn || submitbtn" @click="saveInfo" :loading="loading2">确定</Button>
                     </div>
                 </Modal>
 
@@ -153,7 +154,8 @@ export default {
         EndDate: "",
         Sidx: "Id",
         Sord: "desc"
-      }
+      },
+      showbtn:false
     };
   },
   methods: {
@@ -253,9 +255,14 @@ export default {
       this.query.Sord = order;
       this.getData();
     },
-    setForm(data) {
+    setForm(data,type) {
       this.showFrom = true;
-      this.$emit("set-form", data);
+      this.$emit("set-form", data,type);
+      if(type && type===1){
+        this.showbtn=true;
+      }else{
+         this.showbtn=false;
+      }
     },
     checkInfo() {
       let vm = this;

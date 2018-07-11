@@ -3,32 +3,27 @@
 </style>
 <template>
    <div class="container">
-    <ul class="page-tab-hd page-wxindex">
-        <li class="li1" @click="checkitem(1)"><i class="glyphicon glyphicon-pencil"></i>轮播图配置</li>
-        <li class="li2" ><i class="glyphicon glyphicon-pencil"></i>不可编辑</li>
-        <li class="li3" @click="checkitem(3)"><i class="glyphicon glyphicon-pencil"></i>广告位配置</li>
-        <li class="li4" @click="checkitem(4)"><i class="glyphicon glyphicon-pencil"></i>优秀医师</li>
-        <li class="li5" ><i class="glyphicon glyphicon-pencil"></i>随机显示推荐课程</li>
-        <li class="li6" @click="checkitem(6)"><i class="glyphicon glyphicon-pencil"></i>推荐商品</li>
+    <ul class="page-tab-hd page-courseindex">
+        <li class="li1" ><i class="glyphicon glyphicon-pencil"></i>非编辑</li>
+        <li class="li2" @click="checkitem(1)"><i class="glyphicon glyphicon-pencil"></i>轮播图</li>
+        <li class="li3" ><i class="glyphicon glyphicon-pencil"></i>非编辑</li>
+        <li class="li4" @click="checkitem(2)"><i class="glyphicon glyphicon-pencil"></i>推荐课程</li>
+        <li class="li5" @click="checkitem(3)"><i class="glyphicon glyphicon-pencil"></i>广告图</li>
+        <li class="li6" @click="checkitem(4)"><i class="glyphicon glyphicon-pencil"></i>推荐课程</li>
         <i class="arrow"></i>
     </ul>
      <div class="page-tab-bd" :class="checkclass" v-show="showitem">
         <div class="page-item" v-show="items.item1">
-             <phslideads :slide-type="1"></phslideads>
+             <phslideads :slide-type="5"></phslideads>
         </div><!-- 轮播图配置  -->
+        <div class="page-item" v-show="items.item2">
+               <phrecommend :recommend-type="4" :mold="1"></phrecommend>
+        </div><!-- 推荐商品  -->
         <div class="page-item" v-show="items.item3">
-            <phslideads :slide-type="2"></phslideads>
+            <phslideads :slide-type="6"></phslideads>
         </div><!-- 广告位配置  -->
         <div class="page-item" v-show="items.item4">
-             
-                 <phrecommend :recommend-type="6" mold="2"></phrecommend>
-        </div><!-- 优秀医师  -->
-        <div class="page-item" v-show="items.item5">
-             
-
-        </div><!-- 优秀课程  -->
-        <div class="page-item" v-show="items.item6">
-               <phrecommend :recommend-type="1"></phrecommend>
+               <phrecommend :recommend-type="5" :mold="1"></phrecommend>
         </div><!-- 推荐商品  -->
         
    </div>
@@ -52,8 +47,8 @@ export default {
       items: {
         item1: false,
         item2: false,
-        item3:false,
-        item4:false,
+        item3: false,
+        item4: false,
         item5: false,
         item6: false
       },
@@ -86,13 +81,13 @@ export default {
           this.items.item3 = true;
           break;
         case 4:
-         this.items.item4 = true;
+          this.items.item4 = true;
           break;
         case 5:
-         this.items.item5= true;
+          this.items.item5 = true;
           break;
         case 6:
-         this.items.item6 = true;
+          this.items.item6 = true;
           break;
       }
       this.checkclass = "page-tab-top" + val;

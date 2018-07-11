@@ -15,7 +15,7 @@
       <Upload
         ref="upload"
         :show-upload-list="false"
-        :default-file-list="defaultList"
+        :default-file-list="comdefaultList"
         :on-success="handleSuccess"
         :format="format"
         :max-size="maxsize"
@@ -54,6 +54,14 @@ export default {
     format: {
       type: Array,
       default: ["jpg", "jpeg", "png"]
+    },
+    indexid: {
+      type: Number,
+      default: -1
+    },
+    uptype: {
+      type: Number,
+      default: 0
     }
   },
   data() {
@@ -65,7 +73,11 @@ export default {
       headers: {
         UserId: this.$store.state.user.id,
         Token: this.$store.state.user.token
-      }
+      },
+      defaultVedioImg:
+        "http://mmsoft.51jiuqu.com/Content/images/icon/nav-icon3.png",
+      defaultMusicImg: "http://mmsoft.51jiuqu.com/Content/images/music.png",
+      showids: []
     };
   },
   methods: {
@@ -78,18 +90,31 @@ export default {
       const fileList = this.uploadList;
       console.log(fileList);
       this.uploadList.splice(fileList.indexOf(file), 1);
-      this.$emit("get-result", this.uploadList);
+      this.$emit("get-result", this.uploadList, this.indexid);
     },
     handleSuccess(data, file) {
       let result = data.data;
+
       if (data.totalCount > 0) {
         result.forEach(res => {
-          file.url = res.Url;
+          let url = res.Url;
+          if (this.uptype == 1) {
+            url = this.defaultVedioImg;
+          }
+          file.url = url;
+          file.data = res.Url;
           file.name = res.Name;
-          this.uploadList.push(file);
-        });
 
-        this.$emit("get-result", this.uploadList);
+          //let haves = this.uploadList.filter(e => {
+            //return e.uid == res.uid;
+         // });
+         // if (!haves || haves.length <= 0) {
+            //this.uploadList.push(file);
+         // }
+        });
+         this.uploadList = this.$refs.upload.fileList;
+
+        this.$emit("get-result", this.uploadList, this.indexid);
       }
     },
     handleFormatError(file) {
@@ -101,26 +126,46 @@ export default {
     handleMaxSize(file) {
       this.$Notice.warning({
         title: "超过最大文件",
-        desc: "文件  " + file.name + " 太大了, 最大可上传." + this.maxsize + "kb"
+        desc:
+          "文件  " + file.name + " 太大了, 最大可上传." + this.maxsize + "kb"
       });
     },
     handleBeforeUpload() {
       const check = this.uploadList.length < this.maxlength;
       if (!check) {
         this.$Notice.warning({
-          title: "最多可上传" + this.maxlength + "张图片"
+          title: "最多可上传数量：" + this.maxlength + ""
         });
       }
       return check;
     }
   },
   mounted() {
-    this.uploadList = this.$refs.upload.fileList;
+     this.uploadList = this.$refs.upload.fileList;
+    // this.uploadList=this.comdefaultList;
   },
   watch: {
-    defaultList: function(val, oldvalue) {
-      this.uploadList = val;
-      this.$refs.upload.fileList = val;
+   
+  },
+  computed: {
+    comdefaultList: function() {
+      let temp = this.defaultList;
+      if (temp && temp.length > 0) {
+        if (temp[0].url.indexOf(".mp4") >= 0) {
+          temp.forEach(res => {
+            res.url = this.defaultVedioImg;
+          });
+        }
+   if (temp[0].url.indexOf(".mp3") >= 0) {
+          temp.forEach(res => {
+            res.url = this.defaultVedioImg;
+          });
+        }
+      }else{
+        temp=[];
+      }
+       this.uploadList = temp;
+      return temp;
     }
   }
 };

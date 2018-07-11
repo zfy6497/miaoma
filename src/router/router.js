@@ -65,6 +65,10 @@ export const otherRouter = {
         { path: 'babyorder/:id', title: '婴泳预约', name: 'baby_order', component: resolve => { require(['@/views/yuyue/babyorder.vue'], resolve); } },
         { path: 'babyschedueslist/:id', title: '婴泳排班', name: 'babyschedues_list', component: resolve => { require(['@/views/yuyue/babyschedueslist.vue'], resolve); } },
         { path: 'babyorderdetail/:id', title: '婴泳订单详情', name: 'babyorder_detail', component: resolve => { require(['@/views/yuyue/babyorderdetail.vue'], resolve); } },
+        { path: 'coursedetail/:id', title: '课程详情', name: 'course_detail', component: resolve => { require(['@/views/course/coursedetail.vue'], resolve); } },
+        { path: 'typedetail/:id', title: '类型详情', name: 'type_detail', component: resolve => { require(['@/views/type/detail.vue'], resolve); } },
+        { path: 'articlesdetail/:id', title: '文字详情', name: 'articles_detail', component: resolve => { require(['@/views/articles/detail.vue'], resolve); } },
+        { path: 'storemap/:id', title: '门店定位', name: 'store_map', component: resolve => { require(['@/views/yuyue/storemap.vue'], resolve); } },
         { path: 'seller/appraisaldetail/:id', title: '考评记录详情', name: 'seller_appraisal_detail', component: resolve => { require(['@/views/seller/yuyue/appraisaldetail.vue'], resolve); } }
         
     ]
@@ -98,6 +102,12 @@ export const appRouter = [
                 name: 'brands',
                 title: '品牌管理',
                 component: resolve => { require(['@/views/product/brands.vue'], resolve); }
+            }, {
+                path: 'types',
+                icon: 'levels',
+                name: 'types',
+                title: '类型管理',
+                component: resolve => { require(['@/views/type/index.vue'], resolve); }
             }
         ]
     },
@@ -289,7 +299,7 @@ export const appRouter = [
                 icon: 'ios-list',
                 name: 'homesetting',
                 title: '首页配置',
-                component: resolve => { require(['@/views/course/homesetting.vue'], resolve); }
+                component: resolve => { require(['@/views/configs/coursehomepage.vue'], resolve); }
             },
             {
                 path: 'categorylist',
@@ -335,11 +345,47 @@ export const appRouter = [
                 title: '管理员管理',
                 component: resolve => { require(['@/views/admin/index.vue'], resolve); }
             }, {
-                path: 'group',
+                path: 'configs',
                 icon: 'ios-list-outline',
-                name: 'adminConfig',
+                name: 'systemset',
                 title: '系统配置',
-                component: resolve => { require(['@/views/group/page1/page1.vue'], resolve); }
+                component: resolve => { require(['@/views/configs/systemset.vue'], resolve); }
+            }, {
+                path: 'articles',
+                icon: 'ios-list-outline',
+                name: 'articles',
+                title: '文章管理',
+                component: resolve => { require(['@/views/articles/index.vue'], resolve); }
+            }
+        ]
+    },
+    {
+        path: '/statistics',
+        icon: 'ios-folder',
+        name: 'statistics',
+        title: '统计管理',
+        component: Main,
+        children: [
+            {
+                path: 'statistics-shop',
+                icon: 'ios-list-outline',
+                name: 'statistics-shop',
+                title: '商城订单统计',
+                component: resolve => { require(['@/views/statistics/shop.vue'], resolve); }
+            },
+            {
+                path: 'statistics-service',
+                icon: 'ios-list-outline',
+                name: 'statistics-service',
+                title: '服务订单统计',
+                component: resolve => { require(['@/views/statistics/service.vue'], resolve); }
+            },
+            {
+                path: 'statistics-card',
+                icon: 'ios-list-outline',
+                name: 'statistics-card',
+                title: '会员卡统计',
+                component: resolve => { require(['@/views/statistics/card.vue'], resolve); }
             }
         ]
     }
@@ -379,6 +425,13 @@ export const appStoreRouter = [
                 component: resolve => { require(['@/views/seller/yuyue/specialorder.vue'], resolve); }
             },
             {
+                path: '_storeorders',
+                icon: 'ios-list',
+                name: '_storeorders',
+                title: '婴泳订单',
+                component: resolve => { require(['@/views/seller/yuyue/storeorders.vue'], resolve); }
+            },
+            {
                 path: '_commentlist',
                 icon: 'ios-list',
                 name: '_commentlist',
@@ -391,6 +444,43 @@ export const appStoreRouter = [
                 name: '_appraisalmanage',
                 title: '考评管理',
                 component: resolve => { require(['@/views/seller/yuyue/appraisalmanage.vue'], resolve); }
+            },
+            {
+                path: 'sellerappraisal',
+                icon: 'ios-list',
+                name: 'sellerappraisal',
+                title: '月度考评',
+                component: resolve => { require(['@/views/seller/yuyue/sellerappraisal.vue'], resolve); }
+            }
+        ]
+    },
+    {
+        path: '/yuyue/',
+        icon: 'person',
+        title: '婴泳管理',
+        name: 'sellerbaby',
+        component: Main,
+        children: [
+            {
+                path: '_babylist',
+                icon: 'ios-list',
+                name: '_babylist',
+                title: '婴泳项目',
+                component: resolve => { require(['@/views/yuyue/babylist.vue'], resolve); }
+            },
+            {
+                path: '_babyschedueslist',
+                icon: 'ios-list',
+                name: '_babyschedueslist',
+                title: '婴泳排班',
+                component: resolve => { require(['@/views/yuyue/babyschedueslist.vue'], resolve); }
+            },
+            {
+                path: '_babyorder',
+                icon: 'ios-list',
+                name: '_babyorder',
+                title: '婴泳订单',
+                component: resolve => { require(['@/views/yuyue/babyorder.vue'], resolve); }
             }
         ]
     }

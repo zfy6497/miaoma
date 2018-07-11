@@ -128,6 +128,9 @@
                                 <FormItem label="长期用药:" prop="Allergy">
                                     <label type="text" style="width: 400px" >{{formCustom.Serivce.LongMedication}}</label>
                                 </FormItem>
+                                 <FormItem label="目前用药:" prop="Allergy">
+                                    <label type="text" style="width: 400px" >{{formCustom.Serivce.NowMedication}}</label>
+                                </FormItem>
                             </Form>  </Scroll>
                          </Card>
                        </div>
@@ -176,6 +179,31 @@
                                                 </FormItem>
                                                  <FormItem label="异常特征:" >
                                                     <label type="text" style="width: 400px" >{{formCustom.Serivce.Abnormal}}</label>
+                                                </FormItem>
+                                            </Form> 
+                                     </Card>
+                                     <Card> 
+                                            <p slot="title"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;闻诊</p>
+                                            <Form ref="formCustom" :model="formCustom" :label-width="130">
+                                        
+                                               <FormItem v-for="(item,key) in formCustom.Serivce.Diagnosis1" :label="getAttrName1(key)+':'" >
+                                                    <label type="text" style="width: 400px" > {{item}}</label>
+                                                </FormItem>
+                                            </Form> 
+                                     </Card>
+                                       <Card> 
+                                            <p slot="title"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;问诊</p>
+                                            <Form ref="formCustom" :model="formCustom" :label-width="130">
+                                                 <FormItem v-for="(item,key) in formCustom.Serivce.Diagnosis2" :label="getAttrName1(key)+':'" >
+                                                    <label type="text" style="width: 400px" > {{item}}</label>
+                                                </FormItem>
+                                            </Form> 
+                                     </Card>
+                                       <Card> 
+                                            <p slot="title"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;切诊</p>
+                                            <Form ref="formCustom" :model="formCustom" :label-width="130">
+                                                   <FormItem v-for="(item,key) in formCustom.Serivce.Diagnosis3" :label="getAttrName1(key)+':'" >
+                                                    <label type="text" style="width: 400px" > {{item}}</label>
                                                 </FormItem>
                                             </Form> 
                                      </Card>
@@ -304,6 +332,20 @@
                                 <Form ref="formCustom" :model="formCustom" :label-width="130">
                                     <FormItem label="预约状态:" prop="StatusName">
                                         <label type="text" style="width: 400px" >{{formCustom.Serivce.Advice}}</label>
+                                    </FormItem>
+                                </Form>  
+                        </Card>
+                    </div>
+                </Col>
+        </Row>
+        <Row v-if="formCustom.PayStatus!=-1" >
+                <Col span="24">
+                    <div style="background:#eee;padding: 20px">
+                        <Card>
+                             <p slot="title"> <Icon type="arrow-right-b"></Icon>&nbsp;&nbsp;医师建议</p>
+                                <Form ref="formCustom" :model="formCustom" :label-width="130">
+                                    <FormItem label="预约状态:" prop="StatusName">
+                                        <label type="text" style="width: 400px" >{{formCustom.Serivce.Proposal}}</label>
                                     </FormItem>
                                 </Form>  
                         </Card>
@@ -485,6 +527,11 @@ export default {
         ) {
           if (res === "1") {
             vm.formCustom = data.data;
+            vm.formCustom.Serivce.Diagnosis1=JSON.parse(vm.formCustom.Serivce.Diagnosis1);
+            vm.formCustom.Serivce.Diagnosis2=JSON.parse(vm.formCustom.Serivce.Diagnosis2);
+            vm.formCustom.Serivce.Diagnosis3=JSON.parse(vm.formCustom.Serivce.Diagnosis3);
+   
+         ;
           } else {
             this.$Message.error("获取订单信息出错了");
           }
@@ -493,6 +540,113 @@ export default {
     },
     CancelOrder() {
       let vm = this;
+    },
+    getAttrName1(attr) {
+      let attrname = "";
+      switch (attr) {
+        case "Tone":
+          attrname = "口气";
+          break;
+        case "Cough":
+          attrname = "咳嗽";
+          break;
+        case "Stethoscope":
+          attrname = "听诊器";
+          break;
+        case "AbnormalSmell":
+          attrname = "异常声音";
+          break;
+        case "Appetite":
+          attrname = "胃口";
+          break;
+        case "Diet":
+          attrname = "日常饮食";
+          break;
+        case "MainSidesDish":
+          attrname = "主辅食";
+          break;
+        case "Formula":
+          attrname = "配方奶";
+          break;
+        case "BreastMilk":
+          attrname = "母乳";
+          break;
+        case "Intake":
+          attrname = "摄入量";
+          break;
+        case "Cooking":
+          attrname = "烹饪方法";
+          break;
+        case "PremorbidDiet":
+          attrname = "发病前饮食";
+          break;
+        case "MomFood":
+          attrname = "乳母饮食";
+          break;
+        case "PregnancyFood":
+          attrname = "孕期饮食";
+          break;
+        case "Drinking":
+          attrname = "饮水情况";
+          break;
+        case "DefecateFrequency":
+          attrname = "大便次数";
+          break;
+        case "ShitCharacter":
+          attrname = "大便性状";
+          break;
+        case "DefecateColor":
+          attrname = "大便颜色";
+          break;
+        case "Smells":
+          attrname = "大便气味";
+          break;
+        case "UrineNumber":
+          attrname = "小便次数";
+          break;
+        case "UrineColor":
+          attrname = "小便颜色";
+          break;
+        case "UrineSmells":
+          attrname = "小便气味";
+          break;
+        case "Sleep":
+          attrname = "睡觉情况";
+          break;
+        case "Drool":
+          attrname = "流口水情况";
+          break;
+        case "CodeHot":
+          attrname = "冷热";
+          break;
+        case "Sweats":
+          attrname = "出汗情况";
+          break;
+        case "PerspireParts":
+          attrname = "出汗部位";
+          break;
+        case "LivingHabits":
+          attrname = "生活习惯";
+          break;
+        case "Fur":
+          attrname = "皮毛";
+          break;
+        case "NeckAxillary":
+          attrname = "按颈腋";
+          break;
+        case "Chest":
+          attrname = "按胸腹";
+          break;
+        case "Abdomenbag":
+          attrname = "腹部包块";
+          break;
+        case "ArmsLegs":
+          attrname = "按四肢";
+          break;
+        default:
+          break;
+      }
+      return attrname;
     }
   },
   mounted() {

@@ -46,7 +46,7 @@ export default {
       formCustom: {
         Id: 0,
         Url: "",
-        Sort: "",
+        Sort: 0,
         ImageUrl: "",
         Description: "",
         TypeId: 0
@@ -80,7 +80,7 @@ export default {
         }
       } else {
         for (let key in this.formCustom) {
-          if (key === "Id") {
+          if (key === "Id" || key === "Sort") {
             this.formCustom[key] = 0;
           } else if (key != "TypeId") {
             this.formCustom[key] = "";

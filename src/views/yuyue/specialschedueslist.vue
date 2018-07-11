@@ -349,7 +349,7 @@ export default {
         {
           SId: this.formCustom.Id,
           Day: this.CurrentDate,
-          Single: this.single,
+          Single: this.Single,
           SchedueString: JSON.stringify(data2)
         },
         vm,
@@ -357,6 +357,9 @@ export default {
           if (res === "1") {
             vm.$Message.success("保存成功");
             vm.getDataInfo();
+          }else{
+      
+               vm.$Message.error(data);
           }
         }
       );

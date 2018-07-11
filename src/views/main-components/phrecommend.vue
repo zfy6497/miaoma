@@ -1,9 +1,9 @@
 <template>
     <list :show-search="false" :show-date="true" :show-key-word="true" :show-add-button="true" :show-page="true"  :modal-list="true" :update-url="updateUrl"
-        :delete-url="deleteUrl" :add-url="addUrl" :get-url="getUrl" :form-custom="formCustom" :rule-custom="ruleCustom" :modal-width="800" @set-form="setForm" :other-query="otherQuery" :modal-select="selected" :modalList="true" :recommend-type="recommendType">
+        :delete-url="deleteUrl" :add-url="addUrl" :get-url="geturl" :form-custom="formCustom" :rule-custom="ruleCustom" :modal-width="800" @set-form="setForm" :other-query="otherQuery" :modal-select="selected" :modalList="true" :recommend-type="recommendType">
         <template slot="ModalList">
            
-            <list :show-search="true" :show-date="true" :show-key-word="true"  :show-add-button="false" :show-page="true"  :get-url="'admin/Products/GetCheckList'" :other-query="otherQuery"  :modal-select="selected" @set-Select="setSelect">
+            <list :show-search="true" :show-date="true" :show-key-word="true"  :show-add-button="false" :show-page="true"  :get-url="getchecklisturl" :other-query="otherQuery"  :modal-select="selected" @set-Select="setSelect">
       
            </list>
             
@@ -24,6 +24,10 @@ export default {
     recommendType: {
       Type: Number,
       default: 0
+    },
+     mold: {
+      Type: Number,
+      default: 0
     }
   },
   data() {
@@ -31,7 +35,6 @@ export default {
       updateUrl: "admin/Recommend/Save",
       deleteUrl: "admin/Recommend/Delete",
       addUrl: "admin/Recommend/SaveChecks",
-      getUrl: "admin/Recommend/GetProductList",
       formCustom: {
         Id: 0,
         Url: "",
@@ -53,6 +56,29 @@ export default {
       selected:[]
     };
   },
+  computed:{
+    getchecklisturl:function(){
+       let url="admin/Products/GetCheckList";
+       if(this.mold==1){
+           url="admin/Course/GetCheckList";
+       }
+       if(this.mold==2){
+           url="admin/Special/GetCheckList";
+       }
+       return url;
+    },
+    geturl:function(){
+       let url="admin/Recommend/GetProductList";
+       if(this.mold==1){
+           url="admin/Recommend/GetCourseList";
+       }
+       if(this.mold==2){
+           url="admin/Recommend/GetSpecialList";
+       }
+       return url;
+    }
+  }
+  ,
   methods: {
     getresult(data) {
       if (data.length > 0) {

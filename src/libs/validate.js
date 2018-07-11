@@ -9,10 +9,12 @@ export const validateRequired = (rule, value, callback) => {
 
 export const validateInteger = (rule, value, callback) => {
     setTimeout(() => {
-        if (!Number.isInteger(value)) {
-            callback(new Error('请输入整数'));
-        } else {
+
+        var regPos = /^\d+$/; //正整数
+        if (regPos.test(value)) {
             callback();
+        } else {
+            callback(new Error('请输入整数'));
         }
     }, 1000);
 }

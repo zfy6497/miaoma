@@ -26,6 +26,7 @@ const user = {
         loginin (state, data) {
             state.token = data.token;
             state.id = data.id;
+            state.type = data.type;
         }
     }
 };
